@@ -8,16 +8,16 @@ import {
   HeadphonesIcon,
   LaptopIcon,
   MailIcon,
-  NewspaperIcon,
+  News01Icon,
   ShieldIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
-import type { IconType } from "@hugeicons/react";
+import type { IconSvgElement } from "@hugeicons/react";
 
 export interface NavLinkItem {
   description?: string;
   href: string;
-  icon?: IconType;
+  icon?: IconSvgElement;
   title: string;
 }
 
@@ -133,7 +133,7 @@ export const navItems: NavItem[] = [
   {
     title: "Resources",
     items: [
-      { title: "Blog", href: "/blog", icon: NewspaperIcon },
+      { title: "Blog", href: "/blog", icon: News01Icon },
       { title: "Documentation", href: "/docs", icon: FileIcon },
       { title: "Support", href: "/support", icon: HeadphonesIcon },
       { title: "Contact", href: "/contact", icon: MailIcon },

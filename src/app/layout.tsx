@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Nunito_Sans } from "next/font/google";
+import { Navbar } from "@/components/layout/navbar/navbar";
 import { Providers } from "@/providers/providers";
 import "./globals.css";
 
@@ -28,7 +29,10 @@ export default function RootLayout({
       <body
         className={`${nunitoSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          <main>{children}</main>
+        </Providers>
       </body>
     </html>
   );
