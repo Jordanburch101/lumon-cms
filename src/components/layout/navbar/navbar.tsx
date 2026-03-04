@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useScrolled } from "@/core/hooks/use-scrolled";
@@ -23,15 +22,10 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 lg:px-6">
-        <Link className="flex items-center gap-2" href="/">
-          <Image
-            alt="Lumon"
-            className="dark:invert"
-            height={28}
-            priority
-            src="/lumon-logo.svg"
-            width={120}
-          />
+        <Link className="flex items-center" href="/">
+          <span className="font-semibold text-base tracking-tight">
+            Lumon<span className="text-muted-foreground">Payload</span>
+          </span>
         </Link>
 
         <NavbarDesktop />
