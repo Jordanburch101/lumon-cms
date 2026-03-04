@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Nunito_Sans } from "next/font/google";
-import { Providers } from "@/components/providers";
+import { Providers } from "@/providers/providers";
 import "./globals.css";
 
 const nunitoSans = Nunito_Sans({
