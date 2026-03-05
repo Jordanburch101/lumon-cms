@@ -5,7 +5,7 @@ import { heroData } from "./hero-data";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100svh] w-full">
+    <section className="relative min-h-[calc(100svh-56px)] w-full">
       {/* Background photo */}
       <Image
         alt="Hero background"
