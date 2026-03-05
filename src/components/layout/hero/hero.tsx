@@ -27,7 +27,7 @@ export function Hero() {
           {heroData.subtext}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild size="lg">
+          <Button asChild className="bg-white text-black hover:bg-white/90" size="lg">
             <Link href={heroData.primaryCta.href}>
               {heroData.primaryCta.label}
             </Link>
