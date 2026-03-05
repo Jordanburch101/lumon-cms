@@ -14,9 +14,9 @@ export const chartData = [
 ] as const;
 
 export const statsData = [
-  { label: "Revenue", value: "$48.2k", change: "+12.5%", trend: "up" as const },
-  { label: "Users", value: "2,847", change: "+8.1%", trend: "up" as const },
-  { label: "Uptime", value: "99.98%", change: "+0.02%", trend: "up" as const },
+  { label: "Revenue", value: "$48.2k", change: "+12.5%" },
+  { label: "Users", value: "2,847", change: "+8.1%" },
+  { label: "Uptime", value: "99.98%", change: "+0.02%" },
 ] as const;
 
 export const imageCardData = {

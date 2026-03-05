@@ -1,23 +1,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/core/lib/utils";
 
 function MiniPreview({ mode }: { mode: "light" | "dark" }) {
   const isLight = mode === "light";
   return (
     <div
-      className={`flex-1 rounded-md p-3 ${
+      className={cn(
+        "flex-1 rounded-md p-3 ring-1",
         isLight
-          ? "bg-white text-zinc-900 ring-1 ring-zinc-200"
-          : "bg-zinc-900 text-zinc-100 ring-1 ring-zinc-700"
-      }`}
+          ? "bg-white text-zinc-900 ring-zinc-200"
+          : "bg-zinc-900 text-zinc-100 ring-zinc-700"
+      )}
     >
       <div
-        className={`mb-2 h-1.5 w-8 rounded-full ${isLight ? "bg-zinc-900" : "bg-zinc-100"}`}
+        className={cn(
+          "mb-2 h-1.5 w-8 rounded-full",
+          isLight ? "bg-zinc-900" : "bg-zinc-100"
+        )}
       />
       <div
-        className={`mb-1 h-1 w-full rounded-full ${isLight ? "bg-zinc-200" : "bg-zinc-700"}`}
+        className={cn(
+          "mb-1 h-1 w-full rounded-full",
+          isLight ? "bg-zinc-200" : "bg-zinc-700"
+        )}
       />
       <div
-        className={`h-1 w-3/4 rounded-full ${isLight ? "bg-zinc-200" : "bg-zinc-700"}`}
+        className={cn(
+          "h-1 w-3/4 rounded-full",
+          isLight ? "bg-zinc-200" : "bg-zinc-700"
+        )}
       />
     </div>
   );
