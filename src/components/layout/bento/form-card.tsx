@@ -3,12 +3,12 @@ import { Input } from "@/components/ui/input";
 
 export function FormCard() {
   return (
-    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg bg-card p-4 ring-1 ring-foreground/10">
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg bg-background p-4">
       <div>
-        <p className="font-medium text-sm">Get in touch</p>
-        <p className="mt-0.5 text-[11px] text-muted-foreground">
-          We&apos;ll get back to you shortly.
-        </p>
+        <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
+          Forms
+        </span>
+        <p className="mt-1.5 font-medium text-sm">Get in touch</p>
       </div>
       <form className="flex flex-col gap-2">
         <Input className="h-7 text-xs" placeholder="Your name" />

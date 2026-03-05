@@ -4,8 +4,10 @@ import { statsData } from "./bento-data";
 
 export function StatsCard() {
   return (
-    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg bg-card p-4 ring-1 ring-foreground/10">
-      <p className="font-medium text-sm">Key Metrics</p>
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg bg-background p-4">
+      <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
+        Metrics
+      </span>
       <div className="flex flex-col gap-3">
         {statsData.map((stat) => (
           <div className="flex items-center justify-between" key={stat.label}>

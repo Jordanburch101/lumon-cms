@@ -18,10 +18,13 @@ const chartConfig = {
 
 export function ChartCard() {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-card p-4 ring-1 ring-foreground/10">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-background p-4">
+      <span className="mb-2 text-[11px] text-muted-foreground uppercase tracking-wider">
+        Analytics
+      </span>
       <div className="mb-1 flex items-baseline gap-3">
         <span className="font-semibold text-2xl tabular-nums">+24%</span>
-        <span className="text-muted-foreground text-xs">Monthly Visitors</span>
+        <span className="text-muted-foreground text-xs">monthly visitors</span>
       </div>
       <div className="min-h-0 flex-1">
         <ChartContainer
