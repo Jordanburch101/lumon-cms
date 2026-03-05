@@ -2,13 +2,6 @@
 
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -25,14 +18,14 @@ const chartConfig = {
 
 export function ChartCard() {
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardDescription>Monthly Visitors</CardDescription>
-        <CardTitle className="text-2xl">+24%</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-card p-4 ring-1 ring-foreground/10">
+      <div className="mb-1 flex items-baseline gap-3">
+        <span className="font-semibold text-2xl tabular-nums">+24%</span>
+        <span className="text-muted-foreground text-xs">Monthly Visitors</span>
+      </div>
+      <div className="min-h-0 flex-1">
         <ChartContainer
-          className="aspect-auto h-40 w-full"
+          className="h-full w-full [&_.recharts-cartesian-axis-tick_text]:text-[10px]"
           config={chartConfig}
         >
           <AreaChart data={[...chartData]}>
@@ -41,7 +34,7 @@ export function ChartCard() {
               axisLine={false}
               dataKey="month"
               tickLine={false}
-              tickMargin={8}
+              tickMargin={6}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <defs>
@@ -67,7 +60,7 @@ export function ChartCard() {
             />
           </AreaChart>
         </ChartContainer>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

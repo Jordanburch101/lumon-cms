@@ -1,42 +1,26 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 export function FormCard() {
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Get in touch</CardTitle>
-        <CardDescription>We'll get back to you shortly.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form>
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="bento-name">Name</FieldLabel>
-              <Input id="bento-name" placeholder="Your name" />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="bento-email">Email</FieldLabel>
-              <Input
-                id="bento-email"
-                placeholder="you@example.com"
-                type="email"
-              />
-            </Field>
-            <Button className="w-full" type="button">
-              Submit
-            </Button>
-          </FieldGroup>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg bg-card p-4 ring-1 ring-foreground/10">
+      <div>
+        <p className="font-medium text-sm">Get in touch</p>
+        <p className="mt-0.5 text-[11px] text-muted-foreground">
+          We&apos;ll get back to you shortly.
+        </p>
+      </div>
+      <form className="flex flex-col gap-2">
+        <Input className="h-7 text-xs" placeholder="Your name" />
+        <Input
+          className="h-7 text-xs"
+          placeholder="you@example.com"
+          type="email"
+        />
+        <Button className="h-7 w-full text-xs" size="sm" type="button">
+          Submit
+        </Button>
+      </form>
+    </div>
   );
 }

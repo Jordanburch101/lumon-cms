@@ -9,7 +9,7 @@ export function BentoShowcase() {
   return (
     <section className="w-full py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
-        <div className="mb-10 max-w-2xl">
+        <div className="mb-8 max-w-2xl">
           <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
             {bentoSectionData.headline}
           </h2>
@@ -17,26 +17,26 @@ export function BentoShowcase() {
             {bentoSectionData.subtext}
           </p>
         </div>
-        <div className="grid auto-rows-[minmax(180px,auto)] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Chart: 2 cols, 2 rows */}
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[180px_180px_100px]">
+          {/* Chart: 2 cols, 2 rows — the hero card */}
           <div className="sm:col-span-2 sm:row-span-2">
             <ChartCard />
           </div>
-          {/* Image: 1 col, 2 rows */}
-          <div className="sm:row-span-2 lg:col-span-1">
+          {/* Image: 1 col, 2 rows — full bleed image */}
+          <div className="sm:row-span-2">
             <ImageCard />
           </div>
           {/* Theme: 1x1 */}
-          <div className="lg:col-span-1">
+          <div>
             <ThemeCard />
           </div>
-          {/* Stats: 2 cols, 1 row */}
-          <div className="sm:col-span-2">
-            <StatsCard />
-          </div>
-          {/* Form: 1x1 — only visible on lg where we have 4 cols */}
-          <div className="lg:col-span-1">
+          {/* Form: 1x1 */}
+          <div>
             <FormCard />
+          </div>
+          {/* Stats: full width bottom bar */}
+          <div className="sm:col-span-2 lg:col-span-4">
+            <StatsCard />
           </div>
         </div>
       </div>
