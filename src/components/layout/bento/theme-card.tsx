@@ -57,7 +57,7 @@ function MiniPreview({ mode }: { mode: "light" | "dark" }) {
 
 export function ThemeCard() {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-muted p-4">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-card p-4 ring-1 ring-foreground/10">
       <p className="mb-2 font-medium text-sm">Theming</p>
       <div className="flex min-h-0 flex-1 gap-2">
         <MiniPreview mode="light" />

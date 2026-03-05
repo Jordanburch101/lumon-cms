@@ -17,26 +17,26 @@ export function BentoShowcase() {
             {bentoSectionData.subtext}
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[180px_180px_100px]">
-          {/* Chart: 2 cols, 2 rows — the hero card */}
-          <div className="sm:col-span-2 sm:row-span-2">
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-[220px_220px_160px]">
+          {/* Chart: 2 cols, 2 rows — hero card */}
+          <div className="sm:col-span-2 sm:row-span-2 lg:col-span-2">
             <ChartCard />
           </div>
-          {/* Image: 1 col, 2 rows — full bleed image */}
+          {/* Image: 1 col, 2 rows */}
           <div className="sm:row-span-2">
             <ImageCard />
           </div>
-          {/* Theme: 1x1 */}
+          {/* Stats: wide bottom-left */}
+          <div>
+            <StatsCard />
+          </div>
+          {/* Theme: bottom-center */}
           <div>
             <ThemeCard />
           </div>
-          {/* Form: 1x1 */}
+          {/* Form: bottom-right */}
           <div>
             <FormCard />
-          </div>
-          {/* Stats: full width bottom bar */}
-          <div className="sm:col-span-2 lg:col-span-4">
-            <StatsCard />
           </div>
         </div>
       </div>
