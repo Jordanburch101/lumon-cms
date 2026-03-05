@@ -3,17 +3,36 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { heroData } from "./hero-data";
 
+const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
+
+function getMediaType(src: string): "video" | "image" {
+  return VIDEO_EXTENSION_RE.test(src) ? "video" : "image";
+}
+
 export function Hero() {
+  const mediaType = getMediaType(heroData.mediaSrc);
+
   return (
     <section className="relative min-h-[calc(100svh-56px)] w-full">
-      {/* Background photo */}
-      <Image
-        alt="Hero background"
-        className="object-cover"
-        fill
-        priority
-        src="/hero-bg.jpg"
-      />
+      {/* Background media */}
+      {mediaType === "video" ? (
+        <video
+          autoPlay
+          className="absolute inset-0 h-full w-full object-cover"
+          loop
+          muted
+          playsInline
+          src={heroData.mediaSrc}
+        />
+      ) : (
+        <Image
+          alt="Hero background"
+          className="object-cover"
+          fill
+          priority
+          src={heroData.mediaSrc}
+        />
+      )}
 
       {/* Gradient overlay: transparent at top → black/65 at bottom */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
@@ -27,7 +46,11 @@ export function Hero() {
           {heroData.subtext}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild className="bg-white text-black hover:bg-white/90" size="lg">
+          <Button
+            asChild
+            className="bg-white text-black hover:bg-white/90"
+            size="lg"
+          >
             <Link href={heroData.primaryCta.href}>
               {heroData.primaryCta.label}
             </Link>
