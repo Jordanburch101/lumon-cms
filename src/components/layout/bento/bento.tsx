@@ -17,7 +17,7 @@ export function BentoShowcase() {
             {bentoSectionData.subtext}
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-[220px_220px_160px]">
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-[220px_220px_200px]">
           {/* Chart: 2 cols, 2 rows — hero card */}
           <div className="sm:col-span-2 sm:row-span-2 lg:col-span-2">
             <ChartCard />
