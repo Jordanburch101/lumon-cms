@@ -10,24 +10,24 @@ export function Footer() {
     <footer className="border-t bg-background">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Zone 1: Newsletter */}
-        <div className="border-b py-8">
+        <div className="border-b py-6">
           <NewsletterForm />
         </div>
 
         {/* Zone 2: Link columns */}
-        <div className="grid gap-8 py-8 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-6 py-8 lg:grid-cols-6">
           {/* Logo column */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2">
             <Link className="inline-block" href="/">
               <span className="font-semibold text-base tracking-tight">
                 Lumon
                 <span className="text-muted-foreground">Payload</span>
               </span>
             </Link>
-            <p className="mt-2 text-muted-foreground text-sm">
+            <p className="mt-1.5 text-muted-foreground text-xs">
               Next.js + Payload CMS template and component showcase.
             </p>
-            <div className="mt-4 flex gap-3">
+            <div className="mt-3 flex gap-2">
               {socialLinks.map((social) => (
                 <a
                   className="text-muted-foreground transition-colors hover:text-foreground"
@@ -53,11 +53,11 @@ export function Footer() {
               <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
                 {column.title}
               </h4>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-2 space-y-1.5">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link
-                      className="text-muted-foreground text-sm transition-colors hover:text-foreground"
+                      className="text-muted-foreground text-xs transition-colors hover:text-foreground"
                       href={link.href}
                     >
                       {link.title}

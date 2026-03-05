@@ -1,17 +1,17 @@
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { imageCardData } from "./bento-data";
 
 export function ImageCard() {
   return (
-    <div className="relative h-full overflow-hidden rounded-lg">
-      <div className="absolute inset-0 z-10 bg-primary opacity-40 mix-blend-color" />
-      <Image
-        alt={imageCardData.alt}
-        className="h-full w-full object-cover brightness-50 grayscale"
-        height={400}
-        src={imageCardData.src}
-        width={400}
+    <div className="relative h-full overflow-hidden rounded-xl border border-border/50 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
+      <div className="absolute inset-0 z-10 bg-primary opacity-20 mix-blend-color" />
+      <video
+        autoPlay
+        className="h-full w-full object-cover brightness-75"
+        loop
+        muted
+        playsInline
+        src="/bento-vid.mp4"
       />
       {/* Category label top-left */}
       <span className="absolute top-4 left-4 z-20 text-[11px] text-white/50 uppercase tracking-wider">

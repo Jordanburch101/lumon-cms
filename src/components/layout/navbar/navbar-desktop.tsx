@@ -9,6 +9,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/core/lib/utils";
 import type { NavGroup, NavItem } from "./navbar-data";
 import { navItems } from "./navbar-data";
 
@@ -17,38 +18,38 @@ function MegaMenuContent({ item }: { item: NavItem }) {
     return null;
   }
   return (
-    <div className="grid gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-2">
+    <div className="grid gap-2 p-2 md:w-[460px] lg:w-[540px] lg:grid-cols-2">
       {item.groups.map((group: NavGroup) => (
-        <div className="space-y-2" key={group.title}>
-          <h4 className="px-2 font-medium text-[0.6875rem] text-muted-foreground uppercase tracking-wider">
+        <div className="space-y-0.5" key={group.title}>
+          <h4 className="px-1.5 pb-0.5 font-medium text-[0.625rem] text-muted-foreground uppercase tracking-wider">
             {group.title}
           </h4>
-          <div className="space-y-0.5">
-            {group.items.map((link) => (
-              <NavigationMenuLink asChild key={link.href}>
-                <Link
-                  className="flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
-                  href={link.href}
-                >
-                  {link.icon && (
-                    <HugeiconsIcon
-                      className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                      icon={link.icon}
-                      strokeWidth={2}
-                    />
-                  )}
-                  <div>
-                    <div className="font-medium text-xs">{link.title}</div>
-                    {link.description && (
-                      <p className="text-[0.6875rem] text-muted-foreground leading-relaxed">
-                        {link.description}
-                      </p>
-                    )}
+          {group.items.map((link) => (
+            <NavigationMenuLink asChild key={link.href}>
+              <Link
+                className="flex items-start gap-2 rounded-md px-1.5 py-1 transition-colors hover:bg-muted"
+                href={link.href}
+              >
+                {link.icon && (
+                  <HugeiconsIcon
+                    className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
+                    icon={link.icon}
+                    strokeWidth={2}
+                  />
+                )}
+                <div>
+                  <div className="font-medium text-xs leading-tight">
+                    {link.title}
                   </div>
-                </Link>
-              </NavigationMenuLink>
-            ))}
-          </div>
+                  {link.description && (
+                    <p className="text-[0.625rem] text-muted-foreground leading-snug">
+                      {link.description}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            </NavigationMenuLink>
+          ))}
         </div>
       ))}
     </div>
@@ -64,7 +65,7 @@ function SimpleDropdownContent({ item }: { item: NavItem }) {
       {item.items.map((link) => (
         <NavigationMenuLink asChild key={link.href}>
           <Link
-            className="flex items-center gap-2 rounded-lg p-2 transition-colors hover:bg-muted"
+            className="flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-muted"
             href={link.href}
           >
             {link.icon && (
@@ -91,13 +92,18 @@ export function NavbarDesktop() {
             {item.href && !item.groups && !item.items ? (
               <NavigationMenuLink
                 asChild
-                className={navigationMenuTriggerStyle()}
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "cursor-pointer bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent"
+                )}
               >
                 <Link href={item.href}>{item.title}</Link>
               </NavigationMenuLink>
             ) : (
               <>
-                <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="cursor-pointer bg-transparent hover:bg-transparent focus:bg-transparent data-open:bg-transparent data-popup-open:bg-transparent data-open:focus:bg-transparent data-open:hover:bg-transparent data-popup-open:hover:bg-transparent">
+                  {item.title}
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   {item.groups ? (
                     <MegaMenuContent item={item} />

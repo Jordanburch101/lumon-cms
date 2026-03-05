@@ -20,10 +20,10 @@ export const statsData = [
 ] as const;
 
 export const imageCardData = {
-  src: "https://images.unsplash.com/photo-1604076850742-4c7221f3101b?q=80&w=800&auto=format&fit=crop",
-  alt: "Abstract colorful gradient",
-  title: "Observability Plus",
+  src: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
+  alt: "Abstract colorful gradient mesh",
+  title: "Rich Media",
   description:
-    "Track, measure, and visualize your data in real time with built-in analytics.",
-  badge: "New",
+    "Optimized images, video, and media handling with Next.js Image and responsive layouts.",
+  badge: "Built-in",
 } as const;

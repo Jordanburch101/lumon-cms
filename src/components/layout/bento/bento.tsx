@@ -1,9 +1,10 @@
 import { bentoSectionData } from "./bento-data";
 import { ChartCard } from "./chart-card";
-import { FormCard } from "./form-card";
+import { GlobeCard } from "./globe-card";
 import { ImageCard } from "./image-card";
-import { StatsCard } from "./stats-card";
-import { ThemeCard } from "./theme-card";
+import { IntegrationsCard } from "./integrations-card";
+import { NotificationsCard } from "./notifications-card";
+import { ShowcaseCard } from "./showcase-card";
 
 export function BentoShowcase() {
   return (
@@ -17,22 +18,30 @@ export function BentoShowcase() {
             {bentoSectionData.subtext}
           </p>
         </div>
-        <div className="overflow-hidden rounded-2xl bg-muted p-1.5">
-          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-[220px_220px_200px]">
-            <div className="sm:col-span-2 sm:row-span-2 lg:col-span-2">
+        <div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[240px_240px_56px]">
+            {/* Row 1: Chart (2col) + Globe (1col) + Image (1col, spans 2 rows) */}
+            <div className="sm:col-span-2">
               <ChartCard />
+            </div>
+            <div>
+              <GlobeCard />
             </div>
             <div className="sm:row-span-2">
               <ImageCard />
             </div>
-            <div>
-              <StatsCard />
+
+            {/* Row 2: Showcase (2col) + Notifications (1col) */}
+            <div className="sm:col-span-2">
+              <ShowcaseCard />
             </div>
             <div>
-              <ThemeCard />
+              <NotificationsCard />
             </div>
-            <div>
-              <FormCard />
+
+            {/* Row 3: Integrations strip (full width) */}
+            <div className="hidden sm:col-span-2 sm:block lg:col-span-4">
+              <IntegrationsCard />
             </div>
           </div>
         </div>

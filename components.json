@@ -12,6 +12,8 @@
   },
   "iconLibrary": "hugeicons",
   "rtl": false,
+  "menuColor": "default",
+  "menuAccent": "subtle",
   "aliases": {
     "components": "@/components",
     "utils": "@/core/lib/utils",
@@ -19,7 +21,7 @@
     "lib": "@/core/lib",
     "hooks": "@/core/hooks"
   },
-  "menuColor": "default",
-  "menuAccent": "subtle",
-  "registries": {}
+  "registries": {
+    "@mapcn": "https://mapcn.dev/r/{name}.json"
+  }
 }
