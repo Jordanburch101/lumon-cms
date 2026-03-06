@@ -5,6 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Testimonial } from "./testimonials-data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const WORD_STAGGER = 0.03;
+const WORD_DURATION = 0.5;
 
 interface FeaturedQuoteProps {
   duration: number;
@@ -12,10 +14,9 @@ interface FeaturedQuoteProps {
 }
 
 export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
-  // Use featuredQuote (longer version) when available, fall back to quote
   const displayQuote = testimonial.featuredQuote ?? testimonial.quote;
-  // Split into sentences for staggered animation
-  const sentences = displayQuote.match(/[^.!?]+[.!?]+/g) ?? [displayQuote];
+  const words = displayQuote.split(" ");
+  const totalRevealTime = words.length * WORD_STAGGER + WORD_DURATION;
 
   return (
     <div className="relative flex h-full flex-col justify-center">
@@ -29,39 +30,63 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
 
       <AnimatePresence mode="wait">
         <motion.div
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.2 } }}
-          initial={{ opacity: 0 }}
+          animate="visible"
+          exit="exit"
+          initial="hidden"
           key={testimonial.id}
-          transition={{ duration: 0.3 }}
         >
-          {/* Quote text — staggered by sentence */}
+          {/* Quote text — per-word clip reveal */}
           <blockquote className="relative z-10">
-            {sentences.map((sentence, i) => (
-              <motion.span
-                animate={{ opacity: 1, y: 0 }}
-                className="inline text-xl leading-relaxed tracking-tight sm:text-2xl lg:text-3xl lg:leading-relaxed"
-                initial={{ opacity: 0, y: 12 }}
+            {words.map((word, i) => (
+              <span
+                className="inline-flex overflow-hidden align-bottom"
                 key={`${testimonial.id}-${i}`}
-                transition={{
-                  duration: 0.5,
-                  ease: EASE,
-                  delay: 0.15 + i * 0.08,
-                }}
               >
-                {sentence}
-              </motion.span>
+                <motion.span
+                  className="inline-block text-xl leading-relaxed tracking-tight will-change-transform sm:text-2xl lg:text-3xl lg:leading-relaxed"
+                  variants={{
+                    hidden: { y: "100%" },
+                    visible: {
+                      y: "0%",
+                      transition: {
+                        duration: WORD_DURATION,
+                        ease: EASE,
+                        delay: i * WORD_STAGGER,
+                      },
+                    },
+                    exit: {
+                      y: "-100%",
+                      transition: {
+                        duration: 0.25,
+                        ease: EASE,
+                        delay: i * 0.015,
+                      },
+                    },
+                  }}
+                >
+                  {word}
+                </motion.span>
+                {/* Preserve word spacing */}
+                {i < words.length - 1 && (
+                  <span className="inline-block w-[0.3em]" />
+                )}
+              </span>
             ))}
           </blockquote>
 
           {/* Attribution */}
           <motion.div
-            animate={{ opacity: 1 }}
             className="mt-6 flex items-center gap-3 lg:mt-8"
-            initial={{ opacity: 0 }}
-            transition={{
-              duration: 0.4,
-              delay: 0.15 + sentences.length * 0.08 + 0.2,
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { duration: 0.4, delay: totalRevealTime + 0.1 },
+              },
+              exit: {
+                opacity: 0,
+                transition: { duration: 0.15 },
+              },
             }}
           >
             <Avatar>
@@ -80,7 +105,7 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress bar — key forces remount (restarting animation) when testimonial changes */}
+      {/* Progress bar */}
       <div className="mt-8 h-px w-full bg-border/60 lg:mt-10">
         <div
           className="h-full origin-left bg-foreground/20"
