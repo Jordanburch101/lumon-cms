@@ -1,6 +1,7 @@
 import { BentoShowcase } from "@/components/layout/bento/bento";
 import { Hero } from "@/components/layout/hero/hero";
 import { SplitMedia } from "@/components/layout/split-media/split-media";
+import { Testimonials } from "@/components/layout/testimonials/testimonials";
 
 export default function Page() {
   return (
@@ -8,6 +9,7 @@ export default function Page() {
       <Hero />
       <BentoShowcase />
       <SplitMedia />
+      <Testimonials />
     </>
   );
 }
