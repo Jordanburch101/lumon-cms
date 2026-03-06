@@ -129,7 +129,11 @@ export function NotificationsCard() {
                 stiffness: 380,
                 damping: 30,
                 mass: 0.8,
-                filter: { type: "tween", duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
+                filter: {
+                  type: "tween",
+                  duration: 0.5,
+                  ease: [0.25, 0.1, 0.25, 1],
+                },
                 layout: {
                   type: "spring",
                   stiffness: 400,

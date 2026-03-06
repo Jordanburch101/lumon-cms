@@ -31,9 +31,7 @@ export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
       <div className="flex items-center gap-2.5">
         <Avatar>
           <AvatarImage alt={testimonial.name} src={testimonial.avatarSrc} />
-          <AvatarFallback>
-            {testimonial.name.charAt(0)}
-          </AvatarFallback>
+          <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">
           <span className="block truncate font-medium text-foreground text-xs">

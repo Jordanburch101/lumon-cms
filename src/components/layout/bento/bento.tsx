@@ -24,10 +24,10 @@ export function BentoShowcase() {
             <div className="sm:col-span-2">
               <ChartCard />
             </div>
-            <div>
+            <div className="hidden lg:block">
               <GlobeCard />
             </div>
-            <div className="sm:row-span-2">
+            <div className="sm:col-span-2 lg:col-span-1 lg:row-span-2">
               <ImageCard />
             </div>
 
@@ -35,12 +35,12 @@ export function BentoShowcase() {
             <div className="sm:col-span-2">
               <ShowcaseCard />
             </div>
-            <div>
+            <div className="hidden lg:block">
               <NotificationsCard />
             </div>
 
             {/* Row 3: Integrations strip (full width) */}
-            <div className="hidden sm:col-span-2 sm:block lg:col-span-4">
+            <div className="hidden lg:col-span-4 lg:block">
               <IntegrationsCard />
             </div>
           </div>
