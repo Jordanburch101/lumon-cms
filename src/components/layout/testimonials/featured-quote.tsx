@@ -17,10 +17,10 @@ export function FeaturedQuote({
   duration,
   isPaused,
 }: FeaturedQuoteProps) {
-  // Split quote into sentences for staggered animation
-  const sentences = testimonial.quote.match(/[^.!?]+[.!?]+/g) ?? [
-    testimonial.quote,
-  ];
+  // Use featuredQuote (longer version) when available, fall back to quote
+  const displayQuote = testimonial.featuredQuote ?? testimonial.quote;
+  // Split into sentences for staggered animation
+  const sentences = displayQuote.match(/[^.!?]+[.!?]+/g) ?? [displayQuote];
 
   return (
     <div className="relative flex h-full flex-col justify-center">

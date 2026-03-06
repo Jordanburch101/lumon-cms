@@ -1,6 +1,7 @@
 export interface Testimonial {
   department: string;
   featured?: boolean;
+  featuredQuote?: string;
   id: string;
   name: string;
   quote: string;
@@ -44,6 +45,8 @@ export const testimonials: Testimonial[] = [
   {
     id: "mark",
     quote: "I enjoy every moment of my work day. I have no reason not to.",
+    featuredQuote:
+      "I enjoy every moment of my work day. I have no reason not to. The numbers appear on my screen and I sort them, and when I do it correctly I feel a warmth that I can only describe as purpose. I don't remember arriving this morning, but I know I belong here.",
     name: "Mark S.",
     role: "Refiner",
     department: "MDR",
@@ -51,6 +54,8 @@ export const testimonials: Testimonial[] = [
   {
     id: "helly",
     quote: "I am grateful for the opportunity to serve Kier's vision.",
+    featuredQuote:
+      "I am grateful for the opportunity to serve Kier's vision. Every bin I complete brings me closer to understanding the elegance of the work. My colleagues are my family, and the severed floor is my home. I would choose this life again\u00A0\u2014\u00A0every time, without hesitation.",
     name: "Helly R.",
     role: "Refiner",
     department: "MDR",
@@ -58,6 +63,8 @@ export const testimonials: Testimonial[] = [
   {
     id: "irving",
     quote: "The handbook says to find meaning in the work itself. I have.",
+    featuredQuote:
+      "The handbook says to find meaning in the work itself. I have. Each chapter reveals a deeper truth about devotion and discipline. When I paint during break time, it is the work that guides my hand. Kier's words are not rules\u00A0\u2014\u00A0they are a compass.",
     name: "Irving B.",
     role: "Refiner",
     department: "MDR",
@@ -66,6 +73,8 @@ export const testimonials: Testimonial[] = [
     id: "dylan",
     quote:
       "The incentives are real and the waffle parties are worth every bin.",
+    featuredQuote:
+      "The incentives are real and the waffle parties are worth every bin. I've earned three finger traps, a music-dance experience, and the coveted egg bar. People think the perks are small\u00A0\u2014\u00A0they're not. When you have nothing else, a waffle party is everything.",
     name: "Dylan G.",
     role: "Refiner",
     department: "MDR",

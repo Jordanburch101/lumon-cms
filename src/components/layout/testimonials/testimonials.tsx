@@ -6,9 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FeaturedQuote } from "./featured-quote";
 import { QuoteCard } from "./quote-card";
 import {
-  type Testimonial,
   featuredTestimonials,
   shortTestimonials,
+  type Testimonial,
   testimonialsSectionData,
 } from "./testimonials-data";
 
@@ -28,7 +28,9 @@ export function Testimonials() {
 
   // Auto-advance timer
   useEffect(() => {
-    if (!inView || isPaused) return;
+    if (!inView || isPaused) {
+      return;
+    }
 
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % activePool.length);
@@ -45,13 +47,14 @@ export function Testimonials() {
   }, []);
 
   return (
-    <section
-      className="w-full py-16 lg:py-24"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      ref={sectionRef}
-    >
-      <div className="mx-auto max-w-7xl px-4 lg:px-6">
+    <section className="w-full py-16 lg:py-24" ref={sectionRef}>
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: supplementary hover pause */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: supplementary hover pause */}
+      <div
+        className="mx-auto max-w-7xl px-4 lg:px-6"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         {/* Section header */}
         <motion.div
           animate={inView ? { opacity: 1, y: 0 } : {}}
