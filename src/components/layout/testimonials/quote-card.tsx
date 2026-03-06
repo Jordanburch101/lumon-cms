@@ -29,9 +29,9 @@ export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
         &ldquo;{testimonial.quote}&rdquo;
       </p>
       <div className="flex items-center gap-2.5">
-        <Avatar size="sm">
+        <Avatar>
           <AvatarImage alt={testimonial.name} src={testimonial.avatarSrc} />
-          <AvatarFallback className="text-[10px]">
+          <AvatarFallback>
             {testimonial.name.charAt(0)}
           </AvatarFallback>
         </Avatar>
