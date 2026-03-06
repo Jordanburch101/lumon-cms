@@ -1,6 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useSpring,
+} from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Testimonial } from "./testimonials-data";
 
@@ -18,6 +24,32 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
   const words = displayQuote.split(" ");
   const totalRevealTime = words.length * WORD_STAGGER + WORD_DURATION;
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const heightMv = useMotionValue(0);
+  const heightSpring = useSpring(heightMv, { stiffness: 200, damping: 30 });
+
+  const measureHeight = useCallback(() => {
+    if (contentRef.current) {
+      heightMv.set(contentRef.current.scrollHeight);
+    }
+  }, [heightMv]);
+
+  // On first render, wait for word reveal to finish then measure and enable height clipping
+  useEffect(() => {
+    if (hasInitialized) {
+      return;
+    }
+    const timeout = setTimeout(
+      () => {
+        measureHeight();
+        setHasInitialized(true);
+      },
+      (totalRevealTime + 0.3) * 1000
+    );
+    return () => clearTimeout(timeout);
+  }, [hasInitialized, measureHeight, totalRevealTime]);
+
   return (
     <div className="relative flex h-full flex-col justify-center">
       {/* Decorative quote mark */}
@@ -28,82 +60,95 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
         &ldquo;
       </span>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          animate="visible"
-          exit="exit"
-          initial="hidden"
-          key={testimonial.id}
-        >
-          {/* Quote text — per-word clip reveal */}
-          <blockquote className="relative z-10">
-            {words.map((word, i) => (
-              <span
-                className="inline-flex overflow-hidden align-bottom"
-                key={`${testimonial.id}-${i}`}
-              >
-                <motion.span
-                  className="inline-block text-xl leading-relaxed tracking-tight will-change-transform sm:text-2xl lg:text-3xl lg:leading-relaxed"
-                  variants={{
-                    hidden: { y: "100%" },
-                    visible: {
-                      y: "0%",
-                      transition: {
-                        duration: WORD_DURATION,
-                        ease: EASE,
-                        delay: i * WORD_STAGGER,
-                      },
-                    },
-                    exit: {
-                      y: "-100%",
-                      transition: {
-                        duration: 0.25,
-                        ease: EASE,
-                        delay: i * 0.015,
-                      },
-                    },
-                  }}
-                >
-                  {word}
-                </motion.span>
-                {/* Preserve word spacing */}
-                {i < words.length - 1 && (
-                  <span className="inline-block w-[0.3em]" />
-                )}
-              </span>
-            ))}
-          </blockquote>
+      {/* Height container — only clips after first measurement to avoid cutting off initial reveal */}
+      <motion.div
+        className={hasInitialized ? "overflow-hidden" : ""}
+        style={hasInitialized ? { height: heightSpring } : undefined}
+      >
+        <div ref={contentRef}>
+          <AnimatePresence mode="wait" onExitComplete={measureHeight}>
+            <motion.div
+              animate="visible"
+              exit="exit"
+              initial="hidden"
+              key={testimonial.id}
+            >
+              {/* Quote text — per-word clip reveal */}
+              <blockquote className="relative z-10">
+                {words.map((word, i) => (
+                  <span
+                    className="inline-flex overflow-hidden align-bottom"
+                    key={`${testimonial.id}-${i}`}
+                  >
+                    <motion.span
+                      className="inline-block text-xl leading-relaxed tracking-tight will-change-transform sm:text-2xl lg:text-3xl lg:leading-relaxed"
+                      variants={{
+                        hidden: { y: "100%" },
+                        visible: {
+                          y: "0%",
+                          transition: {
+                            duration: WORD_DURATION,
+                            ease: EASE,
+                            delay: i * WORD_STAGGER,
+                          },
+                        },
+                        exit: {
+                          y: "-100%",
+                          transition: {
+                            duration: 0.25,
+                            ease: EASE,
+                            delay: i * 0.015,
+                          },
+                        },
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                    {i < words.length - 1 && (
+                      <span className="inline-block w-[0.3em]" />
+                    )}
+                  </span>
+                ))}
+              </blockquote>
 
-          {/* Attribution */}
-          <motion.div
-            className="mt-6 flex items-center gap-3 lg:mt-8"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { duration: 0.4, delay: totalRevealTime + 0.1 },
-              },
-              exit: {
-                opacity: 0,
-                transition: { duration: 0.15 },
-              },
-            }}
-          >
-            <Avatar>
-              <AvatarImage alt={testimonial.name} src={testimonial.avatarSrc} />
-              <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <span className="block font-medium text-foreground text-sm">
-                {testimonial.name}
-              </span>
-              <span className="block text-muted-foreground text-xs">
-                {testimonial.role}, {testimonial.department}
-              </span>
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
+              {/* Attribution */}
+              <motion.div
+                className="mt-6 flex items-center gap-3 lg:mt-8"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      duration: 0.4,
+                      delay: totalRevealTime + 0.1,
+                    },
+                  },
+                  exit: {
+                    opacity: 0,
+                    transition: { duration: 0.15 },
+                  },
+                }}
+              >
+                <Avatar>
+                  <AvatarImage
+                    alt={testimonial.name}
+                    src={testimonial.avatarSrc}
+                  />
+                  <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <span className="block font-medium text-foreground text-sm">
+                    {testimonial.name}
+                  </span>
+                  <span className="block text-muted-foreground text-xs">
+                    {testimonial.role}, {testimonial.department}
+                  </span>
+                </div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </motion.div>
 
       {/* Progress bar */}
       <div className="mt-8 h-px w-full bg-border/60 lg:mt-10">
