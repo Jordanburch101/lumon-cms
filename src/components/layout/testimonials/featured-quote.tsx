@@ -8,15 +8,10 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 interface FeaturedQuoteProps {
   duration: number;
-  isPaused: boolean;
   testimonial: Testimonial;
 }
 
-export function FeaturedQuote({
-  testimonial,
-  duration,
-  isPaused,
-}: FeaturedQuoteProps) {
+export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
   // Use featuredQuote (longer version) when available, fall back to quote
   const displayQuote = testimonial.featuredQuote ?? testimonial.quote;
   // Split into sentences for staggered animation
@@ -84,15 +79,13 @@ export function FeaturedQuote({
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress bar — CSS animation so isPaused works via animationPlayState.
-           Key forces remount (restarting animation) when testimonial changes. */}
+      {/* Progress bar — key forces remount (restarting animation) when testimonial changes */}
       <div className="mt-8 h-px w-full bg-border/60 lg:mt-10">
         <div
           className="h-full origin-left bg-foreground/20"
           key={testimonial.id}
           style={{
             animation: `progress-fill ${duration}ms linear forwards`,
-            animationPlayState: isPaused ? "paused" : "running",
           }}
         />
       </div>

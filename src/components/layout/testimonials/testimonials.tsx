@@ -22,13 +22,11 @@ export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [activePool, setActivePool] =
     useState<Testimonial[]>(featuredTestimonials);
-  const [isPaused, setIsPaused] = useState(false);
-
   const activeTestimonial = activePool[activeIndex % activePool.length];
 
   // Auto-advance timer
   useEffect(() => {
-    if (!inView || isPaused) {
+    if (!inView) {
       return;
     }
 
@@ -37,7 +35,7 @@ export function Testimonials() {
     }, ADVANCE_MS);
 
     return () => clearInterval(timer);
-  }, [inView, isPaused, activePool.length]);
+  }, [inView, activePool.length]);
 
   // Handle short quote card click — promote to spotlight
   const handleSelectShort = useCallback((testimonial: Testimonial) => {
@@ -48,13 +46,7 @@ export function Testimonials() {
 
   return (
     <section className="w-full py-16 lg:py-24" ref={sectionRef}>
-      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: supplementary hover pause */}
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: supplementary hover pause */}
-      <div
-        className="mx-auto max-w-7xl px-4 lg:px-6"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
+      <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Section header */}
         <motion.div
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -81,7 +73,6 @@ export function Testimonials() {
           <div className="lg:col-span-3">
             <FeaturedQuote
               duration={ADVANCE_MS}
-              isPaused={isPaused}
               testimonial={activeTestimonial}
             />
           </div>
