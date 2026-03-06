@@ -22,9 +22,11 @@ export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [activePool, setActivePool] =
     useState<Testimonial[]>(featuredTestimonials);
+  const [timerKey, setTimerKey] = useState(0);
   const activeTestimonial = activePool[activeIndex % activePool.length];
 
-  // Auto-advance timer
+  // Auto-advance timer — resets when timerKey changes (e.g. on card click)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: timerKey intentionally resets the interval
   useEffect(() => {
     if (!inView) {
       return;
@@ -35,13 +37,14 @@ export function Testimonials() {
     }, ADVANCE_MS);
 
     return () => clearInterval(timer);
-  }, [inView, activePool.length]);
+  }, [inView, activePool.length, timerKey]);
 
-  // Handle short quote card click — promote to spotlight
+  // Handle short quote card click — promote to spotlight and reset timer
   const handleSelectShort = useCallback((testimonial: Testimonial) => {
     const newPool = [testimonial, ...featuredTestimonials];
     setActivePool(newPool);
     setActiveIndex(0);
+    setTimerKey((k) => k + 1);
   }, []);
 
   return (
