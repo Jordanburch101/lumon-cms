@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Testimonial } from "./testimonials-data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -65,6 +65,7 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
             }}
           >
             <Avatar>
+              <AvatarImage alt={testimonial.name} src={testimonial.avatarSrc} />
               <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>

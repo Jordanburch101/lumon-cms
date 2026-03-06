@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/core/lib/utils";
 import type { Testimonial } from "./testimonials-data";
 
@@ -30,6 +30,7 @@ export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
       </p>
       <div className="flex items-center gap-2.5">
         <Avatar size="sm">
+          <AvatarImage alt={testimonial.name} src={testimonial.avatarSrc} />
           <AvatarFallback className="text-[10px]">
             {testimonial.name.charAt(0)}
           </AvatarFallback>
