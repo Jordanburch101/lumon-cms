@@ -6,7 +6,7 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Testimonial } from "./testimonials-data";
 
@@ -29,26 +29,27 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
   const heightMv = useMotionValue(0);
   const heightSpring = useSpring(heightMv, { stiffness: 200, damping: 30 });
 
-  const measureHeight = useCallback(() => {
-    if (contentRef.current) {
-      heightMv.set(contentRef.current.scrollHeight);
-    }
-  }, [heightMv]);
-
-  // On first render, wait for word reveal to finish then measure and enable height clipping
+  // ResizeObserver tracks actual content size as words reveal and quotes change
   useEffect(() => {
-    if (hasInitialized) {
+    const el = contentRef.current;
+    if (!el) {
       return;
     }
-    const timeout = setTimeout(
-      () => {
-        measureHeight();
+
+    const observer = new ResizeObserver(([entry]) => {
+      const h = entry.contentRect.height;
+      if (hasInitialized) {
+        heightMv.set(h);
+      } else {
+        // First meaningful size — jump immediately, then enable clipping
+        heightMv.jump(h);
         setHasInitialized(true);
-      },
-      (totalRevealTime + 0.3) * 1000
-    );
-    return () => clearTimeout(timeout);
-  }, [hasInitialized, measureHeight, totalRevealTime]);
+      }
+    });
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasInitialized, heightMv]);
 
   return (
     <div className="relative flex h-full flex-col justify-center">
@@ -60,13 +61,13 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
         &ldquo;
       </span>
 
-      {/* Height container — only clips after first measurement to avoid cutting off initial reveal */}
+      {/* Animated height container */}
       <motion.div
         className={hasInitialized ? "overflow-hidden" : ""}
         style={hasInitialized ? { height: heightSpring } : undefined}
       >
         <div ref={contentRef}>
-          <AnimatePresence mode="wait" onExitComplete={measureHeight}>
+          <AnimatePresence mode="wait">
             <motion.div
               animate="visible"
               exit="exit"
