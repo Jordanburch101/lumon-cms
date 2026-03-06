@@ -49,10 +49,14 @@ const notifications = [
   },
 ];
 
+const INITIAL_DELAY = 400;
+const STAGGER_DELAY = 620;
+
 export function NotificationsCard() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [visible, setVisible] = useState<typeof notifications>([]);
+  const [newestId, setNewestId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!inView) {
@@ -60,42 +64,88 @@ export function NotificationsCard() {
     }
 
     let i = 0;
-    const interval = setInterval(() => {
-      if (i >= notifications.length) {
-        clearInterval(interval);
-        return;
-      }
-      const notification = notifications[i];
-      i++;
-      setVisible((prev) => [notification, ...prev]);
-    }, 800);
+    const initialTimeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (i >= notifications.length) {
+          clearInterval(interval);
+          return;
+        }
+        const notification = notifications[i];
+        i++;
+        setNewestId(notification.id);
+        setVisible((prev) => [notification, ...prev]);
+      }, STAGGER_DELAY);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }, INITIAL_DELAY);
+
+    return () => clearTimeout(initialTimeout);
   }, [inView]);
+
+  // Clear the highlight after it animates
+  useEffect(() => {
+    if (newestId === null) {
+      return;
+    }
+    const timeout = setTimeout(() => setNewestId(null), 600);
+    return () => clearTimeout(timeout);
+  }, [newestId]);
 
   return (
     <div
-      className="flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-background p-4 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]"
+      className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-background p-4 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]"
       ref={ref}
     >
       <span className="mb-3 text-[11px] text-muted-foreground uppercase tracking-wider">
         Notifications
       </span>
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-hidden">
+      <div className="relative flex min-h-0 flex-1 flex-col gap-1.5 overflow-hidden">
         <AnimatePresence initial={false}>
           {visible.map((n) => (
             <motion.div
-              animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-              className="flex items-start gap-2.5 rounded-md border border-border/40 px-2.5 py-1.5"
-              exit={{ opacity: 0, scale: 0.95 }}
-              initial={{ opacity: 0, y: -20, scale: 0.95, filter: "blur(4px)" }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+              }}
+              className="relative flex items-start gap-2.5 rounded-lg border border-border/40 px-2.5 py-1.5"
+              exit={{
+                opacity: 0,
+                scale: 0.98,
+                filter: "blur(2px)",
+                transition: { duration: 0.2 },
+              }}
+              initial={{
+                opacity: 0,
+                y: -12,
+                scale: 0.96,
+                filter: "blur(3px)",
+              }}
               key={n.id}
-              layout
+              layout="position"
               transition={{
-                duration: 0.4,
-                ease: [0.25, 0.46, 0.45, 0.94],
+                type: "spring",
+                stiffness: 380,
+                damping: 30,
+                mass: 0.8,
+                filter: { type: "tween", duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
+                layout: {
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 32,
+                },
               }}
             >
+              {/* Highlight pulse on newest item */}
+              {n.id === newestId && (
+                <motion.div
+                  animate={{ opacity: 0 }}
+                  className="pointer-events-none absolute inset-0 rounded-lg bg-foreground/[0.03]"
+                  initial={{ opacity: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+              )}
               <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-secondary">
                 <HugeiconsIcon
                   className="text-foreground/70"
@@ -119,6 +169,9 @@ export function NotificationsCard() {
             </motion.div>
           ))}
         </AnimatePresence>
+
+        {/* Bottom fade mask — implies more content */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-background to-transparent" />
       </div>
     </div>
   );

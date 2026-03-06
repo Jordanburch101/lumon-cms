@@ -25,7 +25,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-1.5 text-muted-foreground text-xs">
-              Next.js + Payload CMS template and component showcase.
+              The work is mysterious and important.
             </p>
             <div className="mt-3 flex gap-2">
               {socialLinks.map((social) => (

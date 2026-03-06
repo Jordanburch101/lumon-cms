@@ -18,42 +18,42 @@ export interface SocialLink {
 
 export const footerColumns: FooterLinkColumn[] = [
   {
-    title: "Product",
+    title: "Departments",
     links: [
-      { title: "Analytics", href: "/products/analytics" },
-      { title: "Dashboard", href: "/products/dashboard" },
-      { title: "Cloud", href: "/products/cloud" },
-      { title: "API", href: "/products/api" },
-      { title: "Integrations", href: "/products/integrations" },
-      { title: "Security", href: "/products/security" },
+      { title: "Macrodata Refinement", href: "/departments/mdr" },
+      { title: "Optics & Design", href: "/departments/optics-design" },
+      { title: "Disposal & Reclamation", href: "/departments/disposal" },
+      { title: "Mammalians Nurturable", href: "/departments/mammalians" },
+      { title: "Choreography & Movement", href: "/departments/choreography" },
+      { title: "Eternal Archives", href: "/departments/archives" },
     ],
   },
   {
-    title: "Solutions",
+    title: "Perks & Benefits",
     links: [
-      { title: "Marketing", href: "/solutions/marketing" },
-      { title: "Sales", href: "/solutions/sales" },
-      { title: "Engineering", href: "/solutions/engineering" },
-      { title: "Startups", href: "/solutions/startups" },
-      { title: "Enterprise", href: "/solutions/enterprise" },
+      { title: "Waffle Party", href: "/perks/waffle-party" },
+      { title: "Music Dance Experience", href: "/perks/mde" },
+      { title: "Finger Traps", href: "/perks/finger-traps" },
+      { title: "Melon Bar", href: "/perks/melon-bar" },
+      { title: "Coveted Egg Bar", href: "/perks/egg-bar" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { title: "Blog", href: "/blog" },
-      { title: "Documentation", href: "/docs" },
-      { title: "Support", href: "/support" },
-      { title: "Contact", href: "/contact" },
+      { title: "The You You Are", href: "/resources/the-you-you-are" },
+      { title: "Compliance Handbook", href: "/resources/handbook" },
+      { title: "Wellness Session", href: "/resources/wellness" },
+      { title: "Break Room", href: "/resources/break-room" },
     ],
   },
   {
     title: "Company",
     links: [
-      { title: "About", href: "/about" },
-      { title: "Careers", href: "/careers" },
-      { title: "Press", href: "/press" },
-      { title: "Legal", href: "/legal" },
+      { title: "About Kier", href: "/about/kier-eagan" },
+      { title: "The Board", href: "/about/board" },
+      { title: "Careers (Severed)", href: "/careers" },
+      { title: "Perpetuity Wing", href: "/about/perpetuity-wing" },
     ],
   },
 ];
@@ -65,6 +65,6 @@ export const socialLinks: SocialLink[] = [
 ];
 
 export const legalLinks = [
-  { title: "Privacy Policy", href: "/privacy" },
-  { title: "Terms of Service", href: "/terms" },
+  { title: "Severance Agreement", href: "/severance-agreement" },
+  { title: "Outie Waiver", href: "/outie-waiver" },
 ];

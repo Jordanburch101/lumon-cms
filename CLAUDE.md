@@ -55,3 +55,36 @@ docs/plans/         — Design documents
 - `bun build` — Production build
 - `bun check` — Lint and format check (Ultracite)
 - `bun fix` — Auto-fix lint and format issues
+
+## cmux (Terminal Multiplexer)
+
+This project runs in cmux. Prefer cmux browser over Playwright MCP — it shares the
+same visible browser the user sees.
+
+### Essential commands
+
+```bash
+# Browser — open, screenshot, interact
+cmux browser open http://localhost:3000              # opens browser split, returns surface ref
+cmux browser surface:N screenshot --out /tmp/s.png   # take screenshot (viewable with Read tool)
+cmux browser surface:N eval "JS expression; 'ok'"    # run JS, return result
+cmux browser surface:N reload                        # reload page
+cmux browser surface:N wait --load-state complete    # wait for page load
+cmux browser surface:N snapshot --interactive        # get DOM accessibility tree
+cmux browser surface:N click "selector"              # click element
+cmux browser surface:N scroll-into-view "selector"   # scroll to element
+
+# Notifications
+cmux notify --title "Title" --body "Body"
+
+# Sidebar
+cmux set-status key "value" --icon name --color "#hex"
+cmux set-progress 0.5 --label "Building..."
+cmux log --level success "Message"
+
+# Terminal I/O
+cmux read-screen --surface surface:N --scrollback --lines 50
+cmux send --surface surface:N "command\n"
+```
+
+See `.agents/skills/cmux/` for the full skill with complete reference docs.

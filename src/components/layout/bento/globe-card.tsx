@@ -110,6 +110,8 @@ export function GlobeCard() {
   const lngRef = useRef(0);
   const latRef = useRef(20);
   const prevThemeRef = useRef(mapTheme);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isVisible = useRef(true);
 
   useEffect(() => {
     if (prevThemeRef.current !== mapTheme) {
@@ -119,10 +121,26 @@ export function GlobeCard() {
     }
   }, [mapTheme]);
 
+  // Pause animation when card is scrolled offscreen
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) {
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        isVisible.current = e.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const handleMapRef = useCallback((node: MapRef | null) => {
     if (node) {
       (mapRef as React.MutableRefObject<MapRef | null>).current = node;
-      node.on("load", () => setReady(true));
+      node.once("load", () => setReady(true));
       if (node.loaded()) {
         setReady(true);
       }
@@ -250,9 +268,12 @@ export function GlobeCard() {
     const active: ActiveArc[] = [];
     let nextArc = 0;
     let spawnCounter = 0;
+    let arcsDirty = false;
+    const lastVisiblePts: number[] = []; // track visible point count per active arc
 
     let frame: number;
     let t = 0;
+    let lastTime = 0;
     let userInteracting = false;
     let resumeTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -344,12 +365,19 @@ export function GlobeCard() {
     };
 
     const DEFAULT_LAT = 20;
-    const animate = () => {
-      t++;
+    const animate = (now: number) => {
+      if (!isVisible.current) {
+        lastTime = 0; // reset so no jump when resuming
+        frame = requestAnimationFrame(animate);
+        return;
+      }
+      const dt = lastTime ? (now - lastTime) / 16.67 : 1; // normalize to 60fps
+      lastTime = now;
+      t += dt;
       if (!userInteracting) {
-        lngRef.current += 0.05;
-        // Gently ease latitude back toward default
-        latRef.current += (DEFAULT_LAT - latRef.current) * 0.01;
+        lngRef.current += 0.05 * dt;
+        // Gently ease latitude back toward default (frame-rate independent exponential decay)
+        latRef.current += (DEFAULT_LAT - latRef.current) * (1 - 0.99 ** dt);
         map.setCenter([lngRef.current, latRef.current]);
       }
 
@@ -358,20 +386,27 @@ export function GlobeCard() {
         frame = requestAnimationFrame(animate);
         return;
       }
-      const pulse = 0.5 + 0.5 * Math.sin(t * 0.04);
-      const pulseSlow = 0.5 + 0.5 * Math.sin(t * 0.02);
+      // Throttle pulse updates — slow oscillation looks identical at ~15fps
+      if (Math.floor(t) % 4 === 0) {
+        const pulse = 0.5 + 0.5 * Math.sin(t * 0.04);
+        const pulseSlow = 0.5 + 0.5 * Math.sin(t * 0.02);
 
-      map.setPaintProperty("cdn-pulse", "circle-radius", 8 + 6 * pulse);
-      map.setPaintProperty("cdn-pulse", "circle-opacity", 0.25 * (1 - pulse));
-      map.setPaintProperty("cdn-glow", "circle-opacity", 0.2 + 0.2 * pulseSlow);
-      map.setPaintProperty(
-        "cdn-dots",
-        "circle-color",
-        pulse > 0.5 ? dotColor : dotDim
-      );
+        map.setPaintProperty("cdn-pulse", "circle-radius", 8 + 6 * pulse);
+        map.setPaintProperty("cdn-pulse", "circle-opacity", 0.25 * (1 - pulse));
+        map.setPaintProperty(
+          "cdn-glow",
+          "circle-opacity",
+          0.2 + 0.2 * pulseSlow
+        );
+        map.setPaintProperty(
+          "cdn-dots",
+          "circle-color",
+          pulse > 0.5 ? dotColor : dotDim
+        );
+      }
 
       // Spawn new arcs
-      spawnCounter++;
+      spawnCounter += dt;
       if (spawnCounter >= SPAWN_INTERVAL && active.length < MAX_ACTIVE) {
         spawnCounter = 0;
         const arc = arcFeatures[nextArc];
@@ -380,18 +415,40 @@ export function GlobeCard() {
           coords: arc.geometry.coordinates as [number, number][],
           phase: 0,
         });
+        lastVisiblePts.push(-1); // force first update
         nextArc = (nextArc + 1) % arcFeatures.length;
+        arcsDirty = true;
       }
 
-      // Advance phases and remove finished arcs
+      // Advance phases, track visible point changes, remove finished arcs
       for (let i = active.length - 1; i >= 0; i--) {
-        active[i].phase += SPEED;
+        active[i].phase += SPEED * dt;
         if (active[i].phase > 3) {
           active.splice(i, 1);
+          lastVisiblePts.splice(i, 1);
+          arcsDirty = true;
+        } else {
+          const a = active[i];
+          const totalPts = a.coords.length;
+          let visPts: number;
+          if (a.phase <= 1) {
+            visPts = Math.max(2, Math.ceil(Math.min(a.phase, 1) * totalPts));
+          } else if (a.phase <= 2) {
+            visPts = totalPts;
+          } else {
+            visPts = totalPts - Math.floor((a.phase - 2) * totalPts);
+          }
+          if (visPts !== lastVisiblePts[i]) {
+            lastVisiblePts[i] = visPts;
+            arcsDirty = true;
+          }
         }
       }
 
-      setArcData();
+      if (arcsDirty) {
+        setArcData();
+        arcsDirty = false;
+      }
 
       frame = requestAnimationFrame(animate);
     };
@@ -410,7 +467,10 @@ export function GlobeCard() {
   }, [ready, dotColor, dotDim]);
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-background shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
+    <div
+      className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-background shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]"
+      ref={containerRef}
+    >
       <span className="absolute top-4 left-4 z-10 text-[11px] text-muted-foreground uppercase tracking-wider">
         Global CDN
       </span>
