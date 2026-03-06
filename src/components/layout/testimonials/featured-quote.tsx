@@ -84,19 +84,15 @@ export function FeaturedQuote({
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress bar */}
+      {/* Progress bar — CSS animation so isPaused works via animationPlayState.
+           Key forces remount (restarting animation) when testimonial changes. */}
       <div className="mt-8 h-px w-full bg-border/60 lg:mt-10">
-        <motion.div
-          animate={{ scaleX: 1 }}
+        <div
           className="h-full origin-left bg-foreground/20"
-          initial={{ scaleX: 0 }}
-          key={`progress-${testimonial.id}`}
+          key={testimonial.id}
           style={{
+            animation: `progress-fill ${duration}ms linear forwards`,
             animationPlayState: isPaused ? "paused" : "running",
-          }}
-          transition={{
-            duration: duration / 1000,
-            ease: "linear",
           }}
         />
       </div>
