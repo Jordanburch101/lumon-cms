@@ -1,4 +1,5 @@
 import { BentoShowcase } from "@/components/layout/bento/bento";
+import { CinematicCta } from "@/components/layout/cinematic-cta/cinematic-cta";
 import { Hero } from "@/components/layout/hero/hero";
 import { ImageGallery } from "@/components/layout/image-gallery/image-gallery";
 import { LatestArticles } from "@/components/layout/latest-articles/latest-articles";
@@ -14,6 +15,7 @@ export default function Page() {
       <Testimonials />
       <ImageGallery />
       <LatestArticles />
+      <CinematicCta />
     </>
   );
 }
