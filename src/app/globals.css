@@ -190,31 +190,34 @@
   z-index: 3;
 }
 
-/* Adaptive text color — JS toggles .liquid-glass-light / .liquid-glass-dark
- * Override CSS custom properties so ALL theme-aware elements transition together.
- * We avoid setting `color` directly on the container to prevent cascading
- * transition delays — instead only CSS vars change, and each element
- * transitions its own computed color simultaneously. */
-
-.liquid-glass-content * {
-  transition:
-    color 0.4s ease,
-    text-shadow 0.4s ease,
-    filter 0.4s ease,
-    transform 0.2s,
-    opacity 0.2s;
+/* Register custom properties so the browser can interpolate them directly.
+ * This avoids cascading transition delays through nested DOM elements —
+ * the variable transitions once on the container, all children see it instantly. */
+@property --foreground {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: oklch(0.13 0.028 261.692);
 }
 
-/* Light text for dark backgrounds
- * color set WITHOUT transition on parent — children transition uniformly via * rule */
+@property --muted-foreground {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: oklch(0.551 0.027 264.364);
+}
+
+/* Transition the custom properties + color on the container only */
+.liquid-glass-content {
+  transition:
+    --foreground 0.2s ease,
+    --muted-foreground 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Light text for dark backgrounds */
 .liquid-glass-light .liquid-glass-content {
   --foreground: oklch(1 0 0);
   --muted-foreground: oklch(0.85 0 0);
-  color: white;
-}
-
-.liquid-glass-light .liquid-glass-content svg {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  color: oklch(1 0 0);
 }
 
 /* Dark text for light backgrounds */
@@ -222,8 +225,4 @@
   --foreground: oklch(0.13 0.028 261.692);
   --muted-foreground: oklch(0.551 0.027 264.364);
   color: oklch(0.13 0.028 261.692);
-}
-
-.liquid-glass-dark .liquid-glass-content svg {
-  filter: none;
 }
