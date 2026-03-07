@@ -31,7 +31,7 @@ export function CinematicCta() {
         {/* Video layer (behind everything) */}
         <video
           autoPlay
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full scale-125 object-cover"
           loop
           muted
           playsInline
