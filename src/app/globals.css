@@ -230,8 +230,8 @@
 /* ── Mega menu dropdown ──
  * Own glass layers matching the navbar exactly. Flush top, rounded bottom. */
 .liquid-glass [data-slot="navigation-menu-viewport"] {
-  margin-top: 0;
-  border-radius: 0 0 0.75rem 0.75rem;
+  margin-top: 0.25rem;
+  border-radius: 0.75rem;
   background: transparent;
   box-shadow: none;
   --tw-ring-shadow: 0 0 #0000;
@@ -274,20 +274,6 @@
     inset 0 -1px 0 0 rgba(255, 255, 255, 0.04);
 }
 
-/* Remove the top shine edge — the navbar's bottom meets the dropdown's top */
-.liquid-glass [data-slot="navigation-menu-viewport"]::after {
-  box-shadow:
-    inset 1px 0 0 0 rgba(255, 255, 255, 0.2),
-    inset -1px 0 0 0 rgba(255, 255, 255, 0.2),
-    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
-}
-
-/* Also remove the bottom shine from the navbar when dropdown is open */
-.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-shine {
-  box-shadow:
-    inset 1px 1px 1px 0 rgba(255, 255, 255, 0.5),
-    inset -1px 0 1px 0 rgba(255, 255, 255, 0.3);
-}
 
 /* Muted text overrides for readability */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
