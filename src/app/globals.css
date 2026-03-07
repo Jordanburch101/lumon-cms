@@ -228,8 +228,10 @@
 }
 
 /* Mega menu dropdown — same layered glass as the navbar bar.
- * Uses ::before for blur+distortion, tint on the element, ::after for shine. */
+ * Flush with navbar: no top gap, flat top corners, shared glass surface. */
 .liquid-glass [data-slot="navigation-menu-viewport"] {
+  margin-top: 0;
+  border-radius: 0 0 0.75rem 0.75rem;
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
