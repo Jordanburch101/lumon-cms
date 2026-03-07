@@ -16,6 +16,11 @@
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
+    "shadcn-ui": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "github",
+      "computedHash": "6ac4f3b3f702e7d81edf883bea1f330bfd6b1b721e876c81642a96edf4c54d75"
+    },
     "skill-creator": {
       "source": "anthropics/skills",
       "sourceType": "github",
