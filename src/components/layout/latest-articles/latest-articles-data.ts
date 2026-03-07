@@ -1,17 +1,17 @@
 export interface Article {
-  id: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  imageSrc: string;
-  imageAlt: string;
   author: {
     name: string;
     avatarSrc: string;
   };
-  readTime: string;
+  category: string;
+  excerpt: string;
   href: string;
+  id: string;
+  imageAlt: string;
+  imageSrc: string;
   publishedAt: string;
+  readTime: string;
+  title: string;
 }
 
 export const latestArticlesSectionData = {
@@ -23,7 +23,8 @@ export const latestArticlesSectionData = {
 export const latestArticles: Article[] = [
   {
     id: "severance-protocol",
-    title: "Understanding the Severance Protocol: A New Era of Work-Life Balance",
+    title:
+      "Understanding the Severance Protocol: A New Era of Work-Life Balance",
     excerpt:
       "How Lumon's revolutionary procedure is redefining what it means to leave work at the office. A deep dive into the science and philosophy behind the split.",
     category: "Research",

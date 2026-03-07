@@ -35,7 +35,7 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
           <Badge className="mb-3 bg-white/20 text-[10px] text-white">
             {article.category}
           </Badge>
-          <h3 className="max-w-lg font-semibold text-xl text-white leading-snug sm:text-2xl">
+          <h3 className="max-w-lg font-semibold text-white text-xl leading-snug sm:text-2xl">
             {article.title}
           </h3>
           <div className="mt-3 flex items-center gap-2.5">
@@ -48,11 +48,9 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
                 {article.author.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <span className="text-white/60 text-sm">
-              {article.author.name}
-            </span>
+            <span className="text-sm text-white/60">{article.author.name}</span>
             <span className="text-white/30">&middot;</span>
-            <span className="text-white/60 text-sm">{article.readTime}</span>
+            <span className="text-sm text-white/60">{article.readTime}</span>
           </div>
         </div>
       </Link>
@@ -75,13 +73,13 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
 
       {/* Content */}
       <div className="mt-4">
-        <Badge variant="secondary" className="text-[10px]">
+        <Badge className="text-[10px]" variant="secondary">
           {article.category}
         </Badge>
-        <h3 className="mt-2 font-semibold text-lg leading-snug line-clamp-2">
+        <h3 className="mt-2 line-clamp-2 font-semibold text-lg leading-snug">
           {article.title}
         </h3>
-        <p className="mt-1.5 text-muted-foreground text-sm leading-relaxed line-clamp-2">
+        <p className="mt-1.5 line-clamp-2 text-muted-foreground text-sm leading-relaxed">
           {article.excerpt}
         </p>
         <div className="mt-3 flex items-center gap-2">
