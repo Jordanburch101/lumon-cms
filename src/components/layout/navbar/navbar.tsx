@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavbarContrast } from "@/core/hooks/use-navbar-contrast";
-import { useScrolled } from "@/core/hooks/use-scrolled";
 import { cn } from "@/core/lib/utils";
 import { NavbarDesktop } from "./navbar-desktop";
 import { NavbarMobile } from "./navbar-mobile";
@@ -58,29 +57,24 @@ function GlassDistortionFilter() {
 }
 
 export function Navbar() {
-  const scrolled = useScrolled();
   const headerRef = useRef<HTMLElement>(null);
-  const contrast = useNavbarContrast(headerRef);
+  const { contrast, scrolled } = useNavbarContrast(headerRef);
 
   return (
     <>
       <GlassDistortionFilter />
       <header
         className={cn(
-          "sticky top-0 z-50 w-full transition-all duration-200",
+          "sticky top-0 z-50 w-full transition-[background-color] duration-200",
           scrolled ? "liquid-glass" : "bg-transparent",
           contrast === "light" && "liquid-glass-light",
           contrast === "dark" && "liquid-glass-dark"
         )}
         ref={headerRef}
       >
-        {scrolled && (
-          <>
-            <div className="liquid-glass-effect" />
-            <div className="liquid-glass-tint" />
-            <div className="liquid-glass-shine" />
-          </>
-        )}
+        <div className={cn("liquid-glass-effect", !scrolled && "opacity-0")} />
+        <div className={cn("liquid-glass-tint", !scrolled && "opacity-0")} />
+        <div className={cn("liquid-glass-shine", !scrolled && "opacity-0")} />
 
         <div className="liquid-glass-content mx-auto flex h-14 max-w-7xl items-center justify-between px-4 lg:px-6">
           <Link className="flex items-center" href="/">

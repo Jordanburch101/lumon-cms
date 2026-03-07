@@ -1,23 +1,38 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Determines whether navbar text should be light or dark by checking
- * which page section (marked with data-navbar-contrast) sits behind the navbar.
+ * Determines navbar contrast and scroll state from a single scroll listener.
  *
  * Sections with dark backgrounds should set data-navbar-contrast="light"
  * (meaning the navbar text should be light/white). Default is "dark" (black text).
  * In dark mode, always returns "light" (white text).
+ *
+ * Also tracks whether the page has scrolled past a threshold to toggle the
+ * glass effect, eliminating the need for a separate useScrolled hook.
  */
 export function useNavbarContrast(
-  headerRef: React.RefObject<HTMLElement | null>
+  headerRef: React.RefObject<HTMLElement | null>,
+  scrollThreshold = 10
 ) {
   const [contrast, setContrast] = useState<"light" | "dark">("dark");
+  const [scrolled, setScrolled] = useState(false);
+  const sectionsRef = useRef<HTMLElement[]>([]);
+
+  // Cache section elements once on mount
+  useEffect(() => {
+    sectionsRef.current = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-navbar-contrast]")
+    );
+  }, []);
 
   const sample = useCallback(() => {
+    // Update scroll state
+    setScrolled(window.scrollY > scrollThreshold);
+
     if (document.documentElement.classList.contains("dark")) {
-      setContrast("light");
+      setContrast((prev) => (prev === "light" ? prev : "light"));
       return;
     }
 
@@ -33,13 +48,9 @@ export function useNavbarContrast(
 
     const navMidY = rect.top + rect.height / 2;
 
-    const sections = document.querySelectorAll<HTMLElement>(
-      "[data-navbar-contrast]"
-    );
-
     let result: "light" | "dark" = "dark";
 
-    for (const section of sections) {
+    for (const section of sectionsRef.current) {
       const sectionRect = section.getBoundingClientRect();
 
       if (sectionRect.top <= navMidY && sectionRect.bottom >= navMidY) {
@@ -48,17 +59,15 @@ export function useNavbarContrast(
       }
     }
 
-    setContrast(result);
-  }, [headerRef]);
+    setContrast((prev) => (prev === result ? prev : result));
+  }, [headerRef, scrollThreshold]);
 
   useEffect(() => {
-    // Run once immediately
     sample();
 
     window.addEventListener("scroll", sample, { passive: true });
     window.addEventListener("resize", sample, { passive: true });
 
-    // Also re-check when theme changes (class mutation on <html>)
     const observer = new MutationObserver(sample);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -72,5 +81,5 @@ export function useNavbarContrast(
     };
   }, [sample]);
 
-  return contrast;
+  return { contrast, scrolled };
 }
