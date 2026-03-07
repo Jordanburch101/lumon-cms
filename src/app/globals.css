@@ -227,63 +227,30 @@
   color: oklch(0.13 0.028 261.692);
 }
 
-/* Mega menu dropdown — same layered glass as the navbar bar.
- * Flush with navbar: no top gap, flat top corners, shared glass surface. */
+/* ── Mega menu: unified glass surface ──
+ * Strip viewport's own background/ring — it becomes transparent.
+ * The navbar's glass layers extend down via :has() to cover it. */
 .liquid-glass [data-slot="navigation-menu-viewport"] {
   margin-top: 0;
   border-radius: 0 0 0.75rem 0.75rem;
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  background: transparent;
+  box-shadow: none;
+  --tw-ring-shadow: 0 0 #0000;
 }
 
-.dark .liquid-glass [data-slot="navigation-menu-viewport"] {
-  background: rgba(0, 0, 0, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+/* When viewport has content, extend glass layers to cover the dropdown */
+.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-effect,
+.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-tint,
+.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-shine {
+  bottom: calc(-1 * var(--nav-viewport-h, 0px));
+  border-radius: 0 0 0.75rem 0.75rem;
 }
 
-/* Glass blur + SVG distortion layer */
-.liquid-glass [data-slot="navigation-menu-viewport"]::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  backdrop-filter: blur(6px) saturate(180%);
-  filter: url(#glass-distortion);
-  isolation: isolate;
-}
-
-/* Shine / edge lighting layer */
-.liquid-glass [data-slot="navigation-menu-viewport"]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow:
-    inset 1px 1px 1px 0 rgba(255, 255, 255, 0.5),
-    inset -1px -1px 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.dark .liquid-glass [data-slot="navigation-menu-viewport"]::after {
-  box-shadow:
-    inset 1px 1px 1px 0 rgba(255, 255, 255, 0.15),
-    inset -1px -1px 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-/* Over dark backgrounds — darker tint for contrast */
-.liquid-glass-light [data-slot="navigation-menu-viewport"] {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* Over light backgrounds — lighter tint for contrast */
+/* Muted text overrides for readability through glass */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
   --muted-foreground: oklch(0.4 0.02 264);
-  background: rgba(255, 255, 255, 0.4);
 }
 
-/* Over dark backgrounds — lighter muted text */
 .liquid-glass-light [data-slot="navigation-menu-viewport"] {
   --muted-foreground: oklch(0.75 0 0);
 }
