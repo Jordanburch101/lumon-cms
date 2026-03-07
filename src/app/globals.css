@@ -246,11 +246,14 @@
   border-radius: 0 0 0.75rem 0.75rem;
 }
 
-/* Muted text overrides for readability through glass */
+/* Extra tint on the dropdown area for text readability.
+ * This overlays on top of the shared glass, not a separate glass panel. */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
   --muted-foreground: oklch(0.4 0.02 264);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .liquid-glass-light [data-slot="navigation-menu-viewport"] {
   --muted-foreground: oklch(0.75 0 0);
+  background: rgba(0, 0, 0, 0.2);
 }
