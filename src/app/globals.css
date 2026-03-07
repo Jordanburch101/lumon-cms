@@ -275,11 +275,13 @@
 }
 
 
-/* Muted text overrides for readability */
+/* Dropdown text adapts with the navbar contrast */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
+  --popover-foreground: oklch(0.13 0.028 261.692);
   --muted-foreground: oklch(0.4 0.02 264);
 }
 
 .liquid-glass-light [data-slot="navigation-menu-viewport"] {
+  --popover-foreground: oklch(1 0 0);
   --muted-foreground: oklch(0.75 0 0);
 }
