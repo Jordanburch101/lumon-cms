@@ -3,7 +3,7 @@
 import { VolumeHighIcon, VolumeMute02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useCallback, useRef, useState } from "react";
+import { type PointerEvent, useCallback, useRef, useState } from "react";
 
 import { cinematicCtaData } from "./cinematic-cta-data";
 
@@ -26,13 +26,17 @@ export function CinematicCta() {
     setMuted(next);
   }, [muted, volume]);
 
-  const handleVolume = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const setVolumeFromPointer = useCallback(
+    (clientX: number) => {
+      const track = trackRef.current;
       const video = videoRef.current;
-      if (!video) {
+      if (!(track && video)) {
         return;
       }
-      const v = Number.parseFloat(e.target.value);
+      const rect = track.getBoundingClientRect();
+      const v = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
       setVolume(v);
       video.volume = v;
       if (v === 0) {
@@ -44,6 +48,24 @@ export function CinematicCta() {
       }
     },
     [muted]
+  );
+
+  const onPointerDown = useCallback(
+    (e: PointerEvent) => {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      setVolumeFromPointer(e.clientX);
+    },
+    [setVolumeFromPointer]
+  );
+
+  const onPointerMove = useCallback(
+    (e: PointerEvent) => {
+      if (e.buttons === 0) {
+        return;
+      }
+      setVolumeFromPointer(e.clientX);
+    },
+    [setVolumeFromPointer]
   );
 
   const { scrollYProgress } = useScroll({
@@ -126,15 +148,32 @@ export function CinematicCta() {
             </button>
 
             <div className="relative z-10 flex w-0 items-center overflow-hidden transition-all duration-300 ease-out group-hover:w-24 group-hover:pr-3">
-              <input
-                className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/20 py-3 accent-white/80 [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
-                max="1"
-                min="0"
-                onChange={handleVolume}
-                step="0.01"
-                type="range"
-                value={muted ? 0 : volume}
-              />
+              {/* Custom slider — thin track + small circle thumb */}
+              <div
+                aria-label="Volume"
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={Math.round((muted ? 0 : volume) * 100)}
+                className="relative h-6 w-full cursor-pointer touch-none select-none"
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                ref={trackRef}
+                role="slider"
+                tabIndex={0}
+              >
+                {/* Track background */}
+                <div className="absolute top-1/2 right-0 left-0 h-[2px] -translate-y-1/2 rounded-full bg-white/20" />
+                {/* Track fill */}
+                <div
+                  className="absolute top-1/2 left-0 h-[2px] -translate-y-1/2 rounded-full bg-white/60"
+                  style={{ width: `${(muted ? 0 : volume) * 100}%` }}
+                />
+                {/* Thumb */}
+                <div
+                  className="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-150 hover:scale-125"
+                  style={{ left: `${(muted ? 0 : volume) * 100}%` }}
+                />
+              </div>
             </div>
           </motion.div>
         </div>
