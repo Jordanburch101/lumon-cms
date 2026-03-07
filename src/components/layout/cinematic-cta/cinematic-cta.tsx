@@ -2,53 +2,54 @@
 
 import { VolumeHighIcon, VolumeMute02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { type PointerEvent, useCallback, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "motion/react";
+import {
+  type KeyboardEvent,
+  type PointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { cinematicCtaData } from "./cinematic-cta-data";
 
 export function CinematicCta() {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [muted, setMuted] = useState(true);
   const [volume, setVolume] = useState(0.5);
 
-  const toggleMute = useCallback(() => {
+  // Sync muted/volume state to the video element
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) {
       return;
     }
-    const next = !muted;
-    video.muted = next;
-    if (!next) {
-      video.volume = volume;
-    }
-    setMuted(next);
+    video.muted = muted;
+    video.volume = volume;
   }, [muted, volume]);
 
-  const trackRef = useRef<HTMLDivElement>(null);
+  const toggleMute = useCallback(() => {
+    setMuted((prev) => !prev);
+  }, []);
 
-  const setVolumeFromPointer = useCallback(
-    (clientX: number) => {
-      const track = trackRef.current;
-      const video = videoRef.current;
-      if (!(track && video)) {
-        return;
-      }
-      const rect = track.getBoundingClientRect();
-      const v = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-      setVolume(v);
-      video.volume = v;
-      if (v === 0) {
-        video.muted = true;
-        setMuted(true);
-      } else if (muted) {
-        video.muted = false;
-        setMuted(false);
-      }
-    },
-    [muted]
-  );
+  const setVolumeFromPointer = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) {
+      return;
+    }
+    const rect = track.getBoundingClientRect();
+    const v = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    setVolume(v);
+    setMuted(v === 0);
+  }, []);
 
   const onPointerDown = useCallback(
     (e: PointerEvent) => {
@@ -68,6 +69,24 @@ export function CinematicCta() {
     [setVolumeFromPointer]
   );
 
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      const step = 0.05;
+      if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+        e.preventDefault();
+        const v = Math.min(1, volume + step);
+        setVolume(v);
+        setMuted(v === 0);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+        e.preventDefault();
+        const v = Math.max(0, volume - step);
+        setVolume(v);
+        setMuted(v === 0);
+      }
+    },
+    [volume]
+  );
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end end"],
@@ -77,6 +96,10 @@ export function CinematicCta() {
   const clipAmount = useTransform(scrollYProgress, [0, 0.6], [0, 100]);
   const leftClipPath = useTransform(clipAmount, (v) => `inset(0 ${v}% 0 0)`);
   const rightClipPath = useTransform(clipAmount, (v) => `inset(0 0 0 ${v}%)`);
+
+  // Track when the video is visible enough for controls to be usable
+  const [videoVisible, setVideoVisible] = useState(false);
+  useMotionValueEvent(clipAmount, "change", (v) => setVideoVisible(v > 80));
 
   // Text fades in after curtains are mostly open
   const textOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
@@ -90,13 +113,14 @@ export function CinematicCta() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Video layer (behind everything) */}
+        {/* scale-125 compensates for residual black bar artifacts in the source video */}
         <video
           autoPlay
           className="absolute inset-0 h-full w-full scale-125 object-cover"
           loop
           muted
           playsInline
-          preload="none"
+          preload="metadata"
           ref={videoRef}
           src={cinematicCtaData.videoSrc}
         />
@@ -125,10 +149,15 @@ export function CinematicCta() {
             {cinematicCtaData.subtext}
           </motion.span>
 
-          {/* Glass audio control */}
+          {/* Glass audio control — only interactive when video is visible */}
           <motion.div
+            aria-hidden={!videoVisible}
             className="group relative mt-8 flex items-center overflow-hidden rounded-full transition-all duration-300 ease-out hover:px-4 hover:py-2.5"
-            style={{ opacity: textOpacity, y: textY }}
+            style={{
+              opacity: textOpacity,
+              y: textY,
+              pointerEvents: videoVisible ? "auto" : "none",
+            }}
           >
             {/* Glass layers */}
             <div className="absolute inset-0 rounded-full backdrop-blur-xl backdrop-saturate-150" />
@@ -155,11 +184,12 @@ export function CinematicCta() {
                 aria-valuemin={0}
                 aria-valuenow={Math.round((muted ? 0 : volume) * 100)}
                 className="relative h-6 w-full cursor-pointer touch-none select-none"
+                onKeyDown={onKeyDown}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 ref={trackRef}
                 role="slider"
-                tabIndex={0}
+                tabIndex={videoVisible ? 0 : -1}
               >
                 {/* Track background */}
                 <div className="absolute top-1/2 right-0 left-0 h-[2px] -translate-y-1/2 rounded-full bg-white/20" />
