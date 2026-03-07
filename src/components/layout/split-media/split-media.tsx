@@ -111,16 +111,16 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
 
   const text = (
     <motion.div
-      animate={inView ? { opacity: 1, x: 0 } : {}}
+      animate={inView ? { x: 0 } : {}}
       className={cn(
         // Mobile: inline content, no card treatment
         "flex flex-col justify-center px-2 py-8",
-        // Desktop: overlapping liquid glass card
+        // Desktop: overlapping liquid glass card (no opacity animation — keeps backdrop-filter active)
         "lg:relative lg:z-10 lg:self-center lg:overflow-hidden lg:rounded-2xl lg:p-0",
         mediaFirst ? "lg:-ml-16" : "lg:-mr-16",
         !mediaFirst && "order-1 lg:order-0"
       )}
-      initial={{ opacity: 0, x: textSlideX }}
+      initial={{ x: textSlideX }}
       transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
     >
       {/* Liquid glass layers (desktop only) */}
@@ -130,8 +130,13 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
         <div className="liquid-glass-shine absolute inset-0 rounded-2xl" />
       </div>
 
-      {/* Content — sits above glass layers */}
-      <div className="relative z-10 flex flex-col justify-center lg:p-12">
+      {/* Content — sits above glass layers, fades in independently */}
+      <motion.div
+        animate={inView ? { opacity: 1 } : {}}
+        className="relative z-10 flex flex-col justify-center lg:p-12"
+        initial={{ opacity: 0 }}
+        transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+      >
         {/* Eyebrow label (replaces step numbers) */}
         <motion.span
           animate={inView ? { opacity: 1 } : {}}
@@ -179,7 +184,7 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
             </Link>
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   );
 
