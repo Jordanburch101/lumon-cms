@@ -93,8 +93,8 @@ export function Navbar() {
         className={cn(
           "sticky top-0 z-50 w-full transition-all duration-200",
           scrolled ? "liquid-glass" : "bg-transparent",
-          scrolled && contrast === "light" && "liquid-glass-light",
-          scrolled && contrast === "dark" && "liquid-glass-dark"
+          contrast === "light" && "liquid-glass-light",
+          contrast === "dark" && "liquid-glass-dark"
         )}
       >
         {scrolled && (

@@ -18,6 +18,7 @@ export function ImageGallery() {
   return (
     <section
       className="bg-black"
+      data-navbar-contrast="light"
       ref={containerRef}
       style={{ height: `${TOTAL * 100}vh` }}
     >
