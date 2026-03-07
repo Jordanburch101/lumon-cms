@@ -1,12 +1,51 @@
 "use client";
 
+import { VolumeHighIcon, VolumeMute02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { cinematicCtaData } from "./cinematic-cta-data";
 
 export function CinematicCta() {
   const containerRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+  const [volume, setVolume] = useState(0.5);
+
+  const toggleMute = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+    const next = !muted;
+    video.muted = next;
+    if (!next) {
+      video.volume = volume;
+    }
+    setMuted(next);
+  }, [muted, volume]);
+
+  const handleVolume = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const video = videoRef.current;
+      if (!video) {
+        return;
+      }
+      const v = Number.parseFloat(e.target.value);
+      setVolume(v);
+      video.volume = v;
+      if (v === 0) {
+        video.muted = true;
+        setMuted(true);
+      } else if (muted) {
+        video.muted = false;
+        setMuted(false);
+      }
+    },
+    [muted]
+  );
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end end"],
@@ -36,6 +75,7 @@ export function CinematicCta() {
           muted
           playsInline
           preload="none"
+          ref={videoRef}
           src={cinematicCtaData.videoSrc}
         />
 
@@ -62,6 +102,41 @@ export function CinematicCta() {
           >
             {cinematicCtaData.subtext}
           </motion.span>
+
+          {/* Glass audio control */}
+          <motion.div
+            className="group relative mt-8 flex items-center gap-3 overflow-hidden rounded-full px-4 py-2.5 transition-all duration-300"
+            style={{ opacity: textOpacity, y: textY }}
+          >
+            {/* Glass layers */}
+            <div className="absolute inset-0 rounded-full backdrop-blur-xl backdrop-saturate-150" />
+            <div className="absolute inset-0 rounded-full bg-white/10" />
+            <div className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_1px_1px_1px_0_rgba(255,255,255,0.2),inset_-1px_-1px_1px_0_rgba(255,255,255,0.1)]" />
+
+            {/* Content */}
+            <button
+              className="relative z-10 flex items-center justify-center text-white/70 transition-colors hover:text-white"
+              onClick={toggleMute}
+              type="button"
+            >
+              <HugeiconsIcon
+                className="size-4"
+                icon={muted ? VolumeMute02Icon : VolumeHighIcon}
+              />
+            </button>
+
+            <div className="relative z-10 flex w-0 items-center overflow-hidden transition-all duration-300 ease-out group-hover:w-24">
+              <input
+                className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/20 accent-white/80 [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+                max="1"
+                min="0"
+                onChange={handleVolume}
+                step="0.01"
+                type="range"
+                value={muted ? 0 : volume}
+              />
+            </div>
+          </motion.div>
         </div>
 
         {/* Left curtain */}
