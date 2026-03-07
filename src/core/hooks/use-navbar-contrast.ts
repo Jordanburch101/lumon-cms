@@ -94,21 +94,35 @@ export function useNavbarContrast(
 /**
  * Check a single element for its visual luminance.
  * Returns luminance (0-1) if determinable, null if transparent/unknown.
+ *
+ * Only treats media elements as dark if they span at least 70% of the
+ * viewport width (full-bleed hero images). Smaller card images are
+ * skipped so the background behind them gets detected.
  */
 function getElementLuminance(el: HTMLElement): number | null {
   const tag = el.tagName.toLowerCase();
+  const vw = window.innerWidth;
 
-  // Media elements — assume dark (hero photos, videos)
+  // Media elements — only count as dark if they're full-width (hero-like)
   if (tag === "img" || tag === "video" || tag === "canvas") {
-    return 0.15;
+    const elRect = el.getBoundingClientRect();
+    if (elRect.width >= vw * 0.7) {
+      return 0.15;
+    }
+    // Small media (card images) — skip, let parent bg determine luminance
+    return null;
   }
 
   const style = window.getComputedStyle(el);
 
-  // CSS background images (url-based) — assume dark
+  // CSS background images — only if element spans most of viewport
   const bgImage = style.backgroundImage;
   if (bgImage && bgImage !== "none" && bgImage.includes("url(")) {
-    return 0.15;
+    const elRect = el.getBoundingClientRect();
+    if (elRect.width >= vw * 0.7) {
+      return 0.15;
+    }
+    return null;
   }
 
   // Check background color
