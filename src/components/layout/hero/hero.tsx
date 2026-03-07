@@ -13,7 +13,10 @@ export function Hero() {
   const mediaType = getMediaType(heroData.mediaSrc);
 
   return (
-    <section className="relative min-h-[calc(100svh-56px)] w-full" data-navbar-contrast="light">
+    <section
+      className="relative min-h-[calc(100svh-56px)] w-full"
+      data-navbar-contrast="light"
+    >
       {/* Background media */}
       {mediaType === "video" ? (
         <video
