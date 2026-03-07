@@ -1,11 +1,9 @@
 "use client";
 
-import { Tick02Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { AnimatePresence, motion } from "motion/react";
+import { animate, motion, useMotionValue, useTransform } from "motion/react";
 import Link from "next/link";
+import { useEffect } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/core/lib/utils";
 import type { PricingTier } from "./pricing-data";
@@ -15,58 +13,99 @@ interface PricingCardProps {
   tier: PricingTier;
 }
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+function AnimatedPrice({ price }: { price: number }) {
+  const mv = useMotionValue(price);
+  const display = useTransform(mv, (v) => {
+    const rounded = Math.round(v);
+    return rounded === 0 ? "Free" : `$${rounded}`;
+  });
+
+  useEffect(() => {
+    const controls = animate(mv, price, { duration: 0.6, ease: EASE });
+    return controls.stop;
+  }, [price, mv]);
+
+  return <motion.span>{display}</motion.span>;
+}
+
 export function PricingCard({ tier, isAnnual }: PricingCardProps) {
   const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
+  const rec = tier.recommended;
 
   return (
-    <div
+    <motion.div
       className={cn(
-        "relative flex flex-col rounded-2xl border bg-card p-6 transition-shadow duration-300 lg:p-8",
-        tier.recommended
-          ? "ring-1 ring-primary/15 lg:scale-[1.02]"
-          : "hover:shadow-sm"
+        "relative flex h-full flex-col rounded-2xl p-8 lg:p-10",
+        rec
+          ? "bg-primary text-primary-foreground"
+          : "border border-border/40 bg-card"
       )}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileHover={{ y: -4 }}
     >
-      {/* Tier header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
-            {tier.name}
-          </span>
-          {tier.badge && <Badge variant="secondary">{tier.badge}</Badge>}
-        </div>
-        <p className="mt-2 text-muted-foreground text-sm">{tier.description}</p>
-      </div>
+      {/* Ambient glow on recommended */}
+      {rec && (
+        <div className="pointer-events-none absolute -inset-px animate-[pricing-glow_4s_ease-in-out_infinite] rounded-2xl" />
+      )}
+
+      {/* Tier name */}
+      <span
+        className={cn(
+          "font-medium text-[11px] uppercase tracking-[0.2em]",
+          rec ? "text-primary-foreground/60" : "text-muted-foreground"
+        )}
+      >
+        {tier.name}
+      </span>
 
       {/* Price */}
-      <div className="mb-6 flex items-baseline gap-1">
-        <AnimatePresence mode="popLayout">
-          <motion.span
-            animate={{ opacity: 1, y: 0 }}
-            className="font-semibold text-4xl tracking-tight"
-            exit={{ opacity: 0, y: -10 }}
-            initial={{ opacity: 0, y: 10 }}
-            key={price}
-            transition={{ duration: 0.2 }}
-          >
-            {price === 0 ? "Free" : `$${price}`}
-          </motion.span>
-        </AnimatePresence>
+      <div className="mt-6 flex items-baseline gap-1.5">
+        <span className="font-semibold text-5xl tracking-tight">
+          <AnimatedPrice price={price} />
+        </span>
         {price > 0 && (
-          <span className="text-muted-foreground text-sm">/mo</span>
+          <span
+            className={cn(
+              "text-sm",
+              rec ? "text-primary-foreground/40" : "text-muted-foreground"
+            )}
+          >
+            /mo
+          </span>
         )}
       </div>
 
+      {/* Description */}
+      <p
+        className={cn(
+          "mt-3 text-sm leading-relaxed",
+          rec ? "text-primary-foreground/60" : "text-muted-foreground"
+        )}
+      >
+        {tier.description}
+      </p>
+
+      {/* Divider */}
+      <div
+        className={cn(
+          "my-8 h-px",
+          rec ? "bg-primary-foreground/10" : "bg-border"
+        )}
+      />
+
       {/* Features */}
-      <ul className="mb-8 flex flex-1 flex-col gap-2.5">
+      <ul className="mb-10 flex flex-1 flex-col gap-3.5">
         {tier.features.map((feature) => (
-          <li className="flex items-start gap-2.5" key={feature}>
-            <HugeiconsIcon
-              className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
-              icon={Tick02Icon}
-              strokeWidth={2}
-            />
-            <span className="text-muted-foreground text-sm">{feature}</span>
+          <li
+            className={cn(
+              "text-sm leading-relaxed",
+              rec ? "text-primary-foreground/80" : "text-muted-foreground"
+            )}
+            key={feature}
+          >
+            {feature}
           </li>
         ))}
       </ul>
@@ -74,12 +113,16 @@ export function PricingCard({ tier, isAnnual }: PricingCardProps) {
       {/* CTA */}
       <Button
         asChild
-        className="w-full"
+        className={cn(
+          "w-full",
+          rec &&
+            "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+        )}
         size="lg"
-        variant={tier.recommended ? "default" : "outline"}
+        variant={rec ? "default" : "outline"}
       >
         <Link href={tier.cta.href}>{tier.cta.label}</Link>
       </Button>
-    </div>
+    </motion.div>
   );
 }

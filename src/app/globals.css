@@ -116,6 +116,16 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@keyframes pricing-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 30px -8px oklch(0.5 0.05 264 / 25%);
+  }
+  50% {
+    box-shadow: 0 0 50px -4px oklch(0.5 0.05 264 / 40%);
+  }
+}
+
 @keyframes progress-fill {
   from {
     transform: scaleX(0);

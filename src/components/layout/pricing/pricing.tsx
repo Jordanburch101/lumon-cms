@@ -20,7 +20,7 @@ export function Pricing() {
         {/* Section header */}
         <motion.div
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mb-6 max-w-2xl"
+          className="mb-6 text-center"
           initial={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
