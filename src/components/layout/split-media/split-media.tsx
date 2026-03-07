@@ -205,7 +205,7 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
 
 export function SplitMedia() {
   return (
-    <section className="w-full py-16 lg:py-24">
+    <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <div className="flex flex-col gap-24 lg:gap-32">
           {splitMediaRows.map((row, i) => (

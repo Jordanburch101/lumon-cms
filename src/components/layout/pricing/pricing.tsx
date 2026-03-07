@@ -15,7 +15,7 @@ export function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
 
   return (
-    <section className="w-full py-16 lg:py-24" ref={sectionRef}>
+    <section className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Section header */}
         <motion.div

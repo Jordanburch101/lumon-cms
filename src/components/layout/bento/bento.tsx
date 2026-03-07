@@ -8,7 +8,7 @@ import { ShowcaseCard } from "./showcase-card";
 
 export function BentoShowcase() {
   return (
-    <section className="w-full py-16 lg:py-24">
+    <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <div className="mb-8 max-w-2xl">
           <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
