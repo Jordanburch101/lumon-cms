@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useNavbarContrast } from "@/core/hooks/use-navbar-contrast";
 import { useScrolled } from "@/core/hooks/use-scrolled";
 import { cn } from "@/core/lib/utils";
 import { NavbarDesktop } from "./navbar-desktop";
@@ -80,14 +82,19 @@ function GlassDistortionFilter() {
 
 export function Navbar() {
   const scrolled = useScrolled();
+  const headerRef = useRef<HTMLElement>(null);
+  const contrast = useNavbarContrast(headerRef);
 
   return (
     <>
       <GlassDistortionFilter />
       <header
+        ref={headerRef}
         className={cn(
           "sticky top-0 z-50 w-full transition-all duration-200",
-          scrolled ? "liquid-glass" : "bg-transparent"
+          scrolled ? "liquid-glass" : "bg-transparent",
+          scrolled && contrast === "light" && "liquid-glass-light",
+          scrolled && contrast === "dark" && "liquid-glass-dark"
         )}
       >
         {scrolled && (
