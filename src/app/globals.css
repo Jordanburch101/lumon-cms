@@ -227,9 +227,8 @@
   color: oklch(0.13 0.028 261.692);
 }
 
-/* ── Mega menu: unified glass surface ──
- * Strip viewport's own background/ring — it becomes transparent.
- * The navbar's glass layers extend down via :has() to cover it. */
+/* ── Mega menu dropdown ──
+ * Own glass layers matching the navbar exactly. Flush top, rounded bottom. */
 .liquid-glass [data-slot="navigation-menu-viewport"] {
   margin-top: 0;
   border-radius: 0 0 0.75rem 0.75rem;
@@ -238,22 +237,63 @@
   --tw-ring-shadow: 0 0 #0000;
 }
 
-/* When viewport has content, extend glass layers to cover the dropdown */
-.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-effect,
-.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-tint,
-.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-shine {
-  bottom: calc(-1 * var(--nav-viewport-h, 0px));
-  border-radius: 0 0 0.75rem 0.75rem;
+/* Glass blur + SVG distortion — same as .liquid-glass-effect */
+.liquid-glass [data-slot="navigation-menu-viewport"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  isolation: isolate;
+  filter: url(#glass-distortion);
+  backdrop-filter: blur(6px) saturate(180%);
 }
 
-/* Extra tint on the dropdown area for text readability.
- * This overlays on top of the shared glass, not a separate glass panel. */
+/* Tint + shine — same as .liquid-glass-tint + .liquid-glass-shine */
+.liquid-glass [data-slot="navigation-menu-viewport"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 1px 0 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.dark .liquid-glass [data-slot="navigation-menu-viewport"]::after {
+  background: rgba(0, 0, 0, 0.15);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset 1px 0 0 0 rgba(255, 255, 255, 0.04),
+    inset -1px 0 0 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Remove the top shine edge — the navbar's bottom meets the dropdown's top */
+.liquid-glass [data-slot="navigation-menu-viewport"]::after {
+  box-shadow:
+    inset 1px 0 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Also remove the bottom shine from the navbar when dropdown is open */
+.liquid-glass:has([data-slot="navigation-menu-viewport"] > *) .liquid-glass-shine {
+  box-shadow:
+    inset 1px 1px 1px 0 rgba(255, 255, 255, 0.5),
+    inset -1px 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Muted text overrides for readability */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
   --muted-foreground: oklch(0.4 0.02 264);
-  background: rgba(255, 255, 255, 0.25);
 }
 
 .liquid-glass-light [data-slot="navigation-menu-viewport"] {
   --muted-foreground: oklch(0.75 0 0);
-  background: rgba(0, 0, 0, 0.2);
 }

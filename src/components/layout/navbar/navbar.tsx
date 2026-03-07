@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavbarContrast } from "@/core/hooks/use-navbar-contrast";
 import { useScrolled } from "@/core/hooks/use-scrolled";
@@ -70,24 +70,6 @@ export function Navbar() {
   const scrolled = useScrolled();
   const headerRef = useRef<HTMLElement>(null);
   const contrast = useNavbarContrast(headerRef);
-
-  // Sync viewport height to CSS variable so glass layers can extend
-  useEffect(() => {
-    const header = headerRef.current;
-    if (!header) return;
-
-    const viewport = header.querySelector<HTMLElement>(
-      '[data-slot="navigation-menu-viewport"]'
-    );
-    if (!viewport) return;
-
-    const observer = new ResizeObserver(([entry]) => {
-      const h = entry.contentRect.height;
-      header.style.setProperty("--nav-viewport-h", `${h}px`);
-    });
-    observer.observe(viewport);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
