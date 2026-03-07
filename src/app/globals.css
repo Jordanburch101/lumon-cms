@@ -140,11 +140,6 @@
   }
 }
 
-/* Liquid glass navbar effect — layered approach */
-.liquid-glass {
-  /* no overflow:hidden — mega menu dropdowns must be visible */
-}
-
 /* Layer 1: Backdrop blur + SVG distortion filter */
 .liquid-glass-effect {
   position: absolute;
@@ -188,6 +183,10 @@
 .liquid-glass-content {
   position: relative;
   z-index: 3;
+  transition:
+    --foreground 0.2s ease,
+    --muted-foreground 0.2s ease,
+    color 0.2s ease;
 }
 
 /* Register custom properties so the browser can interpolate them directly.
@@ -203,14 +202,6 @@
   syntax: "<color>";
   inherits: true;
   initial-value: oklch(0.551 0.027 264.364);
-}
-
-/* Transition the custom properties + color on the container only */
-.liquid-glass-content {
-  transition:
-    --foreground 0.2s ease,
-    --muted-foreground 0.2s ease,
-    color 0.2s ease;
 }
 
 /* Light text for dark backgrounds */

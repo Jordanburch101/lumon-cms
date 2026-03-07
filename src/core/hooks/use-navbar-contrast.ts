@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Determines whether navbar text should be light or dark by checking
@@ -8,15 +8,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
  *
  * Sections with dark backgrounds should set data-navbar-contrast="light"
  * (meaning the navbar text should be light/white). Default is "dark" (black text).
+ * In dark mode, always returns "light" (white text).
  */
 export function useNavbarContrast(
   headerRef: React.RefObject<HTMLElement | null>
 ) {
   const [contrast, setContrast] = useState<"light" | "dark">("dark");
-  const rafRef = useRef<number>(0);
 
   const sample = useCallback(() => {
-    // Dark mode always uses white text
     if (document.documentElement.classList.contains("dark")) {
       setContrast("light");
       return;
@@ -32,20 +31,17 @@ export function useNavbarContrast(
       return;
     }
 
-    // The vertical midpoint of the navbar — this is what we check against sections
     const navMidY = rect.top + rect.height / 2;
 
-    // Find all sections that declare their contrast preference
     const sections = document.querySelectorAll<HTMLElement>(
       "[data-navbar-contrast]"
     );
 
-    let result: "light" | "dark" = "dark"; // default: dark text for light backgrounds
+    let result: "light" | "dark" = "dark";
 
     for (const section of sections) {
       const sectionRect = section.getBoundingClientRect();
 
-      // Check if the navbar midpoint falls within this section
       if (sectionRect.top <= navMidY && sectionRect.bottom >= navMidY) {
         result = section.dataset.navbarContrast as "light" | "dark";
         break;
@@ -56,18 +52,24 @@ export function useNavbarContrast(
   }, [headerRef]);
 
   useEffect(() => {
-    let lastRun = 0;
-    const tick = () => {
-      const now = performance.now();
-      if (now - lastRun > 150) {
-        sample();
-        lastRun = now;
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
+    // Run once immediately
+    sample();
 
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    window.addEventListener("scroll", sample, { passive: true });
+    window.addEventListener("resize", sample, { passive: true });
+
+    // Also re-check when theme changes (class mutation on <html>)
+    const observer = new MutationObserver(sample);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => {
+      window.removeEventListener("scroll", sample);
+      window.removeEventListener("resize", sample);
+      observer.disconnect();
+    };
   }, [sample]);
 
   return contrast;

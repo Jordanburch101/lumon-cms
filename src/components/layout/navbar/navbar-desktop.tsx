@@ -27,7 +27,7 @@ function MegaMenuContent({ item }: { item: NavItem }) {
           {group.items.map((link) => (
             <NavigationMenuLink asChild key={link.href}>
               <Link
-                className="flex items-start gap-2 rounded-md px-1.5 py-1 transition-colors hover:bg-muted"
+                className="flex items-start gap-2 rounded-md px-1.5 py-1 transition-colors"
                 href={link.href}
               >
                 {link.icon && (
@@ -65,7 +65,7 @@ function SimpleDropdownContent({ item }: { item: NavItem }) {
       {item.items.map((link) => (
         <NavigationMenuLink asChild key={link.href}>
           <Link
-            className="flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-muted"
+            className="flex items-center gap-2 rounded-md p-2 transition-colors"
             href={link.href}
           >
             {link.icon && (

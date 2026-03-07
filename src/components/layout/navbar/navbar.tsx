@@ -45,15 +45,6 @@ function GlassDistortionFilter() {
         >
           <fePointLight x={-200} y={-200} z={300} />
         </feSpecularLighting>
-        <feComposite
-          in="specLight"
-          k1={0}
-          k2={1}
-          k3={1}
-          k4={0}
-          operator="arithmetic"
-          result="litImage"
-        />
         <feDisplacementMap
           in="SourceGraphic"
           in2="softMap"
