@@ -275,6 +275,17 @@
 }
 
 
+/* Dropdown hover — translucent instead of solid bg-muted */
+.liquid-glass [data-slot="navigation-menu-viewport"] [data-slot="navigation-menu-link"]:hover,
+.liquid-glass [data-slot="navigation-menu-viewport"] [data-slot="navigation-menu-link"]:focus {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dark .liquid-glass [data-slot="navigation-menu-viewport"] [data-slot="navigation-menu-link"]:hover,
+.dark .liquid-glass [data-slot="navigation-menu-viewport"] [data-slot="navigation-menu-link"]:focus {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* Dropdown text adapts with the navbar contrast */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
   --popover-foreground: oklch(0.13 0.028 261.692);
