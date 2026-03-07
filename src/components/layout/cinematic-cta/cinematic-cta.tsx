@@ -105,7 +105,7 @@ export function CinematicCta() {
 
           {/* Glass audio control */}
           <motion.div
-            className="group relative mt-8 flex items-center gap-3 overflow-hidden rounded-full px-4 py-2.5 transition-all duration-300"
+            className="group relative mt-8 flex items-center overflow-hidden rounded-full transition-all duration-300 ease-out hover:px-4 hover:py-2.5"
             style={{ opacity: textOpacity, y: textY }}
           >
             {/* Glass layers */}
@@ -115,7 +115,7 @@ export function CinematicCta() {
 
             {/* Content */}
             <button
-              className="relative z-10 flex items-center justify-center text-white/70 transition-colors hover:text-white"
+              className="relative z-10 flex size-10 shrink-0 items-center justify-center text-white/70 transition-colors hover:text-white"
               onClick={toggleMute}
               type="button"
             >
@@ -125,9 +125,9 @@ export function CinematicCta() {
               />
             </button>
 
-            <div className="relative z-10 flex w-0 items-center overflow-hidden transition-all duration-300 ease-out group-hover:w-24">
+            <div className="relative z-10 flex w-0 items-center overflow-hidden transition-all duration-300 ease-out group-hover:w-24 group-hover:pr-3">
               <input
-                className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/20 accent-white/80 [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+                className="h-6 w-full cursor-pointer appearance-none rounded-full bg-transparent [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-white/20 [&::-webkit-slider-thumb]:mt-[-4px] [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
                 max="1"
                 min="0"
                 onChange={handleVolume}
