@@ -17,7 +17,7 @@ const options = [
 
 export function PricingToggle({ isAnnual, onToggle }: PricingToggleProps) {
   return (
-    <div className="flex items-center justify-center gap-3">
+    <div className="relative flex items-center justify-center">
       <div className="relative inline-flex rounded-full border bg-muted/50 p-0.5">
         {options.map((option) => {
           const isActive = isAnnual === option.value;
@@ -47,9 +47,10 @@ export function PricingToggle({ isAnnual, onToggle }: PricingToggleProps) {
       <AnimatePresence>
         {isAnnual && (
           <motion.div
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            className="absolute left-[calc(50%+70px)]"
+            exit={{ opacity: 0, scale: 0.8, x: -4 }}
+            initial={{ opacity: 0, scale: 0.8, x: -4 }}
             transition={{ duration: 0.2 }}
           >
             <Badge variant="secondary">Save 20%</Badge>
