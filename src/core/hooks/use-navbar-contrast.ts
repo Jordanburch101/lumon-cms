@@ -16,11 +16,21 @@ export function useNavbarContrast(
   const rafRef = useRef<number>(0);
 
   const sample = useCallback(() => {
+    // Dark mode always uses white text
+    if (document.documentElement.classList.contains("dark")) {
+      setContrast("light");
+      return;
+    }
+
     const header = headerRef.current;
-    if (!header) return;
+    if (!header) {
+      return;
+    }
 
     const rect = header.getBoundingClientRect();
-    if (rect.height === 0) return;
+    if (rect.height === 0) {
+      return;
+    }
 
     // The vertical midpoint of the navbar — this is what we check against sections
     const navMidY = rect.top + rect.height / 2;
