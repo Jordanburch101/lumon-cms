@@ -16,8 +16,8 @@ export default function Page() {
       <Testimonials />
       <ImageGallery />
       <LatestArticles />
-      <Pricing />
       <CinematicCta />
+      <Pricing />
     </>
   );
 }
