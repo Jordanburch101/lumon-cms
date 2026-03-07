@@ -48,7 +48,7 @@ export function PricingToggle({ isAnnual, onToggle }: PricingToggleProps) {
         {isAnnual && (
           <motion.div
             animate={{ opacity: 1, scale: 1, x: 0 }}
-            className="absolute left-[calc(50%+70px)]"
+            className="absolute left-[calc(50%+95px)]"
             exit={{ opacity: 0, scale: 0.8, x: -4 }}
             initial={{ opacity: 0, scale: 0.8, x: -4 }}
             transition={{ duration: 0.2 }}
