@@ -22,25 +22,37 @@ export function LatestArticles() {
   return (
     <section className="w-full py-16 lg:py-24" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
-        {/* Section header */}
+        {/* Section header — headline left, "view all" right */}
         <motion.div
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mb-10 max-w-2xl lg:mb-14"
+          className="mb-10 flex items-end justify-between gap-4 lg:mb-14"
           initial={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
-            {latestArticlesSectionData.headline}
-          </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            {latestArticlesSectionData.subtext}
-          </p>
+          <div className="max-w-2xl">
+            <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+              {latestArticlesSectionData.headline}
+            </h2>
+            <p className="mt-3 text-base text-muted-foreground">
+              {latestArticlesSectionData.subtext}
+            </p>
+          </div>
+          <Link
+            className="group hidden shrink-0 items-center gap-2 font-medium text-foreground text-sm transition-colors hover:text-foreground/70 lg:inline-flex"
+            href="/blog"
+          >
+            View all articles
+            <HugeiconsIcon
+              className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+              icon={ArrowRight01Icon}
+            />
+          </Link>
         </motion.div>
 
         {/* Article grid */}
         <motion.div
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-6"
+          className="grid grid-cols-1 gap-6 lg:grid-cols-5"
           initial={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
         >
@@ -49,22 +61,20 @@ export function LatestArticles() {
             <ArticleCard article={featuredArticle} variant="featured" />
           </div>
 
-          {/* Supporting cards — 2 of 5 columns, stacked */}
+          {/* Supporting cards — 2 of 5 columns, stretch to match featured */}
           <div className="flex flex-col gap-6 lg:col-span-2">
             {supportingArticles.map((article) => (
-              <ArticleCard
-                article={article}
-                key={article.id}
-                variant="supporting"
-              />
+              <div className="lg:flex-1" key={article.id}>
+                <ArticleCard article={article} variant="supporting" />
+              </div>
             ))}
           </div>
         </motion.div>
 
-        {/* View all link */}
+        {/* Mobile-only view all link */}
         <motion.div
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mt-8 lg:mt-10"
+          className="mt-8 lg:hidden"
           initial={{ opacity: 0, y: 12 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}
         >

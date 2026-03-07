@@ -9,6 +9,14 @@ interface ArticleCardProps {
   variant: "featured" | "supporting";
 }
 
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export function ArticleCard({ article, variant }: ArticleCardProps) {
   if (variant === "featured") {
     return (
@@ -20,26 +28,26 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
         <div className="relative aspect-[3/2] w-full lg:aspect-auto lg:h-full">
           <Image
             alt={article.imageAlt}
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
             fill
             sizes="(max-width: 1024px) 100vw, 60vw"
             src={article.imageSrc}
           />
         </div>
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        {/* Gradient overlay — taller for more breathing room */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-[45%] via-black/30 to-transparent" />
 
         {/* Content overlay */}
         <div className="absolute inset-x-0 bottom-0 z-10 p-5 lg:p-8">
-          <Badge className="mb-3 bg-white/20 text-[10px] text-white">
+          <Badge className="mb-3 bg-white/15 text-[10px] text-white backdrop-blur-sm">
             {article.category}
           </Badge>
-          <h3 className="max-w-lg font-semibold text-white text-xl leading-snug sm:text-2xl">
+          <h3 className="max-w-lg font-semibold text-white text-xl leading-snug sm:text-2xl lg:text-3xl lg:leading-snug">
             {article.title}
           </h3>
-          <div className="mt-3 flex items-center gap-2.5">
-            <Avatar className="size-6">
+          <div className="mt-3 flex items-center gap-2.5 lg:mt-4">
+            <Avatar className="size-6 ring-1 ring-white/20">
               <AvatarImage
                 alt={article.author.name}
                 src={article.author.avatarSrc}
@@ -50,7 +58,9 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
             </Avatar>
             <span className="text-sm text-white/60">{article.author.name}</span>
             <span className="text-white/30">&middot;</span>
-            <span className="text-sm text-white/60">{article.readTime}</span>
+            <span className="text-sm text-white/60">
+              {formatDate(article.publishedAt)}
+            </span>
           </div>
         </div>
       </Link>
@@ -64,7 +74,7 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
       <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
         <Image
           alt={article.imageAlt}
-          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+          className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
           fill
           sizes="(max-width: 1024px) 100vw, 40vw"
           src={article.imageSrc}
@@ -72,18 +82,23 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
       </div>
 
       {/* Content */}
-      <div className="mt-4">
-        <Badge className="text-[10px]" variant="secondary">
-          {article.category}
-        </Badge>
-        <h3 className="mt-2 line-clamp-2 font-semibold text-lg leading-snug">
+      <div className="mt-4 px-0.5">
+        <div className="flex items-center gap-2">
+          <Badge className="text-[10px]" variant="secondary">
+            {article.category}
+          </Badge>
+          <span className="text-muted-foreground/50 text-xs">
+            {formatDate(article.publishedAt)}
+          </span>
+        </div>
+        <h3 className="mt-2.5 line-clamp-2 font-semibold text-base leading-snug">
           {article.title}
         </h3>
         <p className="mt-1.5 line-clamp-2 text-muted-foreground text-sm leading-relaxed">
           {article.excerpt}
         </p>
         <div className="mt-3 flex items-center gap-2">
-          <Avatar className="size-5">
+          <Avatar className="size-5 ring-1 ring-border/50">
             <AvatarImage
               alt={article.author.name}
               src={article.author.avatarSrc}
@@ -94,10 +109,6 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
           </Avatar>
           <span className="text-muted-foreground text-xs">
             {article.author.name}
-          </span>
-          <span className="text-muted-foreground/50">&middot;</span>
-          <span className="text-muted-foreground text-xs">
-            {article.readTime}
           </span>
         </div>
       </div>
