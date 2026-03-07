@@ -41,7 +41,7 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
     target: rowRef,
     offset: ["start end", "end start"],
   });
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [-40, 40]);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [-80, 80]);
   const staticY = useMotionValue(0);
   const mediaY = isDesktop ? parallaxY : staticY;
 
@@ -64,7 +64,7 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
 
       {/* Media with parallax (desktop only via CSS containment) */}
       <motion.div
-        className="absolute inset-0 lg:-inset-10"
+        className="absolute inset-0 lg:-inset-20"
         style={{ y: mediaY }}
       >
         {isVideo ? (
@@ -153,7 +153,7 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
 
         <motion.p
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mt-4 max-w-md text-base text-muted-foreground leading-relaxed lg:mt-6 lg:text-lg"
+          className="mt-4 max-w-md text-base text-muted-foreground leading-relaxed lg:mt-6 lg:text-foreground/80 lg:text-lg"
           initial={{ opacity: 0, y: 16 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.45 }}
         >
