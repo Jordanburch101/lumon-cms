@@ -13,11 +13,10 @@ export function CinematicCta() {
   });
 
   // Curtain animation: 0-70% of scroll drives the curtain opening
-  const leftClip = useTransform(scrollYProgress, [0, 0.7], [0, 50]);
-  const leftClipPath = useTransform(leftClip, (v) => `inset(0 ${v}% 0 0)`);
-
-  const rightClip = useTransform(scrollYProgress, [0, 0.7], [0, 50]);
-  const rightClipPath = useTransform(rightClip, (v) => `inset(0 0 0 ${v}%)`);
+  // Each curtain clips from 0% to 100% — center reveals first, edges last
+  const clipAmount = useTransform(scrollYProgress, [0, 0.7], [0, 100]);
+  const leftClipPath = useTransform(clipAmount, (v) => `inset(0 ${v}% 0 0)`);
+  const rightClipPath = useTransform(clipAmount, (v) => `inset(0 0 0 ${v}%)`);
 
   // Text fades in after curtains are ~80% open (scroll 0.55 -> 0.75)
   const textOpacity = useTransform(scrollYProgress, [0.55, 0.75], [0, 1]);
@@ -25,10 +24,9 @@ export function CinematicCta() {
 
   return (
     <section
-      className="relative bg-black"
+      className="relative h-[250vh] bg-black"
       data-navbar-contrast="light"
       ref={containerRef}
-      style={{ height: "250vh" }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Video layer (behind everything) */}
@@ -38,6 +36,7 @@ export function CinematicCta() {
           loop
           muted
           playsInline
+          preload="none"
           src={cinematicCtaData.videoSrc}
         />
 
