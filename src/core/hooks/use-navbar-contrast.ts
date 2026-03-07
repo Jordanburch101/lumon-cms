@@ -38,6 +38,11 @@ export function useNavbarContrast(
         // Skip the header and everything inside it
         if (el === header || header.contains(el)) continue;
 
+        // Skip elements whose bounding box doesn't actually overlap the navbar
+        // (e.g. a hero video that's scrolled above but still in the element stack)
+        const elRect = el.getBoundingClientRect();
+        if (elRect.bottom < rect.top || elRect.top > rect.bottom) continue;
+
         const luminance = getElementLuminance(el);
         if (luminance !== null) {
           totalLuminance += luminance;
