@@ -28,7 +28,7 @@ export const latestArticles: Article[] = [
     excerpt:
       "How Lumon's revolutionary procedure is redefining what it means to leave work at the office. A deep dive into the science and philosophy behind the split.",
     category: "Research",
-    imageSrc: "/gallery/gallery-1.jpg",
+    imageSrc: "/gallery/elevator-descent.jpg",
     imageAlt: "Lumon severance research facility",
     author: {
       name: "Harmony Cobel",
@@ -44,7 +44,7 @@ export const latestArticles: Article[] = [
     excerpt:
       "What makes the waffle party the ultimate reward? We explore the history, the ritual, and why top refiners will do anything to earn one.",
     category: "Culture",
-    imageSrc: "/gallery/gallery-2.jpg",
+    imageSrc: "/gallery/break-room-session.jpg",
     imageAlt: "Lumon waffle party celebration",
     author: {
       name: "Seth Milchick",
@@ -60,7 +60,7 @@ export const latestArticles: Article[] = [
     excerpt:
       "A guided tour through nine floors of founder legacy, preserved in wax and devotion.",
     category: "Heritage",
-    imageSrc: "/gallery/gallery-3.jpg",
+    imageSrc: "/gallery/the-you-you-are.jpg",
     imageAlt: "The Perpetuity Wing at Lumon Industries",
     author: {
       name: "Irving B.",
