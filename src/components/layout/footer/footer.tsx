@@ -7,7 +7,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-background">
+    <footer className="mt-16 border-t bg-background lg:mt-24">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Zone 1: Newsletter */}
         <div className="border-b py-6">

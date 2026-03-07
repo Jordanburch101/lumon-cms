@@ -9,7 +9,7 @@ import { Testimonials } from "@/components/layout/testimonials/testimonials";
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-16 lg:gap-24">
+    <div className="flex flex-col gap-16 lg:gap-32">
       <Hero />
       <BentoShowcase />
       <SplitMedia />
