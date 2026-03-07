@@ -127,7 +127,7 @@ export function CinematicCta() {
 
             <div className="relative z-10 flex w-0 items-center overflow-hidden transition-all duration-300 ease-out group-hover:w-24 group-hover:pr-3">
               <input
-                className="h-6 w-full cursor-pointer appearance-none rounded-full bg-transparent [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-white/20 [&::-webkit-slider-thumb]:mt-[-4px] [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+                className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/20 py-3 accent-white/80 [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
                 max="1"
                 min="0"
                 onChange={handleVolume}
