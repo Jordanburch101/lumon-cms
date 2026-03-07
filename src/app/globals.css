@@ -142,7 +142,6 @@
 
 /* Liquid glass navbar effect */
 .liquid-glass {
-  position: relative;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px) saturate(180%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
