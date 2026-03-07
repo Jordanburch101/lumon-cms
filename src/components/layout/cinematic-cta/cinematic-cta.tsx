@@ -170,8 +170,10 @@ export function CinematicCta() {
                 />
                 {/* Thumb */}
                 <div
-                  className="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-150 hover:scale-125"
-                  style={{ left: `${(muted ? 0 : volume) * 100}%` }}
+                  className="absolute top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-150 hover:scale-125"
+                  style={{
+                    left: `clamp(0px, calc(${(muted ? 0 : volume) * 100}% - 5px), calc(100% - 10px))`,
+                  }}
                 />
               </div>
             </div>
