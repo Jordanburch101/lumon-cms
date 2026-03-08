@@ -107,7 +107,7 @@ export function MdrGrid() {
         style={{
           borderBottom: `1px solid ${CRT.border}`,
           color: CRT.text,
-          textShadow: `0 0 6px ${CRT.glowDim}`,
+          textShadow: `0 0 8px ${CRT.glow}, 0 0 2px ${CRT.textBright}`,
         }}
       >
         <span
@@ -182,7 +182,7 @@ export function MdrGrid() {
                       ri < visibleRows
                         ? `mdr-drift ${driftStyles[idx].animationDuration} ease-in-out ${driftStyles[idx].animationDelay} infinite`
                         : "none",
-                    textShadow: `0 0 8px ${CRT.glowDim}, 0 0 3px ${CRT.glowDim}`,
+                    textShadow: `0 0 8px ${CRT.glow}, 0 0 2px ${CRT.textBright}`,
                     ...Object.fromEntries(
                       Object.entries(driftStyles[idx]).filter(([k]) =>
                         k.startsWith("--")
@@ -212,7 +212,7 @@ export function MdrGrid() {
             <span
               style={{
                 color: CRT.textBright,
-                textShadow: `0 0 6px ${CRT.glowDim}`,
+                textShadow: `0 0 8px ${CRT.glow}, 0 0 2px ${CRT.textBright}`,
               }}
             >
               {bin.label}

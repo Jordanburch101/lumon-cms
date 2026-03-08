@@ -369,48 +369,20 @@
   background: repeating-linear-gradient(
     to bottom,
     transparent 0px,
-    transparent 1px,
-    rgba(0, 0, 0, 0.3) 1px,
-    rgba(0, 0, 0, 0.3) 2px,
-    transparent 2px,
-    transparent 3px,
-    rgba(0, 4, 15, 0.15) 3px,
-    rgba(0, 4, 15, 0.15) 4px
+    rgba(0, 0, 0, 0.35) 1px,
+    transparent 2px
   );
-}
-
-/* Chromatic aberration — slight RGB channel offset at screen edges */
-.crt-chromatic {
-  pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse at 20% 50%,
-      rgba(255, 0, 0, 0.015) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 80% 50%,
-      rgba(0, 100, 255, 0.015) 0%,
-      transparent 50%
-    );
-  mix-blend-mode: screen;
 }
 
 .crt-vignette {
   pointer-events: none;
   background: radial-gradient(
     ellipse at center,
-    transparent 40%,
-    rgba(0, 2, 8, 0.4) 70%,
-    rgba(0, 2, 8, 0.8) 100%
+    transparent 30%,
+    rgba(0, 2, 10, 0.35) 60%,
+    rgba(0, 2, 10, 0.7) 85%,
+    rgba(0, 2, 10, 0.95) 100%
   );
-}
-
-/* CRT screen barrel distortion container */
-.crt-screen {
-  /* Subtle barrel bulge via 3D perspective */
-  transform: perspective(800px) translateZ(0);
-  transform-style: preserve-3d;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -430,9 +402,5 @@
     100% {
       opacity: 1;
     }
-  }
-
-  .crt-screen {
-    filter: none;
   }
 }

@@ -19,128 +19,146 @@ export function MdrScreen() {
     setState("active");
   }, []);
 
-  return (
-    <>
-      {/* SVG filter for barrel distortion — hidden, referenced by CSS */}
-      {/* biome-ignore lint/a11y/noSvgWithoutTitle: hidden SVG filter, not visual content */}
-      <svg
-        aria-hidden
-        className="absolute h-0 w-0"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          {/* Barrel distortion: displaces pixels outward from center, creating CRT screen curvature */}
-          <filter id="crt-barrel">
-            {/* Create a radial gradient displacement map */}
-            <feImage
-              height="100%"
-              href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23808080'/%3E%3Cstop offset='100%25' stop-color='%23606060'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='400' height='250' fill='url(%23g)'/%3E%3C/svg%3E"
-              result="map"
-              width="100%"
-            />
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="map"
-              scale="40"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
-        </defs>
-      </svg>
+  const isOn = state !== "standby";
 
-      {/* Outer bezel — the physical CRT housing */}
+  return (
+    /* Layer 1: Outer monitor housing — the plastic/metal shell */
+    <div
+      className="relative mx-auto w-full max-w-4xl"
+      style={{
+        borderRadius: "clamp(28px, 5vw, 56px)",
+        background:
+          "linear-gradient(170deg, #141c2e 0%, #0a0f1a 40%, #0c1222 100%)",
+        padding: "clamp(6px, 1vw, 12px)",
+        boxShadow: `
+          0 4px 60px -10px rgba(0, 0, 0, 0.8),
+          0 0 120px -20px rgba(74, 144, 226, ${isOn ? "0.2" : "0.05"}),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.4)
+        `,
+        transition: "box-shadow 1s ease",
+      }}
+    >
+      {/* Layer 2: Inner bezel ridge — the sloped edge around the glass */}
       <div
-        className="relative mx-auto w-full max-w-4xl"
         style={{
-          padding: "clamp(14px, 2.5vw, 28px)",
-          background:
-            "linear-gradient(145deg, #0c1220 0%, #060a14 50%, #0a1018 100%)",
-          borderRadius: "clamp(20px, 3.5vw, 40px)",
+          borderRadius: "clamp(22px, 4vw, 46px)",
+          background: "linear-gradient(180deg, #0e1524 0%, #080c18 100%)",
+          padding: "clamp(8px, 1.5vw, 16px)",
           boxShadow: `
-            0 0 120px -20px ${CRT.glowDim},
-            0 0 240px -40px rgba(74, 144, 226, 0.18),
-            inset 0 1px 0 0 rgba(120, 180, 255, 0.1),
-            inset 0 -1px 0 0 rgba(0, 0, 0, 0.5)
+            inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
+            inset 0 -1px 2px 0 rgba(120, 180, 255, 0.04),
+            inset 2px 0 4px 0 rgba(0, 0, 0, 0.3),
+            inset -2px 0 4px 0 rgba(0, 0, 0, 0.3)
           `,
         }}
       >
-        {/* Ambient light spill — blue glow bleeding onto the bezel from the screen */}
+        {/* Layer 3: Screen glass bezel — the lip right around the glass */}
         <div
-          className="pointer-events-none absolute inset-0 z-0"
+          className="relative"
           style={{
-            borderRadius: "inherit",
-            background:
-              "radial-gradient(ellipse at center, rgba(74, 144, 226, 0.06) 30%, transparent 70%)",
-          }}
-        />
-
-        {/* Inner screen — the glass surface with barrel distortion */}
-        <div
-          className="crt-screen relative overflow-hidden"
-          style={{
-            aspectRatio: "16 / 10",
-            backgroundColor: CRT.screenBg,
-            borderRadius: "clamp(10px, 2vw, 20px)",
-            border: `1.5px solid ${CRT.border}`,
+            borderRadius: "clamp(14px, 2.5vw, 28px)",
+            /* The glass bezel ring — visible border with glow */
             boxShadow: `
-              inset 0 0 80px -10px ${CRT.glowDim},
-              inset 0 0 160px -30px rgba(74, 144, 226, 0.12),
-              0 0 30px -5px ${CRT.glowDim}
+              0 0 0 1.5px rgba(74, 144, 226, ${isOn ? "0.3" : "0.12"}),
+              0 0 0 3px rgba(10, 15, 26, 0.9),
+              0 0 ${isOn ? "30px" : "8px"} -2px rgba(74, 144, 226, ${isOn ? "0.15" : "0.03"})
             `,
-            animation:
-              state !== "standby"
-                ? "crt-flicker 4s ease-in-out infinite"
-                : undefined,
-            filter: "url(#crt-barrel)",
+            transition: "box-shadow 1s ease",
           }}
         >
-          {/* Screen content */}
-          <div className="relative z-10 h-full">
-            {state === "standby" && (
-              <button
-                className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-3 bg-transparent"
-                onClick={handleActivate}
-                type="button"
-              >
-                <span
-                  className="font-mono text-xs uppercase tracking-[0.3em] lg:text-sm"
-                  style={{ color: CRT.textDim }}
+          {/* The screen itself */}
+          <div
+            className="relative overflow-hidden"
+            style={{
+              aspectRatio: "16 / 10",
+              backgroundColor: CRT.screenBg,
+              borderRadius: "inherit",
+              animation: isOn
+                ? "crt-flicker 4s ease-in-out infinite"
+                : undefined,
+            }}
+          >
+            {/* Screen content */}
+            <div className="relative z-10 h-full">
+              {state === "standby" && (
+                <button
+                  className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-3 bg-transparent"
+                  onClick={handleActivate}
+                  type="button"
                 >
-                  Press to initialize
-                </span>
-                <span
-                  className="inline-block h-4 w-2"
-                  style={{
-                    backgroundColor: CRT.text,
-                    animation: "crt-cursor-blink 1s step-end infinite",
-                  }}
-                />
-              </button>
-            )}
+                  <span
+                    className="font-mono text-xs uppercase tracking-[0.3em] lg:text-sm"
+                    style={{
+                      color: CRT.text,
+                      textShadow: `0 0 10px ${CRT.glowBright}, 0 0 20px ${CRT.glowDim}`,
+                    }}
+                  >
+                    Press to initialize
+                  </span>
+                  <span
+                    className="inline-block h-4 w-2"
+                    style={{
+                      backgroundColor: CRT.textBright,
+                      boxShadow: `0 0 8px ${CRT.glow}, 0 0 16px ${CRT.glowDim}`,
+                      animation: "crt-cursor-blink 1s step-end infinite",
+                    }}
+                  />
+                </button>
+              )}
 
-            {state === "booting" && (
-              <MdrBootSequence onComplete={handleBootComplete} />
-            )}
+              {state === "booting" && (
+                <MdrBootSequence onComplete={handleBootComplete} />
+              )}
 
-            {state === "active" && <MdrGrid />}
+              {state === "active" && <MdrGrid />}
+            </div>
+
+            {/* Scan lines */}
+            <div className="crt-scanlines absolute inset-0 z-20" />
+
+            {/* Edge light refraction — bright glow along screen edges where light bends around curved glass */}
+            <div
+              className="pointer-events-none absolute inset-0 z-20"
+              style={{
+                borderRadius: "inherit",
+                boxShadow: `
+                  inset 0 0 30px 2px rgba(74, 144, 226, ${isOn ? "0.12" : "0.03"}),
+                  inset 0 0 60px 4px rgba(74, 144, 226, ${isOn ? "0.06" : "0.01"}),
+                  inset 0 0 4px 1px rgba(74, 144, 226, ${isOn ? "0.2" : "0.05"})
+                `,
+                transition: "box-shadow 1s ease",
+              }}
+            />
+
+            {/* Vignette — corners darken like real CRT */}
+            <div className="crt-vignette absolute inset-0 z-20" />
+
+            {/* Top edge highlight — light refracting off curved glass top */}
+            <div
+              className="pointer-events-none absolute inset-x-0 top-0 z-30"
+              style={{
+                height: "30%",
+                background: `linear-gradient(180deg, rgba(120, 180, 255, ${isOn ? "0.03" : "0.01"}) 0%, transparent 100%)`,
+                borderRadius: "inherit",
+              }}
+            />
           </div>
 
-          {/* CRT overlays — always visible */}
-          <div className="crt-scanlines absolute inset-0 z-20" />
-          <div className="crt-vignette absolute inset-0 z-20" />
-          <div className="crt-chromatic absolute inset-0 z-20" />
-
-          {/* Glass reflection highlight — top-left area like real CRT glass */}
+          {/* Edge glow ring — light bleeding out around the glass edges */}
           <div
-            className="pointer-events-none absolute inset-0 z-30"
+            className="pointer-events-none absolute inset-0 z-[-1]"
             style={{
-              background:
-                "radial-gradient(ellipse at 30% 20%, rgba(120, 180, 255, 0.04) 0%, transparent 50%)",
+              borderRadius: "inherit",
+              boxShadow: `
+                0 0 15px 2px rgba(74, 144, 226, ${isOn ? "0.12" : "0.02"}),
+                0 0 40px 5px rgba(74, 144, 226, ${isOn ? "0.06" : "0.01"})
+              `,
+              transition: "box-shadow 1s ease",
             }}
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
