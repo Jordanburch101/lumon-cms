@@ -8,6 +8,7 @@ import {
   generateGridNumbers,
   mdrBins,
   mdrFileData,
+  mdrHexAddress,
 } from "./mdr-terminal-data";
 
 const SCATTER_RADIUS = 80;
@@ -27,7 +28,9 @@ export function MdrGrid() {
     const interval = setInterval(() => {
       row++;
       setVisibleRows(row);
-      if (row >= GRID_ROWS) clearInterval(interval);
+      if (row >= GRID_ROWS) {
+        clearInterval(interval);
+      }
     }, 60);
     return () => clearInterval(interval);
   }, []);
@@ -50,15 +53,18 @@ export function MdrGrid() {
   // Mouse proximity scatter
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const rect = gridRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    if (!rect) {
+      return;
+    }
     mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
 
     cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
       const { x: mx, y: my } = mouseRef.current;
-      for (let i = 0; i < cellRefs.current.length; i++) {
-        const el = cellRefs.current[i];
-        if (!el) continue;
+      for (const el of cellRefs.current) {
+        if (!el) {
+          continue;
+        }
         const cx = el.offsetLeft + el.offsetWidth / 2;
         const cy = el.offsetTop + el.offsetHeight / 2;
         const dx = cx - mx;
@@ -67,11 +73,11 @@ export function MdrGrid() {
 
         if (dist < SCATTER_RADIUS) {
           const strength = 1 - dist / SCATTER_RADIUS;
-          const pushX = (dx / dist) * strength * 12;
-          const pushY = (dy / dist) * strength * 12;
-          el.style.transform = `translate(${pushX}px, ${pushY}px)`;
+          const pushX = (dx / dist) * strength * 14;
+          const pushY = (dy / dist) * strength * 14;
+          el.style.transform = `translate(${pushX}px, ${pushY}px) scale(${1 + strength * 0.5})`;
           el.style.color = CRT.textBright;
-          el.style.textShadow = `0 0 8px ${CRT.glowBright}`;
+          el.style.textShadow = `0 0 12px ${CRT.glowBright}, 0 0 4px ${CRT.glowBright}`;
         } else {
           el.style.transform = "";
           el.style.color = "";
@@ -84,7 +90,9 @@ export function MdrGrid() {
   const handleMouseLeave = useCallback(() => {
     mouseRef.current = { x: -1000, y: -1000 };
     for (const el of cellRefs.current) {
-      if (!el) continue;
+      if (!el) {
+        continue;
+      }
       el.style.transform = "";
       el.style.color = "";
       el.style.textShadow = "";
@@ -93,30 +101,64 @@ export function MdrGrid() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Header bar */}
+      {/* Header bar — matching reference: Cold Harbor | progress bar | % Complete | LUMON */}
       <div
-        className="flex items-center justify-between border-b px-4 py-2 font-mono text-xs lg:px-6 lg:text-sm"
+        className="flex items-center gap-3 px-3 py-1.5 font-mono text-[10px] lg:px-4 lg:py-2 lg:text-xs"
         style={{
-          borderColor: "rgba(74, 158, 197, 0.2)",
+          borderBottom: `1px solid ${CRT.border}`,
           color: CRT.text,
+          textShadow: `0 0 6px ${CRT.glowDim}`,
         }}
       >
-        <span>{mdrFileData.fileName}</span>
-        <span style={{ color: CRT.textDim }}>{mdrFileData.completion}</span>
-        <span className="font-bold tracking-wider" style={{ color: CRT.glow }}>
+        <span
+          className="shrink-0 border px-2 py-0.5"
+          style={{ borderColor: CRT.border }}
+        >
+          {mdrFileData.fileName}
+        </span>
+
+        {/* Progress bar */}
+        <div
+          className="flex-1"
+          style={{
+            height: 10,
+            background: `repeating-linear-gradient(
+              to right,
+              ${CRT.border} 0px,
+              ${CRT.border} 3px,
+              transparent 3px,
+              transparent 5px
+            )`,
+            borderRadius: 2,
+          }}
+        />
+
+        <span style={{ color: CRT.textBright }}>{mdrFileData.completion}</span>
+
+        {/* Lumon logo text */}
+        <span
+          className="shrink-0 rounded-full border px-2.5 py-0.5 font-bold tracking-widest"
+          style={{
+            borderColor: CRT.borderBright,
+            color: CRT.textBright,
+            textShadow: `0 0 8px ${CRT.glowBright}`,
+          }}
+        >
           LUMON
         </span>
       </div>
 
       {/* Number grid */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: decorative hover effect */}
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: decorative hover effect */}
       <div
-        className="relative flex-1 overflow-hidden p-4 lg:p-6"
+        className="relative flex-1 overflow-hidden p-3 lg:p-5"
         onMouseLeave={handleMouseLeave}
         onMouseMove={handleMouseMove}
         ref={gridRef}
       >
         <div
-          className="mx-auto grid gap-x-3 gap-y-1 font-mono text-sm lg:text-base"
+          className="mx-auto grid h-full gap-x-0 gap-y-0 font-mono text-[11px] lg:text-sm"
           style={{
             gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
             color: CRT.text,
@@ -127,8 +169,8 @@ export function MdrGrid() {
               const idx = ri * GRID_COLS + ci;
               return (
                 <span
+                  className="inline-flex items-center justify-center transition-[transform,color,text-shadow] duration-200"
                   key={idx}
-                  className="inline-block text-center transition-[transform,color,text-shadow] duration-200"
                   ref={(el) => {
                     cellRefs.current[idx] = el;
                   }}
@@ -140,7 +182,7 @@ export function MdrGrid() {
                       ri < visibleRows
                         ? `mdr-drift ${driftStyles[idx].animationDuration} ease-in-out ${driftStyles[idx].animationDelay} infinite`
                         : "none",
-                    textShadow: `0 0 4px ${CRT.glowDim}`,
+                    textShadow: `0 0 8px ${CRT.glowDim}, 0 0 3px ${CRT.glowDim}`,
                     ...Object.fromEntries(
                       Object.entries(driftStyles[idx]).filter(([k]) =>
                         k.startsWith("--")
@@ -156,29 +198,58 @@ export function MdrGrid() {
         </div>
       </div>
 
-      {/* Bins bar */}
+      {/* Bins bar — matching reference: bordered boxes with labels and fill bars */}
       <div
-        className="flex items-center justify-center gap-6 border-t px-4 py-3 font-mono text-xs lg:gap-10 lg:px-6"
-        style={{ borderColor: "rgba(74, 158, 197, 0.2)" }}
+        className="flex items-stretch justify-center gap-2 px-3 py-2 font-mono text-[10px] lg:gap-3 lg:px-4 lg:text-xs"
+        style={{ borderTop: `1px solid ${CRT.border}` }}
       >
         {mdrBins.map((bin) => (
-          <div className="flex items-center gap-2" key={bin.id}>
-            <span style={{ color: CRT.textDim }}>{bin.label}</span>
-            <div
-              className="h-2 w-16 overflow-hidden rounded-sm lg:w-20"
-              style={{ backgroundColor: "rgba(74, 158, 197, 0.1)" }}
+          <div
+            className="flex flex-1 flex-col items-center gap-1 border px-2 py-1.5"
+            key={bin.id}
+            style={{ borderColor: CRT.border }}
+          >
+            <span
+              style={{
+                color: CRT.textBright,
+                textShadow: `0 0 6px ${CRT.glowDim}`,
+              }}
             >
+              {bin.label}
+            </span>
+            <div className="flex w-full items-center gap-1.5">
               <div
-                className="h-full rounded-sm"
-                style={{
-                  backgroundColor: bin.color,
-                  width: `${bin.fill * 100}%`,
-                  transition: "width 0.5s ease",
-                }}
-              />
+                className="h-1.5 flex-1 overflow-hidden"
+                style={{ backgroundColor: "rgba(74, 144, 226, 0.1)" }}
+              >
+                <div
+                  className="h-full"
+                  style={{
+                    backgroundColor: CRT.glow,
+                    width: `${bin.fill * 100}%`,
+                    transition: "width 0.5s ease",
+                    boxShadow: `0 0 6px ${CRT.glowDim}`,
+                  }}
+                />
+              </div>
+              <span style={{ color: CRT.textDim, fontSize: "0.6em" }}>
+                {Math.round(bin.fill * 100)}%
+              </span>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Hex address footer */}
+      <div
+        className="py-1 text-center font-mono text-[9px] lg:text-[10px]"
+        style={{
+          color: CRT.textDim,
+          borderTop: `1px solid ${CRT.border}`,
+          textShadow: `0 0 4px ${CRT.glowDim}`,
+        }}
+      >
+        {mdrHexAddress}
       </div>
     </div>
   );

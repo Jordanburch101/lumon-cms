@@ -44,11 +44,14 @@ export const mdrFileData = {
 } as const;
 
 export const mdrBins = [
-  { id: "WO", label: "WO", color: "#5b8a72", fill: 0.0 },
-  { id: "FC", label: "FC", color: "#c9b968", fill: 0.0 },
-  { id: "DR", label: "DR", color: "#3b5998", fill: 0.0 },
-  { id: "MA", label: "MA", color: "#2a4a7f", fill: 0.0 },
+  { id: "01", label: "01", fill: 0.77 },
+  { id: "02", label: "02", fill: 0.75 },
+  { id: "03", label: "03", fill: 0.59 },
+  { id: "04", label: "04", fill: 0.52 },
+  { id: "05", label: "05", fill: 0.75 },
 ] as const;
+
+export const mdrHexAddress = "0x137056 : 0x09B32E";
 
 export function generateGridNumbers(rows: number, cols: number): number[][] {
   return Array.from({ length: rows }, () =>
@@ -56,16 +59,20 @@ export function generateGridNumbers(rows: number, cols: number): number[][] {
   );
 }
 
-export const GRID_ROWS = 14;
-export const GRID_COLS = 16;
+export const GRID_ROWS = 16;
+export const GRID_COLS = 22;
 
 export const CRT = {
-  glow: "#4a9ec5",
-  glowDim: "rgba(74, 158, 197, 0.15)",
-  glowBright: "rgba(74, 158, 197, 0.6)",
-  bg: "#0a0e14",
-  screenBg: "#060a10",
-  text: "#7ab8d4",
-  textDim: "rgba(122, 184, 212, 0.3)",
-  textBright: "#b8e0f0",
+  /** Bright blue glow — matches Severance CRT phosphor */
+  glow: "#4a90e2",
+  glowDim: "rgba(74, 144, 226, 0.3)",
+  glowBright: "rgba(120, 180, 255, 0.8)",
+  bg: "#020408",
+  screenBg: "#030610",
+  text: "#6aacf0",
+  textDim: "rgba(106, 172, 240, 0.35)",
+  textBright: "#a0d0ff",
+  /** Border/chrome color for the CRT bezel and UI elements */
+  border: "rgba(74, 144, 226, 0.4)",
+  borderBright: "rgba(120, 180, 255, 0.6)",
 } as const;
