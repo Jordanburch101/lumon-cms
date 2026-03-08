@@ -87,11 +87,6 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
         )}
       </motion.div>
 
-      {/* Category label */}
-      <span className="absolute top-4 left-4 z-20 text-[11px] text-white/50 uppercase tracking-wider">
-        {row.mediaLabel}
-      </span>
-
       {/* Bottom overlay */}
       <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
         <div className="flex items-center gap-2">
