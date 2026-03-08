@@ -117,30 +117,25 @@ export function MdrScreen() {
             {/* Scan lines */}
             <div className="crt-scanlines absolute inset-0 z-20" />
 
-            {/* Edge light refraction — bright glow along screen edges where light bends around curved glass */}
-            <div
-              className="pointer-events-none absolute inset-0 z-20"
-              style={{
-                borderRadius: "inherit",
-                boxShadow: `
-                  inset 0 0 30px 2px rgba(74, 144, 226, ${isOn ? "0.12" : "0.03"}),
-                  inset 0 0 60px 4px rgba(74, 144, 226, ${isOn ? "0.06" : "0.01"}),
-                  inset 0 0 4px 1px rgba(74, 144, 226, ${isOn ? "0.2" : "0.05"})
-                `,
-                transition: "box-shadow 1s ease",
-              }}
-            />
-
-            {/* Vignette — corners darken like real CRT */}
+            {/* Vignette — darkens middle area, but NOT the very edge */}
             <div className="crt-vignette absolute inset-0 z-20" />
 
-            {/* Top edge highlight — light refracting off curved glass top */}
+            {/* Edge light refraction — BRIGHT glow at the very edge of the screen
+                This sits ABOVE the vignette so it reads through the darkening.
+                On a real CRT, curved glass refracts light outward, creating a
+                concentrated bright line right along the screen perimeter. */}
             <div
-              className="pointer-events-none absolute inset-x-0 top-0 z-30"
+              className="pointer-events-none absolute inset-0 z-30"
               style={{
-                height: "30%",
-                background: `linear-gradient(180deg, rgba(120, 180, 255, ${isOn ? "0.03" : "0.01"}) 0%, transparent 100%)`,
                 borderRadius: "inherit",
+                /* Thin bright edge + softer bloom behind it */
+                boxShadow: `
+                  inset 0 0 2px 1px rgba(100, 170, 255, ${isOn ? "0.5" : "0.1"}),
+                  inset 0 0 8px 2px rgba(74, 144, 226, ${isOn ? "0.3" : "0.06"}),
+                  inset 0 0 20px 4px rgba(74, 144, 226, ${isOn ? "0.12" : "0.02"}),
+                  inset 0 0 50px 8px rgba(74, 144, 226, ${isOn ? "0.06" : "0.01"})
+                `,
+                transition: "box-shadow 1s ease",
               }}
             />
           </div>

@@ -376,12 +376,15 @@
 
 .crt-vignette {
   pointer-events: none;
+  /* Darkens mid-ring but eases off at the very edge so the
+     refraction glow (z-30) can read through at the perimeter */
   background: radial-gradient(
     ellipse at center,
-    transparent 30%,
-    rgba(0, 2, 10, 0.35) 60%,
-    rgba(0, 2, 10, 0.7) 85%,
-    rgba(0, 2, 10, 0.95) 100%
+    transparent 35%,
+    rgba(0, 2, 10, 0.3) 55%,
+    rgba(0, 2, 10, 0.55) 75%,
+    rgba(0, 2, 10, 0.45) 90%,
+    rgba(0, 2, 10, 0.3) 100%
   );
 }
 
