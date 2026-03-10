@@ -88,3 +88,7 @@ cmux send --surface surface:N "command\n"
 ```
 
 See `.agents/skills/cmux/` for the full skill with complete reference docs.
+
+## Figma
+
+See the `figma-workflow` skill (`.agents/skills/figma-workflow/SKILL.md`) for complete Figma MCP workflows, tool reference, project token mapping, and the code-to-Figma capture process. Design file: `WphchqX8oXptbsxPi33oE5`.
