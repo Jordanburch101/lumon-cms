@@ -16,10 +16,15 @@ const WORD_DURATION = 0.5;
 
 interface FeaturedQuoteProps {
   duration: number;
+  paused: boolean;
   testimonial: Testimonial;
 }
 
-export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
+export function FeaturedQuote({
+  testimonial,
+  duration,
+  paused,
+}: FeaturedQuoteProps) {
   const displayQuote = testimonial.featuredQuote ?? testimonial.quote;
   const words = displayQuote.split(" ");
   const totalRevealTime = words.length * WORD_STAGGER + WORD_DURATION;
@@ -158,6 +163,7 @@ export function FeaturedQuote({ testimonial, duration }: FeaturedQuoteProps) {
           key={testimonial.id}
           style={{
             animation: `progress-fill ${duration}ms linear forwards`,
+            animationPlayState: paused ? "paused" : "running",
           }}
         />
       </div>

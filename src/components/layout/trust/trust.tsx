@@ -5,7 +5,7 @@ import { useRef } from "react";
 
 import { cn } from "@/core/lib/utils";
 
-import { CountUp } from "./count-up";
+import { FlipCounter } from "./flip-counter";
 import { logos, stats, trustSectionData } from "./trust-data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -28,37 +28,39 @@ export function Trust() {
         </motion.p>
 
         {/* Stats row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, i) => (
             <motion.div
               animate={inView ? { opacity: 1, y: 0 } : {}}
               className={cn(
-                "relative py-8 text-center sm:py-0",
-                // Vertical dividers (desktop + tablet)
-                i > 0 && "sm:border-border sm:border-l",
-                // Horizontal dividers (mobile)
-                i > 0 && "border-border border-t sm:border-t-0",
-                // Horizontal divider between rows at tablet (after 2nd item)
-                i >= 2 && "sm:border-border sm:border-t lg:border-t-0"
+                "relative py-6 text-center lg:py-0",
+                // Vertical dividers
+                i % 2 !== 0 && "border-border border-l",
+                i > 0 && "lg:border-border lg:border-l",
+                i % 2 === 0 && i > 0 && "border-l-0",
+                // Horizontal dividers
+                i >= 2 && "border-border border-t",
+                "lg:border-t-0"
               )}
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 16 }}
               key={stat.label}
               transition={{
-                duration: 1,
+                duration: 0.8,
                 ease: EASE,
-                delay: 0.08 * i,
+                delay: 0.15 * i,
               }}
             >
-              <div className="font-bold text-7xl text-foreground tracking-tighter">
-                <CountUp
+              <div className="font-bold text-4xl text-foreground tracking-tighter sm:text-5xl lg:text-7xl">
+                <FlipCounter
                   decimals={stat.decimals}
+                  delay={0.15 * i + 0.2}
                   format={stat.format}
                   inView={inView}
                   suffix={stat.suffix}
                   target={stat.value}
                 />
               </div>
-              <p className="mt-4 font-medium text-muted-foreground text-xs uppercase tracking-[0.2em]">
+              <p className="mt-2 font-medium text-[10px] text-muted-foreground uppercase tracking-[0.2em] sm:text-xs lg:mt-4">
                 {stat.label}
               </p>
             </motion.div>

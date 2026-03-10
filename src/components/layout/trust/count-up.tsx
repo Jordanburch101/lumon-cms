@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 interface CountUpProps {
   decimals?: number;
+  delay?: number;
   format?: "k";
   inView: boolean;
   suffix?: string;
@@ -28,6 +29,7 @@ export function CountUp({
   target,
   format,
   decimals,
+  delay = 0,
   suffix = "",
   inView,
 }: CountUpProps) {
@@ -43,10 +45,11 @@ export function CountUp({
     }
     const controls = animate(mv, target, {
       duration: 2.2,
-      ease: [0.33, 1, 0.68, 1], // easeOutExpo approximation as cubic-bezier
+      delay,
+      ease: [0.33, 1, 0.68, 1],
     });
     return controls.stop;
-  }, [inView, mv, target]);
+  }, [inView, mv, target, delay]);
 
   return <motion.span>{display}</motion.span>;
 }

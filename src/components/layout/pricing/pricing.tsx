@@ -3,6 +3,12 @@
 import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+
 import { PricingCard } from "./pricing-card";
 import { pricingSectionData, pricingTiers } from "./pricing-data";
 import { PricingToggle } from "./pricing-toggle";
@@ -42,8 +48,35 @@ export function Pricing() {
           <PricingToggle isAnnual={isAnnual} onToggle={setIsAnnual} />
         </motion.div>
 
-        {/* Pricing cards */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* Mobile: Embla carousel */}
+        <motion.div
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          className="lg:hidden"
+          initial={{ opacity: 0, y: 24 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
+        >
+          <Carousel
+            opts={{
+              align: "center",
+              containScroll: false,
+              startIndex: 1,
+            }}
+          >
+            <CarouselContent className="-ml-4">
+              {pricingTiers.map((tier) => (
+                <CarouselItem
+                  className="basis-[85%] pl-4 sm:basis-[70%]"
+                  key={tier.name}
+                >
+                  <PricingCard isAnnual={isAnnual} tier={tier} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </motion.div>
+
+        {/* Desktop: 3-col grid */}
+        <div className="hidden gap-4 lg:grid lg:grid-cols-3">
           {pricingTiers.map((tier, i) => (
             <motion.div
               animate={inView ? { opacity: 1, y: 0 } : {}}

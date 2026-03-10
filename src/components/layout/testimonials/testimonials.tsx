@@ -18,6 +18,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export function Testimonials() {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const isVisible = useInView(sectionRef, { margin: "-50px" });
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [activePool, setActivePool] =
@@ -25,10 +26,10 @@ export function Testimonials() {
   const [timerKey, setTimerKey] = useState(0);
   const activeTestimonial = activePool[activeIndex % activePool.length];
 
-  // Auto-advance timer — resets when timerKey changes (e.g. on card click)
+  // Auto-advance timer — only runs while section is visible in viewport
   // biome-ignore lint/correctness/useExhaustiveDependencies: timerKey intentionally resets the interval
   useEffect(() => {
-    if (!inView) {
+    if (!isVisible) {
       return;
     }
 
@@ -37,7 +38,7 @@ export function Testimonials() {
     }, ADVANCE_MS);
 
     return () => clearInterval(timer);
-  }, [inView, activePool.length, timerKey]);
+  }, [isVisible, activePool.length, timerKey]);
 
   // Handle short quote card click — promote to spotlight and reset timer
   const handleSelectShort = useCallback((testimonial: Testimonial) => {
@@ -76,6 +77,7 @@ export function Testimonials() {
           <div className="lg:col-span-3">
             <FeaturedQuote
               duration={ADVANCE_MS}
+              paused={!isVisible}
               testimonial={activeTestimonial}
             />
           </div>

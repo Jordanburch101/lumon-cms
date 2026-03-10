@@ -2,24 +2,33 @@
 
 import { type MotionValue, motion, useTransform } from "motion/react";
 import Image from "next/image";
+import { useRef } from "react";
 
 import type { GalleryItem } from "./image-gallery-data";
 
 interface GalleryCardProps {
+  imageReady: boolean;
   index: number;
   item: GalleryItem;
+  onImageLoad: (index: number) => void;
   progress: MotionValue<number>;
   total: number;
 }
 
 export function GalleryCard({
+  imageReady,
   index,
   item,
+  onImageLoad,
   progress,
   total,
 }: GalleryCardProps) {
   const isBase = index === 0;
   const transitions = Math.max(total - 1, 1);
+  const readyRef = useRef(isBase);
+
+  // Keep ref in sync — useTransform callbacks capture the ref, not the prop
+  readyRef.current = imageReady || isBase;
 
   // Each non-base card gets an equal slice of scroll for its clip reveal.
   // Base card (index 0) is always fully visible underneath.
@@ -27,9 +36,13 @@ export function GalleryCard({
   const tEnd = index / transitions;
 
   // Clip reveal: numeric 50 → 0, then mapped to inset() string.
-  // useTransform can't interpolate CSS strings — use a number→string mapper.
+  // Gate: if image isn't loaded, hold at 50 (fully clipped) so previous card stays visible.
   const clipValue = useTransform(progress, [tStart, tEnd], [50, 0]);
-  const clip = useTransform(clipValue, (v) => `inset(${v}% ${v}% ${v}% ${v}%)`);
+  const clip = useTransform(
+    clipValue,
+    (v) =>
+      `inset(${readyRef.current ? v : 50}% ${readyRef.current ? v : 50}% ${readyRef.current ? v : 50}% ${readyRef.current ? v : 50}%)`
+  );
 
   // Outgoing card: scale down slightly as the next card reveals over it
   const nextStart = index / transitions;
@@ -76,7 +89,9 @@ export function GalleryCard({
         alt={item.imageAlt}
         className="object-cover"
         fill
-        priority={index === 0}
+        loading="eager"
+        onLoad={() => onImageLoad(index)}
+        priority={index <= 1}
         sizes="100vw"
         src={item.imageSrc}
       />
