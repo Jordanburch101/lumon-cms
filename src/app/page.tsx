@@ -7,6 +7,7 @@ import { MdrTerminal } from "@/components/layout/mdr-terminal/mdr-terminal";
 import { Pricing } from "@/components/layout/pricing/pricing";
 import { SplitMedia } from "@/components/layout/split-media/split-media";
 import { Testimonials } from "@/components/layout/testimonials/testimonials";
+import { Trust } from "@/components/layout/trust/trust";
 
 export default function Page() {
   return (
@@ -20,6 +21,7 @@ export default function Page() {
       <CinematicCta />
       <Pricing />
       <MdrTerminal />
+      <Trust />
     </div>
   );
 }
