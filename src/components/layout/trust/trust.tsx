@@ -33,13 +33,13 @@ export function Trust() {
             <motion.div
               animate={inView ? { opacity: 1, y: 0 } : {}}
               className={cn(
-                "relative text-center py-8 sm:py-0",
+                "relative py-8 text-center sm:py-0",
                 // Vertical dividers (desktop + tablet)
-                i > 0 && "sm:border-l sm:border-border",
+                i > 0 && "sm:border-border sm:border-l",
                 // Horizontal dividers (mobile)
-                i > 0 && "border-t border-border sm:border-t-0",
+                i > 0 && "border-border border-t sm:border-t-0",
                 // Horizontal divider between rows at tablet (after 2nd item)
-                i >= 2 && "sm:border-t sm:border-border lg:border-t-0",
+                i >= 2 && "sm:border-border sm:border-t lg:border-t-0"
               )}
               initial={{ opacity: 0, y: 32 }}
               key={stat.label}
@@ -49,7 +49,7 @@ export function Trust() {
                 delay: 0.08 * i,
               }}
             >
-              <div className="font-bold text-7xl tracking-tighter text-foreground">
+              <div className="font-bold text-7xl text-foreground tracking-tighter">
                 <CountUp
                   decimals={stat.decimals}
                   format={stat.format}
@@ -58,7 +58,7 @@ export function Trust() {
                   target={stat.value}
                 />
               </div>
-              <p className="mt-4 font-medium text-xs text-muted-foreground uppercase tracking-[0.2em]">
+              <p className="mt-4 font-medium text-muted-foreground text-xs uppercase tracking-[0.2em]">
                 {stat.label}
               </p>
             </motion.div>
@@ -68,14 +68,14 @@ export function Trust() {
         {/* Hairline + Logo strip */}
         <motion.div
           animate={inView ? { opacity: 1 } : {}}
-          className="mt-20 border-t border-border pt-12"
+          className="mt-20 border-border border-t pt-12"
           initial={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
         >
           <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-16">
             {logos.map((logo) => (
               <span
-                className="font-semibold text-base text-foreground opacity-[0.18] tracking-[0.04em]"
+                className="font-semibold text-base text-foreground tracking-[0.04em] opacity-[0.18]"
                 key={logo.name}
               >
                 {logo.name}

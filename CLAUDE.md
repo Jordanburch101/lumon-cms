@@ -89,6 +89,19 @@ cmux send --surface surface:N "command\n"
 
 See `.agents/skills/cmux/` for the full skill with complete reference docs.
 
+## Design Consistency
+
+When building or modifying UI components, use both skills together:
+
+- **`design-language`** — The process for maintaining visual consistency. Read this first to understand *how* to audit existing patterns and replicate them faithfully.
+- **`theme`** — The exact values for this project's Severance/Lumon aesthetic: animation constants, typography classes, spacing tokens, color system, copy voice. This is the reference card — swap it when forking for a new client.
+
+Use these whenever creating new sections, components, or pages. The theme skill has every pattern pre-extracted so you don't need to read multiple components to figure out the conventions.
+
+## Finding & Installing Skills
+
+When you encounter a task outside your current skillset — or the user asks "how do I do X", "can you do X", or "is there a skill for X" — use the `find-skills` skill to search the open agent skills ecosystem via `npx skills find [query]`. Install with `npx skills add <owner/repo@skill> -g -y`. Browse available skills at https://skills.sh/.
+
 ## Figma
 
 See the `figma-workflow` skill (`.agents/skills/figma-workflow/SKILL.md`) for complete Figma MCP workflows, tool reference, project token mapping, and the code-to-Figma capture process. Design file: `WphchqX8oXptbsxPi33oE5`.

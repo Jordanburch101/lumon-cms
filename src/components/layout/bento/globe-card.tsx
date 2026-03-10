@@ -46,7 +46,7 @@ const connections: [number, number][] = [
 function generateArc(
   start: [number, number],
   end: [number, number],
-  steps = 40,
+  steps = 40
 ): [number, number][] {
   const toRad = (d: number) => (d * Math.PI) / 180;
   const toDeg = (r: number) => (r * 180) / Math.PI;
@@ -63,8 +63,8 @@ function generateArc(
     Math.asin(
       Math.sqrt(
         Math.sin((φ2 - φ1) / 2) ** 2 +
-          Math.cos(φ1) * Math.cos(φ2) * Math.sin((λ2 - λ1) / 2) ** 2,
-      ),
+          Math.cos(φ1) * Math.cos(φ2) * Math.sin((λ2 - λ1) / 2) ** 2
+      )
     );
 
   if (d < 1e-10) {
@@ -131,7 +131,7 @@ export function GlobeCard() {
       ([e]) => {
         isVisible.current = e.isIntersecting;
       },
-      { threshold: 0 },
+      { threshold: 0 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -317,7 +317,7 @@ export function GlobeCard() {
           // Drawing in: reveal from start
           const headPts = Math.max(
             2,
-            Math.ceil(Math.min(a.phase, 1) * totalPts),
+            Math.ceil(Math.min(a.phase, 1) * totalPts)
           );
           return {
             type: "Feature" as const,
@@ -396,12 +396,12 @@ export function GlobeCard() {
         map.setPaintProperty(
           "cdn-glow",
           "circle-opacity",
-          0.2 + 0.2 * pulseSlow,
+          0.2 + 0.2 * pulseSlow
         );
         map.setPaintProperty(
           "cdn-dots",
           "circle-color",
-          pulse > 0.5 ? dotColor : dotDim,
+          pulse > 0.5 ? dotColor : dotDim
         );
       }
 
@@ -477,22 +477,22 @@ export function GlobeCard() {
       <div
         className={cn(
           "absolute inset-[-120%] transition-transform duration-700 ease-out [&_.maplibregl-ctrl-bottom-left]:hidden [&_.maplibregl-ctrl-bottom-right]:hidden",
-          ready ? "translate-y-0 scale-100" : "translate-y-[40%] scale-50",
+          ready ? "translate-y-0 scale-100" : "translate-y-[40%] scale-50"
         )}
       >
         <MapView
           className="h-full w-full"
+          interactive
+          key={mapKey}
+          projection={{ type: "globe" }}
+          ref={handleMapRef}
+          theme={mapTheme}
           viewport={{
             center: [0, 20],
             zoom: 0.7,
             bearing: 0,
             pitch: 15,
           }}
-          interactive
-          key={mapKey}
-          projection={{ type: "globe" }}
-          ref={handleMapRef}
-          theme={mapTheme}
         />
       </div>
     </div>
