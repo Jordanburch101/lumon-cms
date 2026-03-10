@@ -89,7 +89,7 @@ export function GalleryCard({
         alt={item.imageAlt}
         className="object-cover"
         fill
-        loading="eager"
+        loading={index <= 2 ? "eager" : undefined}
         onLoad={() => onImageLoad(index)}
         priority={index <= 1}
         sizes="100vw"

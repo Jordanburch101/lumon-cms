@@ -34,13 +34,11 @@ export function Trust() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               className={cn(
                 "relative py-6 text-center lg:py-0",
-                // Vertical dividers
+                // Vertical dividers: odd items always, even item 2 at desktop only
                 i % 2 !== 0 && "border-border border-l",
-                i > 0 && "lg:border-border lg:border-l",
-                i % 2 === 0 && i > 0 && "border-l-0",
-                // Horizontal dividers
-                i >= 2 && "border-border border-t",
-                "lg:border-t-0"
+                i === 2 && "lg:border-border lg:border-l",
+                // Horizontal dividers: bottom row on mobile, removed at desktop
+                i >= 2 && "border-border border-t lg:border-t-0"
               )}
               initial={{ opacity: 0, y: 16 }}
               key={stat.label}

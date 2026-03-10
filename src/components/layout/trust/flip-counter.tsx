@@ -47,9 +47,9 @@ function FlipDigit({
         className="flex flex-col"
         style={{ lineHeight: 1 }}
         transition={{
-          duration: 0.6 + digit * 0.1,
+          duration: digit === 0 ? 0 : 0.6 + digit * 0.1,
           ease: EASE,
-          delay,
+          delay: digit === 0 ? 0 : delay,
         }}
       >
         {DIGITS.map((n) => (

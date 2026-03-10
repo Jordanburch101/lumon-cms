@@ -59,7 +59,7 @@ export function Pricing() {
             opts={{
               align: "center",
               containScroll: false,
-              startIndex: 1,
+              startIndex: 1, // Start on the recommended mid-tier plan
             }}
           >
             <CarouselContent className="-ml-4">
