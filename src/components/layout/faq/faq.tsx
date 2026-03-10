@@ -43,7 +43,7 @@ export function Faq() {
             {/* CTA */}
             <motion.p
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              className="mt-8 text-sm text-muted-foreground"
+              className="mt-8 text-muted-foreground text-sm"
               initial={{ opacity: 0, y: 12 }}
               transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
             >
