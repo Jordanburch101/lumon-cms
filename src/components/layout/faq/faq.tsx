@@ -20,67 +20,84 @@ export function Faq() {
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section className="w-full" ref={sectionRef}>
+    <section ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
-        {/* Section header */}
-        <motion.div
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mb-10 max-w-2xl lg:mb-14"
-          initial={{ opacity: 0, y: 24 }}
-          transition={{ duration: 0.8, ease: EASE }}
-        >
-          <p className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
-            {faqSectionData.eyebrow}
-          </p>
-          <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
-            {faqSectionData.headline}
-          </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            {faqSectionData.subtext}
-          </p>
-        </motion.div>
-
-        {/* Accordion */}
-        <motion.div
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mx-auto max-w-3xl"
-          initial={{ opacity: 0, y: 32 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-        >
-          <Accordion
-            className="rounded-none border-none"
-            collapsible
-            type="single"
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.8fr] lg:gap-16">
+          {/* Section header — pinned left on desktop */}
+          <motion.div
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            className="lg:sticky lg:top-32 lg:self-start"
+            initial={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.8, ease: EASE }}
           >
-            {faqItems.map((item, i) => (
-              <motion.div
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                initial={{ opacity: 0, y: 16 }}
-                key={item.question}
-                transition={{
-                  duration: 0.6,
-                  ease: EASE,
-                  delay: 0.1 + i * 0.05,
-                }}
+            <p className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
+              {faqSectionData.eyebrow}
+            </p>
+            <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+              {faqSectionData.headline}
+            </h2>
+            <p className="mt-3 text-base text-muted-foreground">
+              {faqSectionData.subtext}
+            </p>
+
+            {/* CTA */}
+            <motion.p
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              className="mt-8 text-sm text-muted-foreground"
+              initial={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
+            >
+              Still have questions?{" "}
+              <a
+                className="text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70"
+                href="/contact"
               >
-                <AccordionItem
-                  className={cn(
-                    "border-border/40 border-b data-open:bg-transparent",
-                    i === 0 && "border-t border-t-border/40"
-                  )}
-                  value={`faq-${String(i)}`}
+                Contact your floor supervisor
+              </a>
+            </motion.p>
+          </motion.div>
+
+          {/* Accordion — right column */}
+          <motion.div
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            initial={{ opacity: 0, y: 32 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+          >
+            <Accordion
+              className="rounded-none border-none"
+              collapsible
+              type="single"
+            >
+              {faqItems.map((item, i) => (
+                <motion.div
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  initial={{ opacity: 0, y: 16 }}
+                  key={item.question}
+                  transition={{
+                    duration: 0.6,
+                    ease: EASE,
+                    delay: 0.1 + i * 0.05,
+                  }}
                 >
-                  <AccordionTrigger className="py-5 font-semibold text-sm/relaxed hover:no-underline">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-sm/relaxed">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-            ))}
-          </Accordion>
-        </motion.div>
+                  <AccordionItem
+                    className={cn(
+                      "border-border/50 border-b data-open:bg-transparent",
+                      i === 0 && "border-t border-t-border/50"
+                    )}
+                    value={`faq-${String(i)}`}
+                  >
+                    <AccordionTrigger className="py-5 text-left font-semibold text-[15px]/relaxed hover:no-underline">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-6 text-muted-foreground text-sm/relaxed">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                </motion.div>
+              ))}
+            </Accordion>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
