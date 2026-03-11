@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { generateBlurDataURL } from "./hooks/generateBlurDataURL";
+import { optimizeVideo } from "./hooks/optimizeVideo";
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -7,7 +8,7 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   hooks: {
-    afterChange: [generateBlurDataURL],
+    afterChange: [generateBlurDataURL, optimizeVideo],
   },
   upload: {
     mimeTypes: ["image/*", "video/*"],
