@@ -3,12 +3,44 @@
 import { useScroll } from "motion/react";
 import { useCallback, useRef, useState } from "react";
 
+import { getMediaUrl } from "@/core/lib/utils";
 import { GalleryCard } from "./gallery-card";
-import { galleryItems } from "./image-gallery-data";
+import {
+  galleryItems as defaultItems,
+  type GalleryItem,
+} from "./image-gallery-data";
 
-const TOTAL = galleryItems.length;
+interface ImageGalleryProps {
+  items?: {
+    caption: string;
+    id?: string;
+    image?: { url?: string } | string;
+    imageAlt: string;
+    label: string;
+  }[];
+}
 
-export function ImageGallery() {
+/** Map a Payload gallery item to the internal GalleryItem shape. */
+function toGalleryItem(
+  item: NonNullable<ImageGalleryProps["items"]>[number],
+  index: number
+): GalleryItem {
+  return {
+    id: item.id || `g-${index}`,
+    label: item.label,
+    caption: item.caption,
+    imageSrc: getMediaUrl(item.image),
+    imageAlt: item.imageAlt,
+  };
+}
+
+export function ImageGallery(props: ImageGalleryProps) {
+  const items =
+    props.items && props.items.length > 0
+      ? props.items.map(toGalleryItem)
+      : defaultItems;
+
+  const total = items.length;
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -33,10 +65,10 @@ export function ImageGallery() {
       className="bg-black"
       data-navbar-contrast="light"
       ref={containerRef}
-      style={{ height: `${TOTAL * 100}vh` }}
+      style={{ height: `${total * 100}vh` }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {galleryItems.map((item, i) => (
+        {items.map((item, i) => (
           <GalleryCard
             imageReady={loadedSet.has(i)}
             index={i}
@@ -44,7 +76,7 @@ export function ImageGallery() {
             key={item.id}
             onImageLoad={handleImageLoad}
             progress={scrollYProgress}
-            total={TOTAL}
+            total={total}
           />
         ))}
       </div>
