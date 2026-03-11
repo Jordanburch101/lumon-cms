@@ -626,13 +626,15 @@ function TableSection() {
                   <TableCell>{row.dept}</TableCell>
                   <TableCell>
                     <Badge
-                      variant={
-                        row.status === "Active"
-                          ? "default"
-                          : row.status === "Retired"
-                            ? "outline"
-                            : "secondary"
-                      }
+                      variant={(() => {
+                        if (row.status === "Active") {
+                          return "default";
+                        }
+                        if (row.status === "Retired") {
+                          return "outline";
+                        }
+                        return "secondary";
+                      })()}
                     >
                       {row.status}
                     </Badge>

@@ -234,10 +234,14 @@
  * Own glass layers matching the navbar exactly. Flush top, rounded bottom. */
 .liquid-glass [data-slot="navigation-menu-viewport"] {
   --tw-ring-shadow: 0 0 #0000;
-  margin-top: 0.25rem;
+  margin-top: 0.125rem;
   background: transparent;
   border-radius: 0.75rem;
   box-shadow: none;
+  /* Prevent Radix height/width transition from reshaping the glass mid-animation */
+  transition:
+    width 0s,
+    height 0s;
 }
 
 /* Glass blur + SVG distortion — same as .liquid-glass-effect */
@@ -248,8 +252,8 @@
   content: "";
   border-radius: inherit;
   isolation: isolate;
-  filter: url(#glass-distortion);
   backdrop-filter: blur(6px) saturate(180%);
+  will-change: backdrop-filter;
 }
 
 /* Tint + shine — same as .liquid-glass-tint + .liquid-glass-shine */
@@ -300,12 +304,12 @@
 /* Dropdown text adapts with the navbar contrast */
 .liquid-glass-dark [data-slot="navigation-menu-viewport"] {
   --popover-foreground: oklch(0.13 0.028 261.692);
-  --muted-foreground: oklch(0.4 0.02 264);
+  --muted-foreground: oklch(0.25 0.02 264);
 }
 
 .liquid-glass-light [data-slot="navigation-menu-viewport"] {
   --popover-foreground: oklch(1 0 0);
-  --muted-foreground: oklch(0.75 0 0);
+  --muted-foreground: oklch(0.9 0 0);
 }
 
 /* Reduced motion: disable SVG distortion, keep plain blur */

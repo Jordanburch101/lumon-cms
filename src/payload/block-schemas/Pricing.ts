@@ -1,0 +1,38 @@
+import type { Block } from "payload";
+
+export const PricingBlock: Block = {
+  slug: "pricing",
+  labels: { singular: "Pricing", plural: "Pricing" },
+  fields: [
+    { name: "headline", type: "text", required: true },
+    { name: "subtext", type: "text", required: true },
+    { name: "footnote", type: "text" },
+    { name: "footnoteAttribution", type: "text" },
+    {
+      name: "tiers",
+      type: "array",
+      required: true,
+      fields: [
+        { name: "name", type: "text", required: true },
+        { name: "description", type: "text", required: true },
+        { name: "monthlyPrice", type: "number", required: true },
+        { name: "annualPrice", type: "number", required: true },
+        {
+          name: "features",
+          type: "array",
+          fields: [{ name: "text", type: "text", required: true }],
+        },
+        {
+          name: "cta",
+          type: "group",
+          fields: [
+            { name: "label", type: "text", required: true },
+            { name: "href", type: "text", required: true },
+          ],
+        },
+        { name: "badge", type: "text" },
+        { name: "recommended", type: "checkbox", defaultValue: false },
+      ],
+    },
+  ],
+};
