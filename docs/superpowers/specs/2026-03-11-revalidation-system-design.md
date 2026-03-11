@@ -146,7 +146,7 @@ import { draftMode } from "next/headers";
 const { isEnabled: isDraft } = await draftMode();
 
 const page = isDraft
-  ? await getPayloadPageDirect(slug, true)  // uncached, draft: true
+  ? await getPageDirect(slug, true)  // uncached, draft: true
   : await getCachedPage(slug);              // cached
 ```
 
