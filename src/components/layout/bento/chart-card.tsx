@@ -7,7 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { chartData } from "./bento-data";
+import { chartData as defaultChartData } from "./bento-data";
 
 const chartConfig = {
   visitors: {
@@ -16,7 +16,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartCard() {
+interface ChartCardProps {
+  chartData?: { month: string; visitors: number }[];
+}
+
+export function ChartCard({ chartData }: ChartCardProps) {
+  const data = chartData && chartData.length > 0 ? chartData : defaultChartData;
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-background p-4 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
       <span className="mb-2 text-[11px] text-muted-foreground uppercase tracking-wider">
@@ -37,7 +43,7 @@ export function ChartCard() {
           className="h-full w-full [&_.recharts-cartesian-axis-tick_text]:text-[10px]"
           config={chartConfig}
         >
-          <AreaChart data={[...chartData]}>
+          <AreaChart data={[...data]}>
             <CartesianGrid vertical={false} />
             <XAxis
               axisLine={false}
