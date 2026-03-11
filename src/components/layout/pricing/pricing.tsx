@@ -10,15 +10,55 @@ import {
 } from "@/components/ui/carousel";
 
 import { PricingCard } from "./pricing-card";
-import { pricingSectionData, pricingTiers } from "./pricing-data";
+import {
+  pricingTiers as defaultPricingTiers,
+  type PricingTier,
+  pricingSectionData,
+} from "./pricing-data";
 import { PricingToggle } from "./pricing-toggle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Pricing() {
+interface PricingProps {
+  footnote?: string;
+  footnoteAttribution?: string;
+  headline?: string;
+  subtext?: string;
+  tiers?: {
+    name: string;
+    description: string;
+    monthlyPrice: number;
+    annualPrice: number;
+    features: { text: string }[] | string[];
+    cta: { label: string; href: string };
+    badge?: string;
+    recommended?: boolean;
+  }[];
+}
+
+export function Pricing(props: PricingProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [isAnnual, setIsAnnual] = useState(false);
+
+  const headline = props.headline || pricingSectionData.headline;
+  const subtext = props.subtext || pricingSectionData.subtext;
+  const footnote = props.footnote || pricingSectionData.footnote;
+  const footnoteAttribution =
+    props.footnoteAttribution || pricingSectionData.footnoteAttribution;
+
+  const pricingTiers: PricingTier[] = props.tiers
+    ? props.tiers.map((t) => ({
+        name: t.name,
+        description: t.description,
+        monthlyPrice: t.monthlyPrice,
+        annualPrice: t.annualPrice,
+        features: t.features.map((f) => (typeof f === "string" ? f : f.text)),
+        cta: t.cta,
+        badge: t.badge,
+        recommended: t.recommended,
+      }))
+    : defaultPricingTiers;
 
   return (
     <section className="w-full" ref={sectionRef}>
@@ -31,11 +71,9 @@ export function Pricing() {
           transition={{ duration: 0.8, ease: EASE }}
         >
           <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
-            {pricingSectionData.headline}
+            {headline}
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            {pricingSectionData.subtext}
-          </p>
+          <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
         </motion.div>
 
         {/* Billing toggle */}
@@ -100,8 +138,7 @@ export function Pricing() {
           initial={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
         >
-          &ldquo;{pricingSectionData.footnote}&rdquo; &mdash;{" "}
-          {pricingSectionData.footnoteAttribution}
+          &ldquo;{footnote}&rdquo; &mdash; {footnoteAttribution}
         </motion.p>
       </div>
     </section>
