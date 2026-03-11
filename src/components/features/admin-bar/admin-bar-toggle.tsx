@@ -14,7 +14,10 @@ export function AdminBarToggle({
   disabled,
 }: AdminBarToggleProps) {
   return (
-    <div className="flex items-center rounded-lg bg-white/[0.04] p-0.5">
+    <fieldset
+      aria-label="Content mode"
+      className="flex items-center rounded-lg border-none bg-white/[0.04] p-0.5"
+    >
       <button
         className={cn(
           "rounded-md px-2.5 py-1 font-medium text-[11px] transition-colors",
@@ -41,6 +44,6 @@ export function AdminBarToggle({
       >
         Draft
       </button>
-    </div>
+    </fieldset>
   );
 }

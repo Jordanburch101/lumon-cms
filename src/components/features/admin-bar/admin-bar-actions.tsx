@@ -6,7 +6,7 @@ import {
   PencilEdit02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/core/lib/utils";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
 
@@ -26,6 +26,20 @@ export function AdminBarActions({
   const menuRef = useRef<HTMLDivElement>(null);
 
   const initial = (user.name?.[0] || user.email[0]).toUpperCase();
+
+  // Close menu on Escape key
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [menuOpen]);
 
   return (
     <>
@@ -57,6 +71,7 @@ export function AdminBarActions({
       {/* User menu */}
       <div className="relative" ref={menuRef}>
         <button
+          aria-label="User menu"
           className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-muted-foreground text-xs transition-colors hover:bg-white/[0.05]"
           onBlur={(e) => {
             if (!menuRef.current?.contains(e.relatedTarget)) {
@@ -87,10 +102,14 @@ export function AdminBarActions({
             <button
               className="mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-muted-foreground text-xs transition-colors hover:bg-white/[0.05] hover:text-foreground"
               onClick={async () => {
-                await fetch("/api/users/logout", {
-                  method: "POST",
-                  credentials: "include",
-                });
+                try {
+                  await fetch("/api/users/logout", {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                } catch {
+                  /* silent */
+                }
                 window.location.reload();
               }}
               type="button"

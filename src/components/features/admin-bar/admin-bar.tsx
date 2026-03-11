@@ -55,6 +55,7 @@ export function AdminBar() {
   const [isDraft, setIsDraft] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [hoveredZone, setHoveredZone] = useState<SnapPosition | null>(null);
+  const hoveredZoneRef = useRef<SnapPosition | null>(null);
   const [toggling, setToggling] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
   const dragX = useMotionValue(0);
@@ -171,17 +172,20 @@ export function AdminBar() {
       window.innerHeight
     );
     setHoveredZone(nearest);
+    hoveredZoneRef.current = nearest;
   }, []);
 
   const handleDragEnd = useCallback(() => {
-    if (hoveredZone) {
-      updateBarState({ position: hoveredZone });
+    const zone = hoveredZoneRef.current;
+    if (zone) {
+      updateBarState({ position: zone });
     }
     setIsDragging(false);
     setHoveredZone(null);
+    hoveredZoneRef.current = null;
     dragX.set(0);
     dragY.set(0);
-  }, [hoveredZone, updateBarState, dragX, dragY]);
+  }, [updateBarState, dragX, dragY]);
 
   if (!user) {
     return null;
@@ -213,6 +217,7 @@ export function AdminBar() {
           {barState.collapsed ? (
             <motion.button
               animate={{ scale: 1, opacity: 1 }}
+              aria-label="Expand admin bar"
               className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-border/10 bg-card/92 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-colors hover:bg-card"
               exit={{ scale: 0.8, opacity: 0 }}
               initial={{ scale: 0.8, opacity: 0 }}
@@ -298,6 +303,7 @@ export function AdminBar() {
 
               {/* Collapse */}
               <button
+                aria-label="Collapse admin bar"
                 className="flex h-7 w-7 items-center justify-center rounded-lg text-foreground/30 transition-colors hover:bg-white/[0.05] hover:text-foreground/50"
                 onClick={() => updateBarState({ collapsed: true })}
                 type="button"

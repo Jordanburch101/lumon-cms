@@ -85,12 +85,3 @@ export function getSlugFromPathname(pathname: string): string {
   }
   return pathname.replace(LEADING_SLASH_RE, "").replace(TRAILING_SLASH_RE, "");
 }
-
-export function hasCookie(name: string): boolean {
-  if (typeof document === "undefined") {
-    return false;
-  }
-  return document.cookie
-    .split(";")
-    .some((c) => c.trim().startsWith(`${name}=`));
-}
