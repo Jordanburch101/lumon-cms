@@ -1,6 +1,16 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionBeforeValidateHook, CollectionConfig } from "payload";
 import { generateBlurDataURL } from "./hooks/generateBlurDataURL";
 import { optimizeVideo } from "./hooks/optimizeVideo";
+
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+
+const validateFileSize: CollectionBeforeValidateHook = ({ req }) => {
+  if (req.file && req.file.size > MAX_FILE_SIZE) {
+    throw new Error(
+      `File size ${(req.file.size / 1024 / 1024).toFixed(0)}MB exceeds the ${(MAX_FILE_SIZE / 1024 / 1024).toFixed(0)}MB limit`
+    );
+  }
+};
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -8,20 +18,16 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   hooks: {
-    afterChange: [generateBlurDataURL, optimizeVideo],
+    beforeValidate: [validateFileSize],
+    beforeChange: [generateBlurDataURL],
+    afterChange: [optimizeVideo],
   },
   upload: {
     mimeTypes: ["image/*", "video/*"],
-    formatOptions: {
-      format: "webp",
-      options: { quality: 82 },
-    },
-    resizeOptions: {
-      width: 2560,
-      height: 2560,
-      fit: "inside",
-      withoutEnlargement: true,
-    },
+    // Note: formatOptions and resizeOptions are omitted because they apply to
+    // ALL uploads via sharp — including videos, which sharp cannot process.
+    // Image optimization is handled by imageSizes (which Payload skips for
+    // non-image mimeTypes). WebP conversion can be added per-imageSize if needed.
     imageSizes: [
       {
         name: "thumbnail",
@@ -54,8 +60,9 @@ export const Media: CollectionConfig = {
     {
       name: "stripAudio",
       type: "checkbox",
-      defaultValue: true,
+      defaultValue: false,
       admin: {
+        description: "Remove audio track from the video during optimization",
         condition: (data) => data?.mimeType?.startsWith("video/"),
       },
     },

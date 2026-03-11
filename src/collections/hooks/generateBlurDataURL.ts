@@ -1,42 +1,38 @@
-import type { CollectionAfterChangeHook } from "payload";
+import type { CollectionBeforeChangeHook } from "payload";
 import sharp from "sharp";
 
-export const generateBlurDataURL: CollectionAfterChangeHook = async ({
-  doc,
+export const generateBlurDataURL: CollectionBeforeChangeHook = async ({
+  data,
   req,
   operation,
-  context,
 }) => {
-  // Prevent infinite loop — skip if we triggered this via our own update
-  if (context.skipBlurGeneration) {
-    return doc;
-  }
-
-  // Only process images
-  if (!doc.mimeType?.startsWith("image/")) {
-    return doc;
-  }
-
   // Only on create or when a new file is uploaded
   if (operation !== "create" && !req.file) {
-    return doc;
+    return data;
+  }
+
+  // Only process raster images (skip videos and SVGs)
+  const mimeType = req.file?.mimetype || data.mimeType;
+  if (!mimeType?.startsWith("image/") || mimeType === "image/svg+xml") {
+    return data;
+  }
+
+  // Clear stale blur on re-upload so a failed regeneration doesn't leave old data
+  if (operation === "update" && req.file) {
+    data.blurDataURL = undefined;
   }
 
   try {
-    // Get the image buffer — try req.file first, fall back to fetching from URL
-    let buffer: Buffer | undefined = req.file?.data
-      ? Buffer.from(req.file.data)
-      : undefined;
+    let buffer: Buffer | undefined;
 
-    if (!buffer && doc.url) {
-      const response = await fetch(doc.url);
-      if (response.ok) {
-        buffer = Buffer.from(await response.arrayBuffer());
-      }
+    if (req.file?.data) {
+      buffer = Buffer.isBuffer(req.file.data)
+        ? req.file.data
+        : Buffer.from(req.file.data);
     }
 
     if (!buffer) {
-      return doc;
+      return data;
     }
 
     // Generate a tiny blurred WebP placeholder
@@ -47,16 +43,7 @@ export const generateBlurDataURL: CollectionAfterChangeHook = async ({
       .toBuffer();
 
     const base64 = blurBuffer.toString("base64");
-    const blurDataURL = `data:image/webp;base64,${base64}`;
-
-    // Update the document with the blur placeholder
-    await req.payload.update({
-      collection: "media",
-      id: doc.id,
-      data: { blurDataURL },
-      context: { skipBlurGeneration: true },
-      req,
-    });
+    data.blurDataURL = `data:image/webp;base64,${base64}`;
   } catch (err) {
     req.payload.logger.error({
       msg: "Failed to generate blur placeholder",
@@ -64,5 +51,5 @@ export const generateBlurDataURL: CollectionAfterChangeHook = async ({
     });
   }
 
-  return doc;
+  return data;
 };

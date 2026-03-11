@@ -1,8 +1,9 @@
-import { readFile, unlink, writeFile } from "node:fs/promises";
+import { readFile, stat, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { TaskConfig } from "payload";
 import sharp from "sharp";
+import { downloadMediaToDisk } from "@/lib/download-media";
 import { isFFmpegAvailable, runFFmpeg } from "@/lib/ffmpeg";
 
 const FILE_EXT_REGEX = /\.[^.]+$/;
@@ -20,9 +21,9 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
       id: mediaId,
     });
 
-    if (!media?.url) {
-      req.payload.logger.error({ msg: `Media ${mediaId} has no URL` });
-      return { output: {} };
+    if (!(media?.url && media.filename)) {
+      // Transient — file may still be uploading to S3
+      throw new Error(`Media ${mediaId} has no URL or filename`);
     }
 
     // Verify it's still a video (could have been replaced between queue and execution)
@@ -35,24 +36,25 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
 
     // Check ffmpeg availability
     if (!(await isFFmpegAvailable())) {
-      req.payload.logger.warn({
-        msg: "ffmpeg not available — skipping video optimization",
+      req.payload.logger.error({
+        msg: "ffmpeg not available — cannot optimize video",
       });
       return { output: {} };
     }
 
-    const inputPath = join(tmpdir(), `payload-video-input-${mediaId}`);
-    const outputPath = join(tmpdir(), `payload-video-output-${mediaId}.mp4`);
-    const framePath = join(tmpdir(), `payload-video-frame-${mediaId}.jpg`);
+    const runId = `${mediaId}-${Date.now()}`;
+    const inputPath = join(tmpdir(), `payload-video-input-${runId}`);
+    const outputPath = join(tmpdir(), `payload-video-output-${runId}.mp4`);
+    const framePath = join(tmpdir(), `payload-video-frame-${runId}.jpg`);
 
     try {
-      // Download the video from its URL
-      const response = await fetch(media.url);
-      if (!response.ok) {
-        throw new Error(`Failed to download video: ${response.status}`);
-      }
-      const videoBuffer = Buffer.from(await response.arrayBuffer());
-      await writeFile(inputPath, videoBuffer);
+      // Download the video — streams to disk via S3 (production) or HTTP (dev)
+      await downloadMediaToDisk(
+        media.url,
+        media.filename,
+        inputPath,
+        (media as Record<string, unknown>).prefix as string | undefined
+      );
 
       // Build ffmpeg arguments
       const ffmpegArgs: string[] = [
@@ -91,7 +93,7 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
       await runFFmpeg([
         "-y",
         "-ss",
-        "1",
+        "0.1",
         "-i",
         inputPath,
         "-vframes",
@@ -111,9 +113,10 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
           .webp({ quality: 20 })
           .toBuffer();
         blurDataURL = `data:image/webp;base64,${blurBuffer.toString("base64")}`;
-      } catch {
+      } catch (err) {
         req.payload.logger.warn({
           msg: "Failed to generate video blur placeholder",
+          err: err instanceof Error ? err : new Error(String(err)),
         });
       }
 
@@ -137,13 +140,13 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
         overwriteExistingFiles: true,
         context: {
           skipVideoOptimization: true,
-          skipBlurGeneration: true,
         },
         req,
       });
 
+      const inputSize = (await stat(inputPath)).size;
       req.payload.logger.info({
-        msg: `Video ${mediaId} optimized: ${videoBuffer.length} → ${optimizedBuffer.length} bytes`,
+        msg: `Video ${mediaId} optimized: ${(inputSize / 1024 / 1024).toFixed(1)}MB → ${(optimizedBuffer.length / 1024 / 1024).toFixed(1)}MB`,
       });
     } finally {
       // Clean up temp files

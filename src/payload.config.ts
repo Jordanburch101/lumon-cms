@@ -39,6 +39,13 @@ export default buildConfig({
   jobs: {
     tasks: [optimizeVideoTask],
     autoRun: [{ cron: "* * * * *" }],
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => ({
+      ...defaultJobsCollection,
+      admin: {
+        ...defaultJobsCollection.admin,
+        hidden: false,
+      },
+    }),
   },
   plugins: [
     ...(process.env.S3_BUCKET

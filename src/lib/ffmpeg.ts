@@ -1,13 +1,15 @@
 import { execFile } from "node:child_process";
 
 let ffmpegAvailable: boolean | null = null;
+let lastCheck = 0;
+const CACHE_TTL = 10 * 60 * 1000; // Re-check every 10 minutes
 
 /**
  * Check if ffmpeg is available on the system.
- * Result is cached for the process lifetime.
+ * Result is cached with a TTL so changes are detected after restart/install.
  */
 export async function isFFmpegAvailable(): Promise<boolean> {
-  if (ffmpegAvailable !== null) {
+  if (ffmpegAvailable !== null && Date.now() - lastCheck < CACHE_TTL) {
     return ffmpegAvailable;
   }
 
@@ -18,6 +20,7 @@ export async function isFFmpegAvailable(): Promise<boolean> {
     ffmpegAvailable = false;
   }
 
+  lastCheck = Date.now();
   return ffmpegAvailable;
 }
 
