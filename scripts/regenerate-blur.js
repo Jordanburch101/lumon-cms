@@ -44,7 +44,9 @@ async function main() {
     );
     const mediaData = await mediaRes.json();
     allDocs = allDocs.concat(mediaData.docs);
-    if (!mediaData.hasNextPage) break;
+    if (!mediaData.hasNextPage) {
+      break;
+    }
     page++;
   }
 
@@ -99,9 +101,7 @@ async function main() {
       });
 
       if (updateRes.ok) {
-        console.log(
-          `  ✓ ${doc.filename} → blur (${blurDataURL.length} chars)`
-        );
+        console.log(`  ✓ ${doc.filename} → blur (${blurDataURL.length} chars)`);
         updated++;
       } else {
         const err = await updateRes.text();

@@ -123,6 +123,7 @@ When you encounter a task outside your current skillset — or the user asks "ho
 - **Block schemas**: `src/payload/block-schemas/` — Hero, Bento, SplitMedia, Testimonials, ImageGallery, LatestArticles, CinematicCta, Pricing, Faq, Trust
 - **Block components**: `src/components/blocks/` — React renderers mapped via `render-blocks.tsx`
 - **Page rendering**: SSR catch-all `(frontend)/[[...slug]]/page.tsx` fetches pages via Payload Local API
+- **Operations**: Use the `payload-ops` skill for step-by-step recipes when adding blocks, collections, or modifying schemas. It encodes the project's naming conventions, file locations, and type system patterns.
 
 ### Payload MCP
 
