@@ -10,6 +10,9 @@ import { PricingBlock } from "../block-schemas/Pricing";
 import { SplitMediaBlock } from "../block-schemas/SplitMedia";
 import { TestimonialsBlock } from "../block-schemas/Testimonials";
 import { TrustBlock } from "../block-schemas/Trust";
+import { revalidateOnChange } from "../hooks/revalidateOnChange";
+
+const { afterChange, afterDelete } = revalidateOnChange();
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -19,6 +22,10 @@ export const Pages: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [afterChange],
+    afterDelete: [afterDelete],
   },
   versions: {
     drafts: true,

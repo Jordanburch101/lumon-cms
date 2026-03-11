@@ -1,6 +1,9 @@
 import type { CollectionBeforeValidateHook, CollectionConfig } from "payload";
 import { generateBlurDataURL } from "../hooks/generateBlurDataURL";
 import { optimizeVideo } from "../hooks/optimizeVideo";
+import { revalidateOnChange } from "../hooks/revalidateOnChange";
+
+const revalidate = revalidateOnChange();
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
 
@@ -20,7 +23,8 @@ export const Media: CollectionConfig = {
   hooks: {
     beforeValidate: [validateFileSize],
     beforeChange: [generateBlurDataURL],
-    afterChange: [optimizeVideo],
+    afterChange: [optimizeVideo, revalidate.afterChange],
+    afterDelete: [revalidate.afterDelete],
   },
   upload: {
     mimeTypes: ["image/*", "video/*"],
