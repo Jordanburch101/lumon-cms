@@ -41,7 +41,7 @@ function makeHookArgs(
         disableRevalidate: overrides.disableRevalidate ?? false,
       },
     },
-  } as Parameters<ReturnType<typeof revalidateOnChange>["afterChange"]>[0];
+  } as unknown as Parameters<ReturnType<typeof revalidateOnChange>["afterChange"]>[0];
 }
 
 describe("revalidateOnChange", () => {
@@ -92,7 +92,7 @@ describe("revalidateOnChange", () => {
     it("fires doc and collection tags", () => {
       const { afterDelete } = revalidateOnChange();
       afterDelete(
-        makeHookArgs({ id: 7, collectionSlug: "media" }) as Parameters<
+        makeHookArgs({ id: 7, collectionSlug: "media" }) as unknown as Parameters<
           ReturnType<typeof revalidateOnChange>["afterDelete"]
         >[0]
       );
@@ -106,7 +106,7 @@ describe("revalidateOnChange", () => {
     it("skips revalidation when disableRevalidate is true", () => {
       const { afterDelete } = revalidateOnChange();
       afterDelete(
-        makeHookArgs({ disableRevalidate: true }) as Parameters<
+        makeHookArgs({ disableRevalidate: true }) as unknown as Parameters<
           ReturnType<typeof revalidateOnChange>["afterDelete"]
         >[0]
       );
