@@ -14,13 +14,23 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/core/lib/utils";
-import { type SplitRow, splitMediaRows } from "./split-media-data";
+import { cn, getMediaUrl } from "@/core/lib/utils";
+import { splitMediaRows } from "./split-media-data";
 
 const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
+interface ResolvedRow {
+  body: string;
+  cta?: { href: string; label: string };
+  headline: string;
+  mediaAlt: string;
+  mediaLabel: string;
+  mediaOverlay: { badge?: string; description: string; title: string };
+  mediaSrc: string;
+}
+
+function SplitRowItem({ row, index }: { index: number; row: ResolvedRow }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rowRef, { once: true, margin: "-100px" });
   const isVideo = VIDEO_RE.test(row.mediaSrc);
@@ -93,9 +103,11 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
           <span className="font-medium text-sm text-white">
             {row.mediaOverlay.title}
           </span>
-          <Badge className="bg-white/20 text-[10px] text-white">
-            {row.mediaOverlay.badge}
-          </Badge>
+          {row.mediaOverlay.badge && (
+            <Badge className="bg-white/20 text-[10px] text-white">
+              {row.mediaOverlay.badge}
+            </Badge>
+          )}
         </div>
         <p className="mt-1 text-white/60 text-xs leading-relaxed">
           {row.mediaOverlay.description}
@@ -198,12 +210,44 @@ function SplitRowItem({ row, index }: { row: SplitRow; index: number }) {
   );
 }
 
-export function SplitMedia() {
+interface SplitMediaProps {
+  rows?: {
+    body: string;
+    cta?: { href?: string; label?: string };
+    headline: string;
+    mediaAlt: string;
+    mediaLabel: string;
+    mediaOverlay: { badge?: string; description: string; title: string };
+    mediaSrc: { url?: string } | string;
+  }[];
+}
+
+export function SplitMedia(props: SplitMediaProps) {
+  const rows: ResolvedRow[] =
+    props.rows && props.rows.length > 0
+      ? props.rows.map((r) => ({
+          headline: r.headline,
+          body: r.body,
+          mediaLabel: r.mediaLabel,
+          mediaSrc: getMediaUrl(r.mediaSrc),
+          mediaAlt: r.mediaAlt,
+          cta:
+            r.cta?.label && r.cta?.href
+              ? { label: r.cta.label, href: r.cta.href }
+              : undefined,
+          mediaOverlay: {
+            title: r.mediaOverlay.title,
+            badge: r.mediaOverlay.badge,
+            description: r.mediaOverlay.description,
+          },
+        }))
+      : splitMediaRows;
+
   return (
     <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <div className="flex flex-col gap-24 lg:gap-32">
-          {splitMediaRows.map((row, i) => (
+          {rows.map((row, i) => (
             <SplitRowItem index={i} key={row.headline} row={row} />
           ))}
         </div>
