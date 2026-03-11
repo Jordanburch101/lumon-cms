@@ -9,7 +9,6 @@ import {
   type AdminBarState,
   type AdminUser,
   getSlugFromPathname,
-  hasCookie,
   loadBarState,
   type PageContext,
   SNAP_POSITIONS,
@@ -61,12 +60,8 @@ export function AdminBar() {
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
 
-  // Auth check
+  // Auth check — always attempt fetch since payload-token is HttpOnly
   useEffect(() => {
-    if (!hasCookie("payload-token")) {
-      return;
-    }
-
     fetch("/api/users/me", { credentials: "include" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
