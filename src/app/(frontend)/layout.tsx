@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Nunito_Sans } from "next/font/google";
+import { AdminBar } from "@/components/features/admin-bar/admin-bar";
 import { Footer } from "@/components/layout/footer/footer";
 import { Navbar } from "@/components/layout/navbar/navbar";
 import { Providers } from "@/providers/providers";
@@ -40,6 +41,7 @@ export default function FrontendLayout({
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <AdminBar />
         </Providers>
       </body>
     </html>
