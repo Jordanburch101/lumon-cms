@@ -14,13 +14,14 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { cn, getMediaUrl } from "@/core/lib/utils";
+import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import { splitMediaRows } from "./split-media-data";
 
 const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 interface ResolvedRow {
+  blurDataURL?: string;
   body: string;
   cta?: { href: string; label: string };
   headline: string;
@@ -89,8 +90,10 @@ function SplitRowItem({ row, index }: { index: number; row: ResolvedRow }) {
         ) : (
           <Image
             alt={row.mediaAlt}
+            blurDataURL={row.blurDataURL}
             className="object-cover brightness-75"
             fill
+            placeholder={row.blurDataURL ? "blur" : "empty"}
             sizes="(max-width: 1024px) 100vw, 65vw"
             src={row.mediaSrc}
           />
@@ -230,6 +233,7 @@ export function SplitMedia(props: SplitMediaProps) {
           body: r.body,
           mediaLabel: r.mediaLabel,
           mediaSrc: getMediaUrl(r.mediaSrc),
+          blurDataURL: getBlurDataURL(r.mediaSrc),
           mediaAlt: r.mediaAlt,
           cta:
             r.cta?.label && r.cta?.href

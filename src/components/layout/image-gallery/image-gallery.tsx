@@ -3,7 +3,7 @@
 import { useScroll } from "motion/react";
 import { useCallback, useRef, useState } from "react";
 
-import { getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import { GalleryCard } from "./gallery-card";
 import {
   galleryItems as defaultItems,
@@ -30,6 +30,7 @@ function toGalleryItem(
     label: item.label,
     caption: item.caption,
     imageSrc: getMediaUrl(item.image),
+    blurDataURL: getBlurDataURL(item.image),
     imageAlt: item.imageAlt,
   };
 }

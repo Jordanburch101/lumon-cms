@@ -6,7 +6,7 @@ import { motion, useInView } from "motion/react";
 import Link from "next/link";
 import { useRef } from "react";
 
-import { getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 
 import { ArticleCard } from "./article-card";
 import {
@@ -49,6 +49,7 @@ export function LatestArticles(props: LatestArticlesProps) {
         excerpt: a.excerpt,
         category: a.category,
         imageSrc: getMediaUrl(a.image),
+        blurDataURL: getBlurDataURL(a.image),
         imageAlt: a.imageAlt,
         author: {
           name: a.author.name,

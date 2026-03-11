@@ -87,10 +87,12 @@ export function GalleryCard({
     >
       <Image
         alt={item.imageAlt}
+        blurDataURL={item.blurDataURL}
         className="object-cover"
         fill
         loading={index <= 2 ? "eager" : undefined}
         onLoad={() => onImageLoad(index)}
+        placeholder={item.blurDataURL ? "blur" : "empty"}
         priority={index <= 1}
         sizes="100vw"
         src={item.imageSrc}

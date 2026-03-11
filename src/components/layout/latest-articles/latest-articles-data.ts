@@ -3,6 +3,7 @@ export interface Article {
     name: string;
     avatarSrc: string;
   };
+  blurDataURL?: string;
   category: string;
   excerpt: string;
   href: string;

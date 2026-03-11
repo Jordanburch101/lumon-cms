@@ -1,4 +1,5 @@
 export interface GalleryItem {
+  blurDataURL?: string;
   caption: string;
   id: string;
   imageAlt: string;

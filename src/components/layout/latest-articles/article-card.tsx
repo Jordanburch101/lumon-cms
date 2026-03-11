@@ -28,8 +28,10 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
         <div className="relative aspect-[3/2] w-full lg:aspect-auto lg:h-full">
           <Image
             alt={article.imageAlt}
+            blurDataURL={article.blurDataURL}
             className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
             fill
+            placeholder={article.blurDataURL ? "blur" : "empty"}
             sizes="(max-width: 1024px) 100vw, 60vw"
             src={article.imageSrc}
           />
@@ -74,8 +76,10 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
       <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
         <Image
           alt={article.imageAlt}
+          blurDataURL={article.blurDataURL}
           className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
           fill
+          placeholder={article.blurDataURL ? "blur" : "empty"}
           sizes="(max-width: 1024px) 100vw, 40vw"
           src={article.imageSrc}
         />
