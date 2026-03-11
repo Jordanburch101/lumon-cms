@@ -1,18 +1,56 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
+import Image from "next/image";
 import { useRef } from "react";
 
-import { cn } from "@/core/lib/utils";
+import { cn, getMediaUrl } from "@/core/lib/utils";
 
 import { FlipCounter } from "./flip-counter";
-import { logos, stats, trustSectionData } from "./trust-data";
+import {
+  logos as defaultLogos,
+  stats as defaultStats,
+  type Logo,
+  type Stat,
+  trustSectionData,
+} from "./trust-data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Trust() {
+interface TrustProps {
+  eyebrow?: string;
+  logos?: { name: string; logo?: { url?: string } | string }[];
+  stats?: {
+    label: string;
+    value: number;
+    decimals?: number;
+    format?: string;
+    suffix?: string;
+  }[];
+}
+
+export function Trust(props: TrustProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  const eyebrow = props.eyebrow || trustSectionData.eyebrow;
+
+  const stats: Stat[] = props.stats
+    ? props.stats.map((s) => ({
+        label: s.label,
+        value: s.value,
+        decimals: s.decimals,
+        format: s.format === "k" ? ("k" as const) : undefined,
+        suffix: s.suffix,
+      }))
+    : defaultStats;
+
+  const logos: Logo[] = props.logos
+    ? props.logos.map((l) => ({
+        name: l.name,
+        logoUrl: getMediaUrl(l.logo),
+      }))
+    : defaultLogos;
 
   return (
     <section className="w-full" ref={sectionRef}>
@@ -24,7 +62,7 @@ export function Trust() {
           initial={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          {trustSectionData.eyebrow}
+          {eyebrow}
         </motion.p>
 
         {/* Stats row */}
@@ -73,14 +111,25 @@ export function Trust() {
           transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
         >
           <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-16">
-            {logos.map((logo) => (
-              <span
-                className="font-semibold text-base text-foreground tracking-[0.04em] opacity-[0.18]"
-                key={logo.name}
-              >
-                {logo.name}
-              </span>
-            ))}
+            {logos.map((logo) =>
+              logo.logoUrl ? (
+                <Image
+                  alt={logo.name}
+                  className="h-6 w-auto opacity-[0.18] dark:invert"
+                  height={24}
+                  key={logo.name}
+                  src={logo.logoUrl}
+                  width={120}
+                />
+              ) : (
+                <span
+                  className="font-semibold text-base text-foreground tracking-[0.04em] opacity-[0.18]"
+                  key={logo.name}
+                >
+                  {logo.name}
+                </span>
+              )
+            )}
           </div>
         </motion.div>
       </div>

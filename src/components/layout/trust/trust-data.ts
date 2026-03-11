@@ -7,6 +7,7 @@ export interface Stat {
 }
 
 export interface Logo {
+  logoUrl?: string;
   name: string;
 }
 
