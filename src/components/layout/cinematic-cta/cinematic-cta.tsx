@@ -8,6 +8,7 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
+import Link from "next/link";
 import {
   type KeyboardEvent,
   type PointerEvent,
@@ -17,9 +18,20 @@ import {
   useState,
 } from "react";
 
+import { Button } from "@/components/ui/button";
+import { getMediaUrl } from "@/core/lib/utils";
+
 import { cinematicCtaData } from "./cinematic-cta-data";
 
-export function CinematicCta() {
+interface CinematicCtaProps {
+  cta?: { label?: string; href?: string };
+  headline?: string;
+  label?: string;
+  subtext?: string;
+  videoSrc?: { url?: string } | string;
+}
+
+export function CinematicCta(props: CinematicCtaProps) {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -101,6 +113,11 @@ export function CinematicCta() {
   const [videoVisible, setVideoVisible] = useState(false);
   useMotionValueEvent(clipAmount, "change", (v) => setVideoVisible(v > 80));
 
+  const videoSrc = getMediaUrl(props.videoSrc) || cinematicCtaData.videoSrc;
+  const label = props.label || cinematicCtaData.label;
+  const headline = props.headline || cinematicCtaData.headline;
+  const subtext = props.subtext || cinematicCtaData.subtext;
+
   // Text fades in after curtains are mostly open
   const textOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
   const textY = useTransform(scrollYProgress, [0.5, 0.7], [20, 0]);
@@ -122,7 +139,7 @@ export function CinematicCta() {
           playsInline
           preload="metadata"
           ref={videoRef}
-          src={cinematicCtaData.videoSrc}
+          src={videoSrc}
         />
 
         {/* Gradient overlay on video */}
@@ -134,20 +151,33 @@ export function CinematicCta() {
             className="block font-medium text-[11px] text-white/50 uppercase tracking-[0.2em]"
             style={{ opacity: textOpacity, y: textY }}
           >
-            {cinematicCtaData.label}
+            {label}
           </motion.span>
           <motion.p
             className="mt-4 max-w-lg text-center font-light text-white/85 text-xl italic leading-relaxed lg:text-2xl"
             style={{ opacity: textOpacity, y: textY }}
           >
-            &ldquo;{cinematicCtaData.headline}&rdquo;
+            &ldquo;{headline}&rdquo;
           </motion.p>
           <motion.span
             className="mt-3 block text-[11px] text-white/30 uppercase tracking-[0.2em]"
             style={{ opacity: textOpacity, y: textY }}
           >
-            {cinematicCtaData.subtext}
+            {subtext}
           </motion.span>
+
+          {/* Optional CTA button */}
+          {props.cta?.label && props.cta?.href && (
+            <motion.div style={{ opacity: textOpacity, y: textY }}>
+              <Button
+                asChild
+                className="mt-6 bg-white text-black hover:bg-white/90"
+                size="lg"
+              >
+                <Link href={props.cta.href}>{props.cta.label}</Link>
+              </Button>
+            </motion.div>
+          )}
 
           {/* Glass audio control — only interactive when video is visible */}
           <motion.div
