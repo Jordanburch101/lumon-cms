@@ -15,7 +15,7 @@ mock.module("next/cache", () => ({
   },
 }));
 
-const { revalidateOnChange } = await import("./revalidateOnChange");
+const { revalidateOnChange } = await import(".");
 
 /** Minimal stub matching what the hook destructures */
 function makeHookArgs(

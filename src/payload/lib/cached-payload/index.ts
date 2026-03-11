@@ -1,7 +1,7 @@
 import config from "@payload-config";
 import { cacheLife, cacheTag } from "next/cache";
 import { getPayload } from "payload";
-import { tagResolvedRelationships } from "./relationship-walker";
+import { tagResolvedRelationships } from "../relationship-walker";
 
 /**
  * Fetch a page by slug with caching and relationship tagging.

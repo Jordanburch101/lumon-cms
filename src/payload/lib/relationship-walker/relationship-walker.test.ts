@@ -11,7 +11,7 @@ mock.module("next/cache", () => ({
   },
 }));
 
-const { tagResolvedRelationships } = await import("./relationship-walker");
+const { tagResolvedRelationships } = await import(".");
 
 describe("tagResolvedRelationships", () => {
   beforeEach(() => {
