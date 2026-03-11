@@ -33,10 +33,8 @@ Two Next.js Route Handlers in `src/app/(frontend)/api/draft/`. Authentication us
 Note: Payload's REST API endpoints (`/api/users/me`, `/api/users/logout`, `/api/pages`) are mounted at the app root by Payload's middleware, not scoped to the `(payload)` route group.
 
 **`toggle/route.ts`** (`src/app/(frontend)/api/draft/toggle/route.ts`)
-- `POST /api/draft/toggle`
-- Validates by calling `payload.auth({ headers: request.headers })`. If `result.user` is `null`, return 401.
-- If authenticated → reads current `draftMode().isEnabled`, flips it
-- Returns `{ enabled: boolean }` JSON response
+- `GET /api/draft/toggle` — returns current draft mode state as `{ enabled: boolean }`. Requires auth (cookie). Used by the admin bar on mount to read draft state (the draft mode cookie is HttpOnly and unreadable from `document.cookie`).
+- `POST /api/draft/toggle` — flips draft mode. Validates by calling `payload.auth({ headers: request.headers })`. If `result.user` is `null`, return 401. Returns `{ enabled: boolean }` JSON response.
 
 **`disable/route.ts`** (`src/app/(frontend)/api/draft/disable/route.ts`)
 - `GET /api/draft/disable`
@@ -74,7 +72,7 @@ Contents left to right:
 2. **Edit Page** — pencil icon + "Edit Page" label. Links to `/admin/collections/pages/<id>`. Disabled if no page context.
 3. **Collections** — grid icon + "Collections" label. Links to `/admin/collections`.
 4. **Divider** — 1px vertical line, `bg-border/10`
-5. **Draft/Published toggle** — segmented control. Active segment has subtle `bg-white/8`. Clicking toggles via `POST /api/draft/toggle`, then calls `window.location.reload()` (not `router.refresh()`) since `draftMode()` is evaluated server-side on each request. Reads initial state from the draft mode cookie on mount.
+5. **Draft/Published toggle** — segmented control. Active segment has subtle `bg-white/8`. Clicking toggles via `POST /api/draft/toggle`, then calls `window.location.reload()` (not `router.refresh()`) since `draftMode()` is evaluated server-side on each request. Reads initial state from `GET /api/draft/toggle` on mount (draft cookie is HttpOnly).
 6. **Divider**
 7. **User avatar** — circle with first initial, `bg-white/8`. Click opens a dropdown with user name/email and "Sign out" (calls `POST /api/users/logout`).
 8. **Collapse button** — chevron icon. Animates bar to collapsed state.
