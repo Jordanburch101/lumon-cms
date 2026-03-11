@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { TaskConfig } from "payload";
 import sharp from "sharp";
-import { downloadMediaToDisk } from "@/lib/download-media";
-import { isFFmpegAvailable, runFFmpeg } from "@/lib/ffmpeg";
+import { downloadMediaToDisk } from "../lib/download-media";
+import { isFFmpegAvailable, runFFmpeg } from "../lib/ffmpeg";
 
 const FILE_EXT_REGEX = /\.[^.]+$/;
 

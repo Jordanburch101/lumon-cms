@@ -1,13 +1,13 @@
-import { BentoShowcase } from "@/components/layout/bento/bento";
-import { CinematicCta } from "@/components/layout/cinematic-cta/cinematic-cta";
-import { Faq } from "@/components/layout/faq/faq";
-import { Hero } from "@/components/layout/hero/hero";
-import { ImageGallery } from "@/components/layout/image-gallery/image-gallery";
-import { LatestArticles } from "@/components/layout/latest-articles/latest-articles";
-import { Pricing } from "@/components/layout/pricing/pricing";
-import { SplitMedia } from "@/components/layout/split-media/split-media";
-import { Testimonials } from "@/components/layout/testimonials/testimonials";
-import { Trust } from "@/components/layout/trust/trust";
+import { BentoShowcase } from "@/components/blocks/bento/bento";
+import { CinematicCta } from "@/components/blocks/cinematic-cta/cinematic-cta";
+import { Faq } from "@/components/blocks/faq/faq";
+import { Hero } from "@/components/blocks/hero/hero";
+import { ImageGallery } from "@/components/blocks/image-gallery/image-gallery";
+import { LatestArticles } from "@/components/blocks/latest-articles/latest-articles";
+import { Pricing } from "@/components/blocks/pricing/pricing";
+import { SplitMedia } from "@/components/blocks/split-media/split-media";
+import { Testimonials } from "@/components/blocks/testimonials/testimonials";
+import { Trust } from "@/components/blocks/trust/trust";
 
 // Temporary until payload-types.ts is generated
 interface LayoutBlock {

@@ -6,10 +6,10 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
-import { Media } from "./collections/Media";
-import { Pages } from "./collections/Pages";
-import { Users } from "./collections/Users";
-import { optimizeVideoTask } from "./jobs/optimize-video";
+import { Media } from "./payload/collections/Media";
+import { Pages } from "./payload/collections/Pages";
+import { Users } from "./payload/collections/Users";
+import { optimizeVideoTask } from "./payload/jobs/optimize-video";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -74,7 +74,7 @@ export default buildConfig({
         tools: {
           collections: {
             enabled: process.env.NODE_ENV === "development",
-            collectionsDirPath: path.resolve(dirname, "collections"),
+            collectionsDirPath: path.resolve(dirname, "payload/collections"),
           },
           config: {
             enabled: process.env.NODE_ENV === "development",

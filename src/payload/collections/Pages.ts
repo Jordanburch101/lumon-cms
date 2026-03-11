@@ -1,15 +1,15 @@
 import type { CollectionConfig } from "payload";
 
-import { BentoBlock } from "../blocks/Bento";
-import { CinematicCtaBlock } from "../blocks/CinematicCta";
-import { FaqBlock } from "../blocks/Faq";
-import { HeroBlock } from "../blocks/Hero";
-import { ImageGalleryBlock } from "../blocks/ImageGallery";
-import { LatestArticlesBlock } from "../blocks/LatestArticles";
-import { PricingBlock } from "../blocks/Pricing";
-import { SplitMediaBlock } from "../blocks/SplitMedia";
-import { TestimonialsBlock } from "../blocks/Testimonials";
-import { TrustBlock } from "../blocks/Trust";
+import { BentoBlock } from "../block-schemas/Bento";
+import { CinematicCtaBlock } from "../block-schemas/CinematicCta";
+import { FaqBlock } from "../block-schemas/Faq";
+import { HeroBlock } from "../block-schemas/Hero";
+import { ImageGalleryBlock } from "../block-schemas/ImageGallery";
+import { LatestArticlesBlock } from "../block-schemas/LatestArticles";
+import { PricingBlock } from "../block-schemas/Pricing";
+import { SplitMediaBlock } from "../block-schemas/SplitMedia";
+import { TestimonialsBlock } from "../block-schemas/Testimonials";
+import { TrustBlock } from "../block-schemas/Trust";
 
 export const Pages: CollectionConfig = {
   slug: "pages",

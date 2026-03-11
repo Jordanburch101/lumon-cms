@@ -1,5 +1,5 @@
 import type { CollectionAfterChangeHook } from "payload";
-import { isFFmpegAvailable } from "@/lib/ffmpeg";
+import { isFFmpegAvailable } from "../lib/ffmpeg";
 
 export const optimizeVideo: CollectionAfterChangeHook = async ({
   doc,

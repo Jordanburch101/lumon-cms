@@ -6,7 +6,7 @@
   },
   "overrides": [
     {
-      "includes": ["src/collections/**", "src/blocks/**"],
+      "includes": ["src/payload/**"],
       "linter": {
         "rules": {
           "style": {

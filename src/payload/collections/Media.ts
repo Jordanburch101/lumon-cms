@@ -1,6 +1,6 @@
 import type { CollectionBeforeValidateHook, CollectionConfig } from "payload";
-import { generateBlurDataURL } from "./hooks/generateBlurDataURL";
-import { optimizeVideo } from "./hooks/optimizeVideo";
+import { generateBlurDataURL } from "../hooks/generateBlurDataURL";
+import { optimizeVideo } from "../hooks/optimizeVideo";
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
 

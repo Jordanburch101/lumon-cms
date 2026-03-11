@@ -23,8 +23,9 @@
 - Fonts: Nunito Sans (sans) + Geist Mono (mono)
 - Color theme uses oklch color space — defined in `src/app/globals.css`
 - Path aliases: `@/*` → `src/*`
+  - `@/payload` — Payload CMS schemas, collections, hooks, jobs, utilities
   - `@/components/ui` — shadcn primitives
-  - `@/components/blocks` — Payload blocks
+  - `@/components/blocks` — Payload block components + render-blocks mapper
   - `@/components/layout` — structural components (navbar, footer)
   - `@/components/features` — feature components
   - `@/core/lib` — generic utilities
@@ -37,12 +38,18 @@
 ```
 src/
   app/              — Next.js App Router pages and layouts
+  payload/          — All Payload CMS concerns
+    block-schemas/  — Block field definitions (Hero, Bento, etc.)
+    collections/    — Data models (Users, Media, Pages)
+    hooks/          — Collection & field hooks
+    jobs/           — Async job tasks (video optimization)
+    lib/            — Payload-specific utilities (ffmpeg, downloads)
   core/             — Upstream-safe agnostic code (hooks, utils)
     hooks/          — Generic reusable hooks
     lib/            — Generic utilities (cn, helpers)
   components/       — All UI rendering
     ui/             — shadcn UI primitives (generated, don't hand-edit)
-    blocks/         — Payload CMS content blocks
+    blocks/         — Payload block components + render-blocks mapper
     layout/         — Structural components (navbar, footer)
     features/       — Feature-level composed components
   types/            — Project-specific TypeScript types
@@ -111,8 +118,10 @@ When you encounter a task outside your current skillset — or the user asks "ho
 - **Route groups**: `(frontend)` for public site, `(payload)` for admin panel + REST API
 - **No root layout.tsx** — each route group has its own root layout. This is required so Payload's `RootLayout` gets full control of `<html>`/`<body>` for admin routes. The `(payload)/layout.tsx` must import `@payloadcms/next/css`.
 - **Config**: `src/payload.config.ts` — collections, plugins, db adapter, S3 storage
-- **Collections**: Users, Media, Pages (with layout blocks field)
-- **Blocks**: Hero, Bento, SplitMedia, Testimonials, ImageGallery, LatestArticles, CinematicCta, Pricing, Faq, Trust
+- **Payload directory**: `src/payload/` — block schemas, collections, hooks, jobs, utilities
+- **Collections**: `src/payload/collections/` — Users, Media, Pages (with layout blocks field)
+- **Block schemas**: `src/payload/block-schemas/` — Hero, Bento, SplitMedia, Testimonials, ImageGallery, LatestArticles, CinematicCta, Pricing, Faq, Trust
+- **Block components**: `src/components/blocks/` — React renderers mapped via `render-blocks.tsx`
 - **Page rendering**: SSR catch-all `(frontend)/[[...slug]]/page.tsx` fetches pages via Payload Local API
 
 ### Payload MCP
