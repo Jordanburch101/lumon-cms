@@ -17,3 +17,13 @@ export function getMediaUrl(
   }
   return media.url || "";
 }
+
+/** Extract blurDataURL from a Payload Media object for next/image placeholder. */
+export function getBlurDataURL(
+  media: string | { blurDataURL?: string } | undefined | null
+): string | undefined {
+  if (!media || typeof media === "string") {
+    return undefined;
+  }
+  return media.blurDataURL || undefined;
+}

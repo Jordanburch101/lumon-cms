@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import { heroData } from "./hero-data";
 
 const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
@@ -12,7 +12,7 @@ function getMediaType(src: string): "video" | "image" {
 
 interface HeroProps {
   headline?: string;
-  mediaSrc?: { url?: string } | string;
+  mediaSrc?: { url?: string; blurDataURL?: string } | string;
   primaryCta?: { label?: string; href?: string };
   secondaryCta?: { label?: string; href?: string };
   subtext?: string;
@@ -20,6 +20,7 @@ interface HeroProps {
 
 export function Hero(props: HeroProps) {
   const mediaSrc = getMediaUrl(props.mediaSrc) || heroData.mediaSrc;
+  const blurDataURL = getBlurDataURL(props.mediaSrc);
   const headline = props.headline || heroData.headline;
   const subtext = props.subtext || heroData.subtext;
   const primaryCtaLabel = props.primaryCta?.label || heroData.primaryCta.label;
@@ -49,8 +50,10 @@ export function Hero(props: HeroProps) {
       ) : (
         <Image
           alt="Hero background"
+          blurDataURL={blurDataURL}
           className="object-cover"
           fill
+          placeholder={blurDataURL ? "blur" : "empty"}
           priority
           src={mediaSrc}
         />

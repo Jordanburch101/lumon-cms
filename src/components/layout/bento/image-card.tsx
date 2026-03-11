@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import { imageCardData } from "./bento-data";
 
 const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
@@ -10,13 +10,14 @@ interface ImageCardProps {
     alt?: string;
     badge?: string;
     description?: string;
-    src?: { url?: string } | string;
+    src?: { url?: string; blurDataURL?: string } | string;
     title?: string;
   };
 }
 
 export function ImageCard({ image }: ImageCardProps) {
   const src = getMediaUrl(image?.src) || imageCardData.src;
+  const blurDataURL = getBlurDataURL(image?.src);
   const alt = image?.alt || imageCardData.alt;
   const title = image?.title || imageCardData.title;
   const badge = image?.badge ?? imageCardData.badge;
@@ -39,8 +40,10 @@ export function ImageCard({ image }: ImageCardProps) {
       ) : (
         <Image
           alt={alt}
+          blurDataURL={blurDataURL}
           className="object-cover brightness-75"
           fill
+          placeholder={blurDataURL ? "blur" : "empty"}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           src={src}
         />
