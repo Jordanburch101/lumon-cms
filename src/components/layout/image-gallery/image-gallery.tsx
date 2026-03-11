@@ -14,7 +14,7 @@ interface ImageGalleryProps {
   items?: {
     caption: string;
     id?: string;
-    image?: { url?: string } | string;
+    image?: { url?: string; blurDataURL?: string } | string;
     imageAlt: string;
     label: string;
   }[];

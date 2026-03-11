@@ -12,7 +12,7 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
   inputSchema: [{ name: "mediaId", type: "number", required: true }],
   retries: 2,
   handler: async ({ input, req }) => {
-    const { mediaId } = input;
+    const mediaId = (input as { mediaId: number }).mediaId;
 
     // Fetch the media document
     const media = await req.payload.findByID({

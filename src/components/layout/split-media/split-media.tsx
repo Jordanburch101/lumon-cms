@@ -221,7 +221,7 @@ interface SplitMediaProps {
     mediaAlt: string;
     mediaLabel: string;
     mediaOverlay: { badge?: string; description: string; title: string };
-    mediaSrc: { url?: string } | string;
+    mediaSrc: { url?: string; blurDataURL?: string } | string;
   }[];
 }
 

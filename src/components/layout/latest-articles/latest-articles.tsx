@@ -24,7 +24,7 @@ interface LatestArticlesProps {
     title: string;
     excerpt: string;
     category: string;
-    image: { url?: string } | string;
+    image: { url?: string; blurDataURL?: string } | string;
     imageAlt: string;
     author: { name: string; avatar?: { url?: string } | string };
     readTime: string;
