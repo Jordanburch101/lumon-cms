@@ -1,6 +1,24 @@
+import type { Metadata } from "next";
 import { Footer } from "@/components/layout/footer/footer";
 import { Navbar } from "@/components/layout/navbar/navbar";
 import { Providers } from "@/providers/providers";
+import { Geist_Mono, Nunito_Sans } from "next/font/google";
+import "../globals.css";
+
+const nunitoSans = Nunito_Sans({
+  variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Lumon",
+  description: "Next.js + Payload CMS template and component showcase",
+};
 
 export default function FrontendLayout({
   children,
@@ -8,16 +26,22 @@ export default function FrontendLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Providers>
-      {process.env.NODE_ENV === "development" && (
-        <script
-          async
-          src="https://mcp.figma.com/mcp/html-to-design/capture.js"
-        />
-      )}
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
-    </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${nunitoSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>
+          {process.env.NODE_ENV === "development" && (
+            <script
+              async
+              src="https://mcp.figma.com/mcp/html-to-design/capture.js"
+            />
+          )}
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </Providers>
+      </body>
+    </html>
   );
 }

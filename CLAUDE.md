@@ -9,7 +9,9 @@
 - **Icons**: Hugeicons (`@hugeicons/react`)
 - **Charts**: Recharts
 - **Themes**: next-themes (class-based, system default)
-- **CMS**: Payload CMS (to be added)
+- **CMS**: Payload CMS 3.x (SQLite/libsql, S3 storage via Railway)
+- **Database**: libsql on Railway (`libsql://libsql-production-9f2c.up.railway.app`)
+- **Object Storage**: Railway S3 bucket (`lumon-media`) for media uploads
 - **Code quality**: Ultracite (Biome-based) — `bun check` / `bun fix`
 - **Linting**: ESLint with next core-web-vitals + TypeScript
 
@@ -101,6 +103,41 @@ Use these whenever creating new sections, components, or pages. The theme skill 
 ## Finding & Installing Skills
 
 When you encounter a task outside your current skillset — or the user asks "how do I do X", "can you do X", or "is there a skill for X" — use the `find-skills` skill to search the open agent skills ecosystem via `npx skills find [query]`. Install with `npx skills add <owner/repo@skill> -g -y`. Browse available skills at https://skills.sh/.
+
+## Payload CMS
+
+### Architecture
+
+- **Route groups**: `(frontend)` for public site, `(payload)` for admin panel + REST API
+- **No root layout.tsx** — each route group has its own root layout. This is required so Payload's `RootLayout` gets full control of `<html>`/`<body>` for admin routes. The `(payload)/layout.tsx` must import `@payloadcms/next/css`.
+- **Config**: `src/payload.config.ts` — collections, plugins, db adapter, S3 storage
+- **Collections**: Users, Media, Pages (with layout blocks field)
+- **Blocks**: Hero, Bento, SplitMedia, Testimonials, ImageGallery, LatestArticles, CinematicCta, Pricing, Faq, Trust
+- **Page rendering**: SSR catch-all `(frontend)/[[...slug]]/page.tsx` fetches pages via Payload Local API
+
+### Payload MCP
+
+The `@payloadcms/plugin-mcp` is configured and connected via `.mcp.json`. It uses HTTP transport at `http://localhost:3000/api/mcp` with Bearer token auth.
+
+**Available MCP tools** (require dev server running):
+- `mcp__payload__findPages` / `createPages` / `updatePages` / `deletePages`
+- `mcp__payload__findMedia` / `createMedia` / `updateMedia` / `deleteMedia`
+- `mcp__payload__findCollections` / `createCollection`
+- `mcp__payload__findConfig` / `updateConfig`
+
+**Key learnings**:
+- Media fields in blocks expect Payload media IDs (numbers), not URLs
+- Upload media via REST API with multipart form: `-F "file=@path" -F "_payload={\"alt\":\"...\"};type=application/json"`
+- The MCP `createMedia` tool cannot upload files — use the REST API for uploads, then reference IDs in MCP calls
+- To create a page with blocks, media must exist first (FK constraint)
+- `createPages` fails if a page with the same slug exists — use `updatePages` instead
+- API key for MCP is managed via admin panel: MCP > API Keys. Enable the checkbox and save to generate a key.
+
+### Admin credentials
+
+- **URL**: `http://localhost:3000/admin`
+- **Email**: `jordanburch.dev@gmail.com`
+- **Password**: `meta1234`
 
 ## Figma
 
