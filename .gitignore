@@ -45,3 +45,8 @@ next-env.d.ts
 .playwright-mcp/
 *.png
 .superpowers
+
+# Payload
+payload.db
+payload.db-journal
+src/app/(payload)/admin/importMap.js
