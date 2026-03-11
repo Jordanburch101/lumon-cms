@@ -56,7 +56,7 @@ mock.module("next/cache", () => ({
 }));
 ```
 
-This avoids needing test-specific exports or dependency injection. The mock must be declared before importing the module under test.
+This avoids needing test-specific exports or dependency injection. The mock must be declared before importing the module under test. Because ESM static imports are hoisted by the runtime, import the module under test via `await import(...)` inside the test body or after the `mock.module()` call at module scope — not as a top-level static import.
 
 ## Test File 1: `src/payload/hooks/revalidateOnChange.test.ts`
 
@@ -68,11 +68,10 @@ The `revalidateOnChange()` hook factory — verifies that the returned `afterCha
 
 | Test | Input | Expected |
 |------|-------|----------|
-| afterChange fires doc + collection tags | `{ id: 1 }` on `pages` | `revalidateTag("doc:pages:1")`, `revalidateTag("collection:pages")` |
+| afterChange fires doc + collection tags | `{ id: 1 }` on `pages` | `revalidateTag("doc:pages:1", "default")`, `revalidateTag("collection:pages", "default")` |
 | afterDelete fires doc + collection tags | `{ id: 1 }` on `pages` | Same as above |
 | Loop prevention | `context.disableRevalidate = true` | No `revalidateTag` calls |
-| Custom static tags | `revalidateOnChange({ tags: ["nav"] })` | Also fires `revalidateTag("nav")` |
-| Draft skipping | `doc._status = "draft"` | No `revalidateTag` calls |
+| Custom static tags | `revalidateOnChange({ tags: ["nav"] })` | Also fires `revalidateTag("nav", "default")` |
 
 ### Mock Requirements
 
@@ -132,7 +131,7 @@ E2E tests run locally against the staging environment (`bun test tests/e2e/`). C
 
 ## Relationship Walker Extraction
 
-The walker is currently embedded in `cached-payload.ts`. Extraction steps:
+The walker is currently embedded in `cached-payload.ts`. Extraction is required (not just export) because `cached-payload.ts` uses `'use cache'`, a Next.js runtime directive that cannot run in a unit test environment. Extraction steps:
 
 1. Create `src/payload/lib/relationship-walker.ts`
    - Move: `AnyObject` type, `isObject`, `resolveCollection`, `walkNode`, `tagResolvedRelationships`
