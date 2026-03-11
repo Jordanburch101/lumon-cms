@@ -3,11 +3,12 @@
 import { motion, useInView } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { getMediaUrl } from "@/core/lib/utils";
 import { FeaturedQuote } from "./featured-quote";
 import { QuoteCard } from "./quote-card";
 import {
-  featuredTestimonials,
-  shortTestimonials,
+  featuredTestimonials as defaultFeatured,
+  shortTestimonials as defaultShort,
   type Testimonial,
   testimonialsSectionData,
 } from "./testimonials-data";
@@ -15,7 +16,55 @@ import {
 const ADVANCE_MS = 6000;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Testimonials() {
+interface TestimonialsProps {
+  headline?: string;
+  subtext?: string;
+  testimonials?: {
+    avatar?: { url?: string } | string;
+    department: string;
+    featured?: boolean;
+    featuredQuote?: string;
+    id?: string;
+    name: string;
+    quote: string;
+    role: string;
+  }[];
+}
+
+/** Map a Payload testimonial item to the internal Testimonial shape. */
+function toTestimonial(
+  item: NonNullable<TestimonialsProps["testimonials"]>[number],
+  index: number
+): Testimonial {
+  return {
+    id: item.id || `t-${index}`,
+    avatarSrc: getMediaUrl(item.avatar),
+    name: item.name,
+    role: item.role,
+    department: item.department,
+    quote: item.quote,
+    featured: item.featured,
+    featuredQuote: item.featuredQuote,
+  };
+}
+
+export function Testimonials(props: TestimonialsProps) {
+  const headline = props.headline || testimonialsSectionData.headline;
+  const subtext = props.subtext || testimonialsSectionData.subtext;
+
+  // Resolve testimonials from props or fallback to data file
+  const hasPayloadData = props.testimonials && props.testimonials.length > 0;
+  const allTestimonials = hasPayloadData
+    ? props.testimonials.map(toTestimonial)
+    : undefined;
+
+  const featuredTestimonials = allTestimonials
+    ? allTestimonials.filter((t) => t.featured)
+    : defaultFeatured;
+  const shortTestimonials = allTestimonials
+    ? allTestimonials.filter((t) => !t.featured)
+    : defaultShort;
+
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
   const isVisible = useInView(sectionRef, { margin: "-50px" });
@@ -25,6 +74,13 @@ export function Testimonials() {
     useState<Testimonial[]>(featuredTestimonials);
   const [timerKey, setTimerKey] = useState(0);
   const activeTestimonial = activePool[activeIndex % activePool.length];
+
+  // Sync activePool when featuredTestimonials changes (e.g. props arrive)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: featuredTestimonials identity changes when props change
+  useEffect(() => {
+    setActivePool(featuredTestimonials);
+    setActiveIndex(0);
+  }, [hasPayloadData]);
 
   // Auto-advance timer — only runs while section is visible in viewport
   // biome-ignore lint/correctness/useExhaustiveDependencies: timerKey intentionally resets the interval
@@ -41,12 +97,15 @@ export function Testimonials() {
   }, [isVisible, activePool.length, timerKey]);
 
   // Handle short quote card click — promote to spotlight and reset timer
-  const handleSelectShort = useCallback((testimonial: Testimonial) => {
-    const newPool = [testimonial, ...featuredTestimonials];
-    setActivePool(newPool);
-    setActiveIndex(0);
-    setTimerKey((k) => k + 1);
-  }, []);
+  const handleSelectShort = useCallback(
+    (testimonial: Testimonial) => {
+      const newPool = [testimonial, ...featuredTestimonials];
+      setActivePool(newPool);
+      setActiveIndex(0);
+      setTimerKey((k) => k + 1);
+    },
+    [featuredTestimonials]
+  );
 
   return (
     <section className="w-full" ref={sectionRef}>
@@ -59,11 +118,9 @@ export function Testimonials() {
           transition={{ duration: 0.8, ease: EASE }}
         >
           <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
-            {testimonialsSectionData.headline}
+            {headline}
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            {testimonialsSectionData.subtext}
-          </p>
+          <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
         </motion.div>
 
         {/* Content grid */}
