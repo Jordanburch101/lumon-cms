@@ -116,7 +116,7 @@ describe("generateBlurDataURL", () => {
   it("returns data unchanged when no buffer is available", async () => {
     // Create with file but file.data is undefined
     const args = makeArgs();
-    (args.req as Record<string, unknown>).file = { mimetype: "image/jpeg" };
+    (args.req as unknown as Record<string, unknown>).file = { mimetype: "image/jpeg" };
     const result = await generateBlurDataURL(args);
 
     expect(mockToBuffer).not.toHaveBeenCalled();

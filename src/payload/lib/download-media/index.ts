@@ -65,7 +65,7 @@ async function httpDownload(url: string, destPath: string): Promise<void> {
   }
 
   await pipeline(
-    Readable.fromWeb(body as import("node:stream/web").ReadableStream),
+    Readable.fromWeb(body as unknown as import("node:stream/web").ReadableStream),
     createWriteStream(destPath)
   );
 }
