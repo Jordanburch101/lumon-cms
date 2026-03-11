@@ -1,9 +1,13 @@
 import type { CollectionConfig } from "payload";
+import { generateBlurDataURL } from "./hooks/generateBlurDataURL";
 
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [generateBlurDataURL],
   },
   upload: {
     mimeTypes: ["image/*", "video/*"],
