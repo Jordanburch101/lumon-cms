@@ -1,8 +1,8 @@
 /* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
 /* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
 
+import config from "@payload-config";
 import { generatePageMetadata, NotFoundPage } from "@payloadcms/next/views";
-import type { AdminViewProps } from "payload";
 import { importMap } from "../importMap";
 
 interface Args {
@@ -11,9 +11,9 @@ interface Args {
 }
 
 export const generateMetadata = ({ params, searchParams }: Args) =>
-  generatePageMetadata({ config: "@/payload.config", params, searchParams });
+  generatePageMetadata({ config, params, searchParams });
 
-const NotFound = ({ params, searchParams }: AdminViewProps) =>
-  NotFoundPage({ config: "@/payload.config", importMap, params, searchParams });
+const NotFound = ({ params, searchParams }: Args) =>
+  NotFoundPage({ config, importMap, params, searchParams });
 
 export default NotFound;

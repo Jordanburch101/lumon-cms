@@ -53,9 +53,11 @@ export function Testimonials(props: TestimonialsProps) {
   const subtext = props.subtext || testimonialsSectionData.subtext;
 
   // Resolve testimonials from props or fallback to data file
-  const hasPayloadData = props.testimonials && props.testimonials.length > 0;
+  const payloadTestimonials = props.testimonials;
+  const hasPayloadData =
+    payloadTestimonials !== undefined && payloadTestimonials.length > 0;
   const allTestimonials = hasPayloadData
-    ? props.testimonials.map(toTestimonial)
+    ? payloadTestimonials.map(toTestimonial)
     : undefined;
 
   const featuredTestimonials = allTestimonials
