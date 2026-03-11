@@ -11,13 +11,29 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/core/lib/utils";
 
-import { faqItems, faqSectionData } from "./faq-data";
+import { faqItems as defaultFaqItems, faqSectionData } from "./faq-data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Faq() {
+interface FaqProps {
+  cta?: { text?: string; label?: string; href?: string };
+  eyebrow?: string;
+  headline?: string;
+  items?: { question: string; answer: string }[];
+  subtext?: string;
+}
+
+export function Faq(props: FaqProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  const eyebrow = props.eyebrow || faqSectionData.eyebrow;
+  const headline = props.headline || faqSectionData.headline;
+  const subtext = props.subtext || faqSectionData.subtext;
+  const faqItems = props.items || defaultFaqItems;
+  const ctaText = props.cta?.text || "Still have questions?";
+  const ctaLabel = props.cta?.label || "Contact your floor supervisor";
+  const ctaHref = props.cta?.href || "/contact";
 
   return (
     <section ref={sectionRef}>
@@ -31,14 +47,12 @@ export function Faq() {
             transition={{ duration: 0.8, ease: EASE }}
           >
             <p className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
-              {faqSectionData.eyebrow}
+              {eyebrow}
             </p>
             <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
-              {faqSectionData.headline}
+              {headline}
             </h2>
-            <p className="mt-3 text-base text-muted-foreground">
-              {faqSectionData.subtext}
-            </p>
+            <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
 
             {/* CTA */}
             <motion.p
@@ -47,12 +61,12 @@ export function Faq() {
               initial={{ opacity: 0, y: 12 }}
               transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
             >
-              Still have questions?{" "}
+              {ctaText}{" "}
               <a
                 className="text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70"
-                href="/contact"
+                href={ctaHref}
               >
-                Contact your floor supervisor
+                {ctaLabel}
               </a>
             </motion.p>
           </motion.div>
