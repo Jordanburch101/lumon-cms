@@ -43,32 +43,6 @@ export async function getPageDirect(slug: string, draft = false) {
   return result.docs[0] ?? null;
 }
 
-/**
- * Fetch any collection document by slug with caching and relationship tagging.
- * For collections other than pages that need cached frontend fetching.
- */
-export async function getCachedDocument(collection: string, slug: string) {
-  "use cache";
-  cacheLife("hours");
-
-  const payload = await getPayload({ config });
-  const result = await payload.find({
-    collection: collection as "pages",
-    where: { slug: { equals: slug } },
-    draft: false,
-    limit: 1,
-  });
-
-  const doc = result.docs[0] ?? null;
-
-  if (doc) {
-    cacheTag(`collection:${collection}`, `doc:${collection}:${doc.id}`);
-    tagResolvedRelationships(doc);
-  }
-
-  return doc;
-}
-
 // ── Relationship walker ──────────────────────────────────────────────
 
 type AnyObject = Record<string, unknown>;
