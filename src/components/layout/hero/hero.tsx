@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getMediaUrl } from "@/core/lib/utils";
 import { heroData } from "./hero-data";
 
 const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
@@ -9,8 +10,26 @@ function getMediaType(src: string): "video" | "image" {
   return VIDEO_EXTENSION_RE.test(src) ? "video" : "image";
 }
 
-export function Hero() {
-  const mediaType = getMediaType(heroData.mediaSrc);
+interface HeroProps {
+  headline?: string;
+  mediaSrc?: { url?: string } | string;
+  primaryCta?: { label?: string; href?: string };
+  secondaryCta?: { label?: string; href?: string };
+  subtext?: string;
+}
+
+export function Hero(props: HeroProps) {
+  const mediaSrc = getMediaUrl(props.mediaSrc) || heroData.mediaSrc;
+  const headline = props.headline || heroData.headline;
+  const subtext = props.subtext || heroData.subtext;
+  const primaryCtaLabel = props.primaryCta?.label || heroData.primaryCta.label;
+  const primaryCtaHref = props.primaryCta?.href || heroData.primaryCta.href;
+  const secondaryCtaLabel =
+    props.secondaryCta?.label || heroData.secondaryCta.label;
+  const secondaryCtaHref =
+    props.secondaryCta?.href || heroData.secondaryCta.href;
+
+  const mediaType = getMediaType(mediaSrc);
 
   return (
     <section
@@ -25,7 +44,7 @@ export function Hero() {
           loop
           muted
           playsInline
-          src={heroData.mediaSrc}
+          src={mediaSrc}
         />
       ) : (
         <Image
@@ -33,7 +52,7 @@ export function Hero() {
           className="object-cover"
           fill
           priority
-          src={heroData.mediaSrc}
+          src={mediaSrc}
         />
       )}
 
@@ -43,20 +62,16 @@ export function Hero() {
       {/* Content: bottom-left anchored */}
       <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-16 lg:px-6">
         <h1 className="max-w-2xl font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-6xl">
-          {heroData.headline}
+          {headline}
         </h1>
-        <p className="mt-4 max-w-xl text-base text-white/70">
-          {heroData.subtext}
-        </p>
+        <p className="mt-4 max-w-xl text-base text-white/70">{subtext}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button
             asChild
             className="bg-white text-black hover:bg-white/90"
             size="lg"
           >
-            <Link href={heroData.primaryCta.href}>
-              {heroData.primaryCta.label}
-            </Link>
+            <Link href={primaryCtaHref}>{primaryCtaLabel}</Link>
           </Button>
           <Button
             asChild
@@ -65,11 +80,11 @@ export function Hero() {
             variant="outline"
           >
             <a
-              href={heroData.secondaryCta.href}
+              href={secondaryCtaHref}
               rel="noopener noreferrer"
               target="_blank"
             >
-              {heroData.secondaryCta.label}
+              {secondaryCtaLabel}
             </a>
           </Button>
         </div>
