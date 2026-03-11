@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowShrink02Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -20,8 +18,6 @@ import {
 } from "./admin-bar-data";
 import { AdminBarSnap } from "./admin-bar-snap";
 import { AdminBarToggle } from "./admin-bar-toggle";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
 
 function findNearestSnap(
   x: number,
@@ -82,7 +78,9 @@ export function AdminBar() {
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        /* silent */
+      });
   }, []);
 
   // Page context — refetch on pathname change (SPA navigation)
@@ -104,7 +102,9 @@ export function AdminBar() {
           setPage({ id: doc.id, slug: doc.slug });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        /* silent */
+      });
   }, [user, pathname]);
 
   // Read draft mode state from toggle API (HttpOnly cookie can't be read client-side)
@@ -120,7 +120,9 @@ export function AdminBar() {
           setIsDraft(data.enabled);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        /* silent */
+      });
   }, [user]);
 
   // Persist state changes
@@ -226,19 +228,25 @@ export function AdminBar() {
               type="button"
             >
               <svg
+                aria-hidden="true"
                 className="text-foreground/70"
                 fill="currentColor"
                 height="15"
                 viewBox="0 0 24 24"
                 width="15"
               >
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" />
               </svg>
             </motion.button>
           ) : (
             <motion.div
               animate={{ scale: 1, opacity: 1 }}
-              className="flex items-center gap-0.5 rounded-xl border border-border/10 bg-card/92 py-1.5 pr-1.5 pl-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+              className={cn(
+                "flex items-center gap-0.5 rounded-xl border border-border/10 bg-card/92 py-1.5 pr-1.5 pl-3.5 backdrop-blur-xl",
+                isDragging
+                  ? "shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+                  : "shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+              )}
               exit={{ scale: 0.9, opacity: 0 }}
               initial={{ scale: 0.9, opacity: 0 }}
               key="expanded"
@@ -248,13 +256,14 @@ export function AdminBar() {
               {/* Drag handle area */}
               <div className="flex cursor-grab items-center gap-2 border-border/10 border-r pr-2 active:cursor-grabbing">
                 <svg
+                  aria-hidden="true"
                   className="text-foreground/70"
                   fill="currentColor"
                   height="14"
                   viewBox="0 0 24 24"
                   width="14"
                 >
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" />
                 </svg>
                 <div className="flex flex-col gap-[3px] opacity-25">
                   <div className="flex gap-[3px]">
@@ -272,12 +281,15 @@ export function AdminBar() {
                 </div>
               </div>
 
-              {/* Actions */}
+              {/* Actions: Edit Page + Collections */}
               <AdminBarActions
                 page={page}
                 position={barState.position}
                 user={user}
               />
+
+              {/* Divider */}
+              <div className="mx-1 h-5 w-px bg-border/10" />
 
               {/* Draft toggle */}
               <AdminBarToggle
@@ -295,7 +307,20 @@ export function AdminBar() {
                 onClick={() => updateBarState({ collapsed: true })}
                 type="button"
               >
-                <HugeiconsIcon icon={ArrowShrink02Icon} size={14} />
+                <svg
+                  aria-hidden="true"
+                  className="text-current"
+                  fill="none"
+                  height="14"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width="14"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
               </button>
             </motion.div>
           )}

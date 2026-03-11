@@ -11,7 +11,7 @@ interface AdminBarSnapProps {
 export function AdminBarSnap({ activeZone }: AdminBarSnapProps) {
   return (
     <motion.div
-      animate={{ opacity: 1 }}
+      animate={{ opacity: 0.5 }}
       className="pointer-events-none fixed inset-0 z-[9998]"
       exit={{ opacity: 0 }}
       initial={{ opacity: 0 }}

@@ -54,9 +54,6 @@ export function AdminBarActions({
         <span>Collections</span>
       </a>
 
-      {/* Divider */}
-      <div className="mx-1 h-5 w-px bg-border/10" />
-
       {/* User menu */}
       <div className="relative" ref={menuRef}>
         <button
