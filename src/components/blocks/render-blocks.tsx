@@ -1,35 +1,41 @@
-import { BentoShowcase } from "@/components/blocks/bento/bento";
-import { CinematicCta } from "@/components/blocks/cinematic-cta/cinematic-cta";
-import { Faq } from "@/components/blocks/faq/faq";
-import { Hero } from "@/components/blocks/hero/hero";
-import { ImageGallery } from "@/components/blocks/image-gallery/image-gallery";
-import { LatestArticles } from "@/components/blocks/latest-articles/latest-articles";
-import { Pricing } from "@/components/blocks/pricing/pricing";
-import { SplitMedia } from "@/components/blocks/split-media/split-media";
-import { Testimonials } from "@/components/blocks/testimonials/testimonials";
-import { Trust } from "@/components/blocks/trust/trust";
+import type { LayoutBlock } from "@/types/block-types";
+import { BentoShowcase } from "./bento/bento";
+import { CinematicCta } from "./cinematic-cta/cinematic-cta";
+import { Faq } from "./faq/faq";
+import { Hero } from "./hero/hero";
+import { ImageGallery } from "./image-gallery/image-gallery";
+import { LatestArticles } from "./latest-articles/latest-articles";
+import { Pricing } from "./pricing/pricing";
+import { SplitMedia } from "./split-media/split-media";
+import { Testimonials } from "./testimonials/testimonials";
+import { Trust } from "./trust/trust";
 
-// Temporary until payload-types.ts is generated
-interface LayoutBlock {
-  blockType: string;
-  id: string;
-  // biome-ignore lint/suspicious/noExplicitAny: dynamic block props from Payload CMS
-  [key: string]: any;
+function renderBlock(block: LayoutBlock) {
+  switch (block.blockType) {
+    case "hero":
+      return <Hero {...block} />;
+    case "bento":
+      return <BentoShowcase {...block} />;
+    case "splitMedia":
+      return <SplitMedia {...block} />;
+    case "testimonials":
+      return <Testimonials {...block} />;
+    case "imageGallery":
+      return <ImageGallery {...block} />;
+    case "latestArticles":
+      return <LatestArticles {...block} />;
+    case "cinematicCta":
+      return <CinematicCta {...block} />;
+    case "pricing":
+      return <Pricing {...block} />;
+    case "faq":
+      return <Faq {...block} />;
+    case "trust":
+      return <Trust {...block} />;
+    default:
+      return null;
+  }
 }
-
-// biome-ignore lint/suspicious/noExplicitAny: blocks have varying prop shapes
-const blockComponents: Record<string, React.ComponentType<any>> = {
-  hero: Hero,
-  bento: BentoShowcase,
-  splitMedia: SplitMedia,
-  testimonials: Testimonials,
-  imageGallery: ImageGallery,
-  latestArticles: LatestArticles,
-  cinematicCta: CinematicCta,
-  pricing: Pricing,
-  faq: Faq,
-  trust: Trust,
-};
 
 export function RenderBlocks({ blocks }: { blocks: LayoutBlock[] }) {
   if (!blocks || blocks.length === 0) {
@@ -38,18 +44,11 @@ export function RenderBlocks({ blocks }: { blocks: LayoutBlock[] }) {
 
   return (
     <div className="flex flex-col gap-16 lg:gap-32">
-      {blocks.map((block) => {
-        const Component = blockComponents[block.blockType];
-        if (!Component) {
-          return null;
-        }
-
-        return (
-          <div data-section={block.blockType} key={block.id}>
-            <Component {...block} />
-          </div>
-        );
-      })}
+      {blocks.map((block) => (
+        <div data-section={block.blockType} key={block.id}>
+          {renderBlock(block)}
+        </div>
+      ))}
     </div>
   );
 }

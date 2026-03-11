@@ -3,44 +3,10 @@
 import { useScroll } from "motion/react";
 import { useCallback, useRef, useState } from "react";
 
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import type { ImageGalleryBlock } from "@/types/block-types";
 import { GalleryCard } from "./gallery-card";
-import {
-  galleryItems as defaultItems,
-  type GalleryItem,
-} from "./image-gallery-data";
 
-interface ImageGalleryProps {
-  items?: {
-    caption: string;
-    id?: string;
-    image?: { url?: string; blurDataURL?: string } | string;
-    imageAlt: string;
-    label: string;
-  }[];
-}
-
-/** Map a Payload gallery item to the internal GalleryItem shape. */
-function toGalleryItem(
-  item: NonNullable<ImageGalleryProps["items"]>[number],
-  index: number
-): GalleryItem {
-  return {
-    id: item.id || `g-${index}`,
-    label: item.label,
-    caption: item.caption,
-    imageSrc: getMediaUrl(item.image),
-    blurDataURL: getBlurDataURL(item.image),
-    imageAlt: item.imageAlt,
-  };
-}
-
-export function ImageGallery(props: ImageGalleryProps) {
-  const items =
-    props.items && props.items.length > 0
-      ? props.items.map(toGalleryItem)
-      : defaultItems;
-
+export function ImageGallery({ items }: ImageGalleryBlock) {
   const total = items.length;
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -74,7 +40,7 @@ export function ImageGallery(props: ImageGalleryProps) {
             imageReady={loadedSet.has(i)}
             index={i}
             item={item}
-            key={item.id}
+            key={item.id ?? `g-${i}`}
             onImageLoad={handleImageLoad}
             progress={scrollYProgress}
             total={total}

@@ -7,7 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { chartData as defaultChartData } from "./bento-data";
+import type { BentoBlock } from "@/types/block-types";
 
 const chartConfig = {
   visitors: {
@@ -16,12 +16,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-interface ChartCardProps {
-  chartData?: { month: string; visitors: number }[];
-}
-
-export function ChartCard({ chartData }: ChartCardProps) {
-  const data = chartData && chartData.length > 0 ? chartData : defaultChartData;
+export function ChartCard({
+  chartData,
+}: {
+  chartData?: BentoBlock["chartData"];
+}) {
+  const data = chartData ?? [];
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-background p-4 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">

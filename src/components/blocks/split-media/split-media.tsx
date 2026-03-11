@@ -15,26 +15,20 @@ import { useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
-import { splitMediaRows } from "./split-media-data";
+import type { SplitMediaBlock } from "@/types/block-types";
 
 const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-interface ResolvedRow {
-  blurDataURL?: string;
-  body: string;
-  cta?: { href: string; label: string };
-  headline: string;
-  mediaAlt: string;
-  mediaLabel: string;
-  mediaOverlay: { badge?: string; description: string; title: string };
-  mediaSrc: string;
-}
+/** A single row from the CMS block data. */
+type SplitMediaRow = SplitMediaBlock["rows"][number];
 
-function SplitRowItem({ row, index }: { index: number; row: ResolvedRow }) {
+function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rowRef, { once: true, margin: "-100px" });
-  const isVideo = VIDEO_RE.test(row.mediaSrc);
+  const mediaSrc = getMediaUrl(row.mediaSrc);
+  const blurDataURL = getBlurDataURL(row.mediaSrc);
+  const isVideo = VIDEO_RE.test(mediaSrc);
   const mediaFirst = index % 2 === 0;
 
   // Detect desktop for parallax (mobile gets no parallax per spec)
@@ -85,17 +79,17 @@ function SplitRowItem({ row, index }: { index: number; row: ResolvedRow }) {
             loop
             muted
             playsInline
-            src={row.mediaSrc}
+            src={mediaSrc}
           />
         ) : (
           <Image
             alt={row.mediaAlt}
-            blurDataURL={row.blurDataURL}
+            blurDataURL={blurDataURL}
             className="object-cover brightness-75"
             fill
-            placeholder={row.blurDataURL ? "blur" : "empty"}
+            placeholder={blurDataURL ? "blur" : "empty"}
             sizes="(max-width: 1024px) 100vw, 65vw"
-            src={row.mediaSrc}
+            src={mediaSrc}
           />
         )}
       </motion.div>
@@ -175,7 +169,7 @@ function SplitRowItem({ row, index }: { index: number; row: ResolvedRow }) {
           {row.body}
         </motion.p>
 
-        {row.cta && (
+        {row.cta?.label && row.cta.href && (
           <motion.div
             animate={inView ? { opacity: 1, y: 0 } : {}}
             className="mt-6 lg:mt-8"
@@ -213,46 +207,13 @@ function SplitRowItem({ row, index }: { index: number; row: ResolvedRow }) {
   );
 }
 
-interface SplitMediaProps {
-  rows?: {
-    body: string;
-    cta?: { href?: string; label?: string };
-    headline: string;
-    mediaAlt: string;
-    mediaLabel: string;
-    mediaOverlay: { badge?: string; description: string; title: string };
-    mediaSrc: { url?: string; blurDataURL?: string } | string;
-  }[];
-}
-
-export function SplitMedia(props: SplitMediaProps) {
-  const rows: ResolvedRow[] =
-    props.rows && props.rows.length > 0
-      ? props.rows.map((r) => ({
-          headline: r.headline,
-          body: r.body,
-          mediaLabel: r.mediaLabel,
-          mediaSrc: getMediaUrl(r.mediaSrc),
-          blurDataURL: getBlurDataURL(r.mediaSrc),
-          mediaAlt: r.mediaAlt,
-          cta:
-            r.cta?.label && r.cta?.href
-              ? { label: r.cta.label, href: r.cta.href }
-              : undefined,
-          mediaOverlay: {
-            title: r.mediaOverlay.title,
-            badge: r.mediaOverlay.badge,
-            description: r.mediaOverlay.description,
-          },
-        }))
-      : splitMediaRows;
-
+export function SplitMedia({ rows }: SplitMediaBlock) {
   return (
     <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <div className="flex flex-col gap-24 lg:gap-32">
           {rows.map((row, i) => (
-            <SplitRowItem index={i} key={row.headline} row={row} />
+            <SplitRowItem index={i} key={row.id ?? row.headline} row={row} />
           ))}
         </div>
       </div>

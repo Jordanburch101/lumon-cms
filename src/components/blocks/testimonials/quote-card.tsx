@@ -2,16 +2,18 @@
 
 import { motion } from "motion/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/core/lib/utils";
-import type { Testimonial } from "./testimonials-data";
+import { cn, getMediaUrl } from "@/core/lib/utils";
+import type { TestimonialItem } from "./testimonials";
 
 interface QuoteCardProps {
   isActive: boolean;
   onSelect: () => void;
-  testimonial: Testimonial;
+  testimonial: TestimonialItem;
 }
 
 export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
+  const avatarUrl = getMediaUrl(testimonial.avatar);
+
   return (
     <motion.button
       className={cn(
@@ -30,7 +32,7 @@ export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
       </p>
       <div className="flex items-center gap-2.5">
         <Avatar>
-          <AvatarImage alt={testimonial.name} src={testimonial.avatarSrc} />
+          <AvatarImage alt={testimonial.name} src={avatarUrl} />
           <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">

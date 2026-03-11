@@ -1,4 +1,4 @@
-import { bentoSectionData } from "./bento-data";
+import type { BentoBlock } from "@/types/block-types";
 import { ChartCard } from "./chart-card";
 import { GlobeCard } from "./globe-card";
 import { ImageCard } from "./image-card";
@@ -6,23 +6,12 @@ import { IntegrationsCard } from "./integrations-card";
 import { NotificationsCard } from "./notifications-card";
 import { ShowcaseCard } from "./showcase-card";
 
-interface BentoShowcaseProps {
-  chartData?: { month: string; visitors: number }[];
-  headline?: string;
-  image?: {
-    alt?: string;
-    badge?: string;
-    description?: string;
-    src?: { url?: string } | string;
-    title?: string;
-  };
-  subtext?: string;
-}
-
-export function BentoShowcase(props: BentoShowcaseProps) {
-  const headline = props.headline || bentoSectionData.headline;
-  const subtext = props.subtext || bentoSectionData.subtext;
-
+export function BentoShowcase({
+  headline,
+  subtext,
+  image,
+  chartData,
+}: BentoBlock) {
   return (
     <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
@@ -36,13 +25,13 @@ export function BentoShowcase(props: BentoShowcaseProps) {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[240px_240px_56px]">
             {/* Row 1: Chart (2col) + Globe (1col) + Image (1col, spans 2 rows) */}
             <div className="sm:col-span-2">
-              <ChartCard chartData={props.chartData} />
+              <ChartCard chartData={chartData ?? undefined} />
             </div>
             <div className="hidden lg:block">
               <GlobeCard />
             </div>
             <div className="sm:col-span-2 lg:col-span-1 lg:row-span-2">
-              <ImageCard image={props.image} />
+              <ImageCard image={image} />
             </div>
 
             {/* Row 2: Showcase (2col) + Notifications (1col) */}

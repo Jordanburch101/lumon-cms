@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
-import { heroData } from "./hero-data";
+import type { HeroBlock } from "@/types/block-types";
 
 const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
 
@@ -10,27 +10,16 @@ function getMediaType(src: string): "video" | "image" {
   return VIDEO_EXTENSION_RE.test(src) ? "video" : "image";
 }
 
-interface HeroProps {
-  headline?: string;
-  mediaSrc?: { url?: string; blurDataURL?: string } | string;
-  primaryCta?: { label?: string; href?: string };
-  secondaryCta?: { label?: string; href?: string };
-  subtext?: string;
-}
-
-export function Hero(props: HeroProps) {
-  const mediaSrc = getMediaUrl(props.mediaSrc) || heroData.mediaSrc;
-  const blurDataURL = getBlurDataURL(props.mediaSrc);
-  const headline = props.headline || heroData.headline;
-  const subtext = props.subtext || heroData.subtext;
-  const primaryCtaLabel = props.primaryCta?.label || heroData.primaryCta.label;
-  const primaryCtaHref = props.primaryCta?.href || heroData.primaryCta.href;
-  const secondaryCtaLabel =
-    props.secondaryCta?.label || heroData.secondaryCta.label;
-  const secondaryCtaHref =
-    props.secondaryCta?.href || heroData.secondaryCta.href;
-
-  const mediaType = getMediaType(mediaSrc);
+export function Hero({
+  mediaSrc,
+  headline,
+  subtext,
+  primaryCta,
+  secondaryCta,
+}: HeroBlock) {
+  const url = getMediaUrl(mediaSrc);
+  const blurDataURL = getBlurDataURL(mediaSrc);
+  const mediaType = url ? getMediaType(url) : "image";
 
   return (
     <section
@@ -38,16 +27,17 @@ export function Hero(props: HeroProps) {
       data-navbar-contrast="light"
     >
       {/* Background media */}
-      {mediaType === "video" ? (
+      {url && mediaType === "video" && (
         <video
           autoPlay
           className="absolute inset-0 h-full w-full object-cover"
           loop
           muted
           playsInline
-          src={mediaSrc}
+          src={url}
         />
-      ) : (
+      )}
+      {url && mediaType === "image" && (
         <Image
           alt="Hero background"
           blurDataURL={blurDataURL}
@@ -55,14 +45,14 @@ export function Hero(props: HeroProps) {
           fill
           placeholder={blurDataURL ? "blur" : "empty"}
           priority
-          src={mediaSrc}
+          src={url}
         />
       )}
 
-      {/* Gradient overlay: transparent at top → black/65 at bottom */}
+      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
 
-      {/* Content: bottom-left anchored */}
+      {/* Content */}
       <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-16 lg:px-6">
         <h1 className="max-w-2xl font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-6xl">
           {headline}
@@ -74,7 +64,7 @@ export function Hero(props: HeroProps) {
             className="bg-white text-black hover:bg-white/90"
             size="lg"
           >
-            <Link href={primaryCtaHref}>{primaryCtaLabel}</Link>
+            <Link href={primaryCta.href}>{primaryCta.label}</Link>
           </Button>
           <Button
             asChild
@@ -83,11 +73,11 @@ export function Hero(props: HeroProps) {
             variant="outline"
           >
             <a
-              href={secondaryCtaHref}
+              href={secondaryCta.href}
               rel="noopener noreferrer"
               target="_blank"
             >
-              {secondaryCtaLabel}
+              {secondaryCta.label}
             </a>
           </Button>
         </div>

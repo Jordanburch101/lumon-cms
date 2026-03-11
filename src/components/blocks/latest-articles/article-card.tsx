@@ -2,10 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import type { Article } from "./latest-articles-data";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import type { LatestArticlesBlock } from "@/types/block-types";
+
+type ArticleData = LatestArticlesBlock["articles"][number];
 
 interface ArticleCardProps {
-  article: Article;
+  article: ArticleData;
   variant: "featured" | "supporting";
 }
 
@@ -18,6 +21,10 @@ function formatDate(dateStr: string) {
 }
 
 export function ArticleCard({ article, variant }: ArticleCardProps) {
+  const imageSrc = getMediaUrl(article.image);
+  const blurData = getBlurDataURL(article.image);
+  const avatarSrc = getMediaUrl(article.author.avatar);
+
   if (variant === "featured") {
     return (
       <Link
@@ -28,12 +35,12 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
         <div className="relative aspect-[3/2] w-full lg:aspect-auto lg:h-full">
           <Image
             alt={article.imageAlt}
-            blurDataURL={article.blurDataURL}
+            blurDataURL={blurData}
             className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
             fill
-            placeholder={article.blurDataURL ? "blur" : "empty"}
+            placeholder={blurData ? "blur" : "empty"}
             sizes="(max-width: 1024px) 100vw, 60vw"
-            src={article.imageSrc}
+            src={imageSrc}
           />
         </div>
 
@@ -50,10 +57,7 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
           </h3>
           <div className="mt-3 flex items-center gap-2.5 lg:mt-4">
             <Avatar className="size-6 ring-1 ring-white/20">
-              <AvatarImage
-                alt={article.author.name}
-                src={article.author.avatarSrc}
-              />
+              <AvatarImage alt={article.author.name} src={avatarSrc} />
               <AvatarFallback className="text-[10px]">
                 {article.author.name.charAt(0)}
               </AvatarFallback>
@@ -76,12 +80,12 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
       <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
         <Image
           alt={article.imageAlt}
-          blurDataURL={article.blurDataURL}
+          blurDataURL={blurData}
           className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
           fill
-          placeholder={article.blurDataURL ? "blur" : "empty"}
+          placeholder={blurData ? "blur" : "empty"}
           sizes="(max-width: 1024px) 100vw, 40vw"
-          src={article.imageSrc}
+          src={imageSrc}
         />
       </div>
 
@@ -103,10 +107,7 @@ export function ArticleCard({ article, variant }: ArticleCardProps) {
         </p>
         <div className="mt-3 flex items-center gap-2">
           <Avatar className="size-5 ring-1 ring-border/50">
-            <AvatarImage
-              alt={article.author.name}
-              src={article.author.avatarSrc}
-            />
+            <AvatarImage alt={article.author.name} src={avatarSrc} />
             <AvatarFallback className="text-[9px]">
               {article.author.name.charAt(0)}
             </AvatarFallback>

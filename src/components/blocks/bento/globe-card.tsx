@@ -365,62 +365,50 @@ export function GlobeCard() {
     };
 
     const DEFAULT_LAT = 20;
-    const animate = (now: number) => {
-      if (!isVisible.current) {
-        lastTime = 0; // reset so no jump when resuming
-        frame = requestAnimationFrame(animate);
-        return;
-      }
-      const dt = lastTime ? (now - lastTime) / 16.67 : 1; // normalize to 60fps
-      lastTime = now;
-      t += dt;
-      if (!userInteracting) {
-        lngRef.current += 0.05 * dt;
-        // Gently ease latitude back toward default (frame-rate independent exponential decay)
-        latRef.current += (DEFAULT_LAT - latRef.current) * (1 - 0.99 ** dt);
-        map.setCenter([lngRef.current, latRef.current]);
-      }
 
-      // Pulse the dots and rings
-      if (!map.getLayer("cdn-pulse")) {
-        frame = requestAnimationFrame(animate);
-        return;
-      }
-      // Throttle pulse updates — slow oscillation looks identical at ~15fps
-      if (Math.floor(t) % 4 === 0) {
-        const pulse = 0.5 + 0.5 * Math.sin(t * 0.04);
-        const pulseSlow = 0.5 + 0.5 * Math.sin(t * 0.02);
+    const updateRotation = (dt: number) => {
+      lngRef.current += 0.05 * dt;
+      latRef.current += (DEFAULT_LAT - latRef.current) * (1 - 0.99 ** dt);
+      map.setCenter([lngRef.current, latRef.current]);
+    };
 
-        map.setPaintProperty("cdn-pulse", "circle-radius", 8 + 6 * pulse);
-        map.setPaintProperty("cdn-pulse", "circle-opacity", 0.25 * (1 - pulse));
-        map.setPaintProperty(
-          "cdn-glow",
-          "circle-opacity",
-          0.2 + 0.2 * pulseSlow
-        );
-        map.setPaintProperty(
-          "cdn-dots",
-          "circle-color",
-          pulse > 0.5 ? dotColor : dotDim
-        );
-      }
+    const updatePulse = (tick: number) => {
+      const pulse = 0.5 + 0.5 * Math.sin(tick * 0.04);
+      const pulseSlow = 0.5 + 0.5 * Math.sin(tick * 0.02);
+      map.setPaintProperty("cdn-pulse", "circle-radius", 8 + 6 * pulse);
+      map.setPaintProperty("cdn-pulse", "circle-opacity", 0.25 * (1 - pulse));
+      map.setPaintProperty("cdn-glow", "circle-opacity", 0.2 + 0.2 * pulseSlow);
+      map.setPaintProperty(
+        "cdn-dots",
+        "circle-color",
+        pulse > 0.5 ? dotColor : dotDim
+      );
+    };
 
-      // Spawn new arcs
-      spawnCounter += dt;
-      if (spawnCounter >= SPAWN_INTERVAL && active.length < MAX_ACTIVE) {
-        spawnCounter = 0;
-        const arc = arcFeatures[nextArc];
-        active.push({
-          arcIdx: nextArc,
-          coords: arc.geometry.coordinates as [number, number][],
-          phase: 0,
-        });
-        lastVisiblePts.push(-1); // force first update
-        nextArc = (nextArc + 1) % arcFeatures.length;
-        arcsDirty = true;
-      }
+    const spawnArc = () => {
+      const arc = arcFeatures[nextArc];
+      active.push({
+        arcIdx: nextArc,
+        coords: arc.geometry.coordinates as [number, number][],
+        phase: 0,
+      });
+      lastVisiblePts.push(-1);
+      nextArc = (nextArc + 1) % arcFeatures.length;
+      arcsDirty = true;
+    };
 
-      // Advance phases, track visible point changes, remove finished arcs
+    const getVisiblePoints = (a: ActiveArc): number => {
+      const totalPts = a.coords.length;
+      if (a.phase <= 1) {
+        return Math.max(2, Math.ceil(Math.min(a.phase, 1) * totalPts));
+      }
+      if (a.phase <= 2) {
+        return totalPts;
+      }
+      return totalPts - Math.floor((a.phase - 2) * totalPts);
+    };
+
+    const advanceArcs = (dt: number) => {
       for (let i = active.length - 1; i >= 0; i--) {
         active[i].phase += SPEED * dt;
         if (active[i].phase > 3) {
@@ -428,26 +416,47 @@ export function GlobeCard() {
           lastVisiblePts.splice(i, 1);
           arcsDirty = true;
         } else {
-          const a = active[i];
-          const totalPts = a.coords.length;
-          let visPts: number;
-          if (a.phase <= 1) {
-            visPts = Math.max(2, Math.ceil(Math.min(a.phase, 1) * totalPts));
-          } else if (a.phase <= 2) {
-            visPts = totalPts;
-          } else {
-            visPts = totalPts - Math.floor((a.phase - 2) * totalPts);
-          }
+          const visPts = getVisiblePoints(active[i]);
           if (visPts !== lastVisiblePts[i]) {
             lastVisiblePts[i] = visPts;
             arcsDirty = true;
           }
         }
       }
+    };
 
+    const tickArcs = (dt: number) => {
+      spawnCounter += dt;
+      if (spawnCounter >= SPAWN_INTERVAL && active.length < MAX_ACTIVE) {
+        spawnCounter = 0;
+        spawnArc();
+      }
+      advanceArcs(dt);
       if (arcsDirty) {
         setArcData();
         arcsDirty = false;
+      }
+    };
+
+    const animate = (now: number) => {
+      if (!isVisible.current) {
+        lastTime = 0;
+        frame = requestAnimationFrame(animate);
+        return;
+      }
+      const dt = lastTime ? (now - lastTime) / 16.67 : 1;
+      lastTime = now;
+      t += dt;
+
+      if (!userInteracting) {
+        updateRotation(dt);
+      }
+
+      if (map.getLayer("cdn-pulse")) {
+        if (Math.floor(t) % 4 === 0) {
+          updatePulse(t);
+        }
+        tickArcs(dt);
       }
 
       frame = requestAnimationFrame(animate);

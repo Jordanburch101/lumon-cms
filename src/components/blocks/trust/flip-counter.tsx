@@ -2,26 +2,32 @@
 
 import { motion } from "motion/react";
 
+import type { TrustBlock } from "@/types/block-types";
+
 const EASE = [0.16, 1, 0.3, 1] as const;
 const DIGITS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+/** A single stat item from the CMS block data. */
+type TrustStat = TrustBlock["stats"][number];
+
 interface FlipCounterProps {
-  decimals?: number;
   delay?: number;
-  format?: "k";
   inView: boolean;
-  suffix?: string;
-  target: number;
+  stat: TrustStat;
 }
 
-function formatValue(n: number, format?: "k", decimals?: number): string {
+function formatValue(
+  n: number,
+  format?: ("none" | "k") | null,
+  decimals?: number | null
+): string {
   if (format === "k") {
     if (n >= 1000) {
       return `${Math.floor(n / 1000)}k`;
     }
     return Math.floor(n).toString();
   }
-  if (decimals !== undefined && decimals > 0) {
+  if (decimals != null && decimals > 0) {
     return n.toFixed(decimals);
   }
   return Math.floor(n).toString();
@@ -88,15 +94,9 @@ function StaticChar({
   );
 }
 
-export function FlipCounter({
-  target,
-  format,
-  decimals,
-  delay = 0,
-  suffix = "",
-  inView,
-}: FlipCounterProps) {
-  const formatted = formatValue(target, format, decimals) + suffix;
+export function FlipCounter({ stat, delay = 0, inView }: FlipCounterProps) {
+  const formatted =
+    formatValue(stat.value, stat.format, stat.decimals) + (stat.suffix ?? "");
   const chars = formatted.split("");
 
   // Per-character stagger within this counter

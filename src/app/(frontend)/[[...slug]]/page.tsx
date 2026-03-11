@@ -4,20 +4,6 @@ import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import { RenderBlocks } from "@/components/blocks/render-blocks";
 
-// Lightweight page shape used until `payload generate:types` produces payload-types.ts
-interface LayoutBlock {
-  blockType: string;
-  id: string;
-  [key: string]: unknown;
-}
-
-interface PageDoc {
-  title: string;
-  slug: string;
-  layout?: LayoutBlock[];
-  meta?: { title?: string; description?: string; image?: unknown };
-}
-
 interface Args {
   params: Promise<{ slug?: string[] }>;
 }
@@ -35,13 +21,13 @@ export default async function Page({ params }: Args) {
     limit: 1,
   });
 
-  const page = result.docs[0] as unknown as PageDoc | undefined;
+  const page = result.docs[0];
 
   if (!page) {
     notFound();
   }
 
-  return <RenderBlocks blocks={page.layout || []} />;
+  return <RenderBlocks blocks={page.layout ?? []} />;
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
@@ -58,7 +44,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     select: { meta: true, title: true },
   });
 
-  const page = result.docs[0] as unknown as PageDoc | undefined;
+  const page = result.docs[0];
 
   if (!page) {
     return {};

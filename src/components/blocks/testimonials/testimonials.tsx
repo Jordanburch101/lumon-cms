@@ -3,69 +3,22 @@
 import { motion, useInView } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getMediaUrl } from "@/core/lib/utils";
+import type { TestimonialsBlock } from "@/types/block-types";
 import { FeaturedQuote } from "./featured-quote";
 import { QuoteCard } from "./quote-card";
-import {
-  featuredTestimonials as defaultFeatured,
-  shortTestimonials as defaultShort,
-  type Testimonial,
-  testimonialsSectionData,
-} from "./testimonials-data";
+
+export type TestimonialItem = TestimonialsBlock["testimonials"][number];
 
 const ADVANCE_MS = 6000;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-interface TestimonialsProps {
-  headline?: string;
-  subtext?: string;
-  testimonials?: {
-    avatar?: { url?: string } | string;
-    department: string;
-    featured?: boolean;
-    featuredQuote?: string;
-    id?: string;
-    name: string;
-    quote: string;
-    role: string;
-  }[];
-}
-
-/** Map a Payload testimonial item to the internal Testimonial shape. */
-function toTestimonial(
-  item: NonNullable<TestimonialsProps["testimonials"]>[number],
-  index: number
-): Testimonial {
-  return {
-    id: item.id || `t-${index}`,
-    avatarSrc: getMediaUrl(item.avatar),
-    name: item.name,
-    role: item.role,
-    department: item.department,
-    quote: item.quote,
-    featured: item.featured,
-    featuredQuote: item.featuredQuote,
-  };
-}
-
-export function Testimonials(props: TestimonialsProps) {
-  const headline = props.headline || testimonialsSectionData.headline;
-  const subtext = props.subtext || testimonialsSectionData.subtext;
-
-  // Resolve testimonials from props or fallback to data file
-  const payloadTestimonials = props.testimonials;
-  const hasPayloadData =
-    payloadTestimonials !== undefined && payloadTestimonials.length > 0;
-  const allTestimonials = hasPayloadData
-    ? payloadTestimonials.map(toTestimonial)
-    : undefined;
-
-  const featuredTestimonials = allTestimonials
-    ? allTestimonials.filter((t) => t.featured)
-    : defaultFeatured;
-  const shortTestimonials = allTestimonials
-    ? allTestimonials.filter((t) => !t.featured)
-    : defaultShort;
+export function Testimonials({
+  headline,
+  subtext,
+  testimonials,
+}: TestimonialsBlock) {
+  const featuredTestimonials = testimonials.filter((t) => t.featured);
+  const shortTestimonials = testimonials.filter((t) => !t.featured);
 
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
@@ -73,16 +26,16 @@ export function Testimonials(props: TestimonialsProps) {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [activePool, setActivePool] =
-    useState<Testimonial[]>(featuredTestimonials);
+    useState<TestimonialItem[]>(featuredTestimonials);
   const [timerKey, setTimerKey] = useState(0);
   const activeTestimonial = activePool[activeIndex % activePool.length];
 
-  // Sync activePool when featuredTestimonials changes (e.g. props arrive)
-  // biome-ignore lint/correctness/useExhaustiveDependencies: featuredTestimonials identity changes when props change
+  // Sync activePool when testimonials prop changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: testimonials identity changes when props change
   useEffect(() => {
     setActivePool(featuredTestimonials);
     setActiveIndex(0);
-  }, [hasPayloadData]);
+  }, [testimonials]);
 
   // Auto-advance timer — only runs while section is visible in viewport
   // biome-ignore lint/correctness/useExhaustiveDependencies: timerKey intentionally resets the interval
@@ -100,7 +53,7 @@ export function Testimonials(props: TestimonialsProps) {
 
   // Handle short quote card click — promote to spotlight and reset timer
   const handleSelectShort = useCallback(
-    (testimonial: Testimonial) => {
+    (testimonial: TestimonialItem) => {
       const newPool = [testimonial, ...featuredTestimonials];
       setActivePool(newPool);
       setActiveIndex(0);

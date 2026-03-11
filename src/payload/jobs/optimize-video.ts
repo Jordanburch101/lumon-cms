@@ -53,7 +53,9 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
         media.url,
         media.filename,
         inputPath,
-        (media as Record<string, unknown>).prefix as string | undefined
+        (media as unknown as Record<string, unknown>).prefix as
+          | string
+          | undefined
       );
 
       // Build ffmpeg arguments

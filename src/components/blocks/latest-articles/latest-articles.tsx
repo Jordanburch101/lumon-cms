@@ -6,65 +6,22 @@ import { motion, useInView } from "motion/react";
 import Link from "next/link";
 import { useRef } from "react";
 
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import type { LatestArticlesBlock } from "@/types/block-types";
 
 import { ArticleCard } from "./article-card";
-import {
-  type Article,
-  featuredArticle as defaultFeaturedArticle,
-  supportingArticles as defaultSupportingArticles,
-  latestArticlesSectionData,
-} from "./latest-articles-data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-interface LatestArticlesProps {
-  articles?: {
-    id?: string;
-    title: string;
-    excerpt: string;
-    category: string;
-    image: { url?: string; blurDataURL?: string } | string;
-    imageAlt: string;
-    author: { name: string; avatar?: { url?: string } | string };
-    readTime: string;
-    href: string;
-    publishedAt: string;
-  }[];
-  headline?: string;
-  subtext?: string;
-}
-
-export function LatestArticles(props: LatestArticlesProps) {
+export function LatestArticles({
+  headline,
+  subtext,
+  articles,
+}: LatestArticlesBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
-  const headline = props.headline || latestArticlesSectionData.headline;
-  const subtext = props.subtext || latestArticlesSectionData.subtext;
-
-  const articles: Article[] = props.articles
-    ? props.articles.map((a, i) => ({
-        id: a.id || String(i),
-        title: a.title,
-        excerpt: a.excerpt,
-        category: a.category,
-        imageSrc: getMediaUrl(a.image),
-        blurDataURL: getBlurDataURL(a.image),
-        imageAlt: a.imageAlt,
-        author: {
-          name: a.author.name,
-          avatarSrc: getMediaUrl(a.author.avatar),
-        },
-        readTime: a.readTime,
-        href: a.href,
-        publishedAt: a.publishedAt,
-      }))
-    : [];
-
-  const featuredArticle = props.articles ? articles[0] : defaultFeaturedArticle;
-  const supportingArticles = props.articles
-    ? articles.slice(1)
-    : defaultSupportingArticles;
+  const featuredArticle = articles[0];
+  const supportingArticles = articles.slice(1);
 
   return (
     <section className="w-full" ref={sectionRef}>
@@ -109,7 +66,7 @@ export function LatestArticles(props: LatestArticlesProps) {
           {/* Supporting cards — 2 of 5 columns, stretch to match featured */}
           <div className="flex flex-col gap-6 lg:col-span-2">
             {supportingArticles.map((article) => (
-              <div className="lg:flex-1" key={article.id}>
+              <div className="lg:flex-1" key={article.id ?? article.title}>
                 <ArticleCard article={article} variant="supporting" />
               </div>
             ))}

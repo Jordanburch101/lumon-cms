@@ -9,7 +9,7 @@
     "lint": "eslint",
     "check": "ultracite check",
     "fix": "ultracite fix",
-    "generate:types": "payload generate:types"
+    "generate:types": "bun -e \"process.argv=['bun','payload','generate:types'];const{bin}=await import('./node_modules/payload/dist/bin/index.js');await bin()\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1006.0",

@@ -8,57 +8,23 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import type { PricingBlock } from "@/types/block-types";
 
 import { PricingCard } from "./pricing-card";
-import {
-  pricingTiers as defaultPricingTiers,
-  type PricingTier,
-  pricingSectionData,
-} from "./pricing-data";
 import { PricingToggle } from "./pricing-toggle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-interface PricingProps {
-  footnote?: string;
-  footnoteAttribution?: string;
-  headline?: string;
-  subtext?: string;
-  tiers?: {
-    name: string;
-    description: string;
-    monthlyPrice: number;
-    annualPrice: number;
-    features: { text: string }[] | string[];
-    cta: { label: string; href: string };
-    badge?: string;
-    recommended?: boolean;
-  }[];
-}
-
-export function Pricing(props: PricingProps) {
+export function Pricing({
+  headline,
+  subtext,
+  footnote,
+  footnoteAttribution,
+  tiers,
+}: PricingBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [isAnnual, setIsAnnual] = useState(false);
-
-  const headline = props.headline || pricingSectionData.headline;
-  const subtext = props.subtext || pricingSectionData.subtext;
-  const footnote = props.footnote || pricingSectionData.footnote;
-  const footnoteAttribution =
-    props.footnoteAttribution || pricingSectionData.footnoteAttribution;
-
-  const pricingTiers: PricingTier[] = props.tiers
-    ? props.tiers.map((t) => ({
-        name: t.name,
-        description: t.description,
-        monthlyPrice: t.monthlyPrice,
-        annualPrice: t.annualPrice,
-        features: t.features.map((f) => (typeof f === "string" ? f : f.text)),
-        cta: t.cta,
-        badge: t.badge,
-        recommended: t.recommended,
-      }))
-    : defaultPricingTiers;
 
   return (
     <section className="w-full" ref={sectionRef}>
@@ -101,7 +67,7 @@ export function Pricing(props: PricingProps) {
             }}
           >
             <CarouselContent className="-ml-4">
-              {pricingTiers.map((tier) => (
+              {tiers.map((tier) => (
                 <CarouselItem
                   className="basis-[85%] pl-4 sm:basis-[70%]"
                   key={tier.name}
@@ -115,7 +81,7 @@ export function Pricing(props: PricingProps) {
 
         {/* Desktop: 3-col grid */}
         <div className="hidden gap-4 lg:grid lg:grid-cols-3">
-          {pricingTiers.map((tier, i) => (
+          {tiers.map((tier, i) => (
             <motion.div
               animate={inView ? { opacity: 1, y: 0 } : {}}
               initial={{ opacity: 0, y: 24 }}
@@ -132,14 +98,17 @@ export function Pricing(props: PricingProps) {
         </div>
 
         {/* Footnote */}
-        <motion.p
-          animate={inView ? { opacity: 1 } : {}}
-          className="mt-10 text-center text-muted-foreground/50 text-xs italic lg:mt-14"
-          initial={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
-        >
-          &ldquo;{footnote}&rdquo; &mdash; {footnoteAttribution}
-        </motion.p>
+        {footnote && (
+          <motion.p
+            animate={inView ? { opacity: 1 } : {}}
+            className="mt-10 text-center text-muted-foreground/50 text-xs italic lg:mt-14"
+            initial={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
+          >
+            &ldquo;{footnote}&rdquo;
+            {footnoteAttribution && <> &mdash; {footnoteAttribution}</>}
+          </motion.p>
+        )}
       </div>
     </section>
   );

@@ -1,34 +1,22 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
-import { imageCardData } from "./bento-data";
+import type { BentoBlock } from "@/types/block-types";
 
 const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 
-interface ImageCardProps {
-  image?: {
-    alt?: string;
-    badge?: string;
-    description?: string;
-    src?: { url?: string; blurDataURL?: string } | string;
-    title?: string;
-  };
-}
-
-export function ImageCard({ image }: ImageCardProps) {
-  const src = getMediaUrl(image?.src) || imageCardData.src;
-  const blurDataURL = getBlurDataURL(image?.src);
-  const alt = image?.alt || imageCardData.alt;
-  const title = image?.title || imageCardData.title;
-  const badge = image?.badge ?? imageCardData.badge;
-  const description = image?.description || imageCardData.description;
+export function ImageCard({ image }: { image: BentoBlock["image"] }) {
+  const src = getMediaUrl(image.src);
+  const blurDataURL = getBlurDataURL(image.src);
+  const { alt, title, description } = image;
+  const badge = image.badge ?? null;
 
   const isVideo = VIDEO_RE.test(src);
 
   return (
     <div className="relative h-full overflow-hidden rounded-xl border border-border/50 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
       <div className="absolute inset-0 z-10 bg-primary opacity-20 mix-blend-color" />
-      {isVideo ? (
+      {src && isVideo && (
         <video
           autoPlay
           className="h-full w-full object-cover brightness-75"
@@ -37,7 +25,8 @@ export function ImageCard({ image }: ImageCardProps) {
           playsInline
           src={src}
         />
-      ) : (
+      )}
+      {src && !isVideo && (
         <Image
           alt={alt}
           blurDataURL={blurDataURL}

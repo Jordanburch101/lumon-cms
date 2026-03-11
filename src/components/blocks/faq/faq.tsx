@@ -2,7 +2,6 @@
 
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-
 import {
   Accordion,
   AccordionContent,
@@ -10,30 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/core/lib/utils";
-
-import { faqItems as defaultFaqItems, faqSectionData } from "./faq-data";
+import type { FaqBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-interface FaqProps {
-  cta?: { text?: string; label?: string; href?: string };
-  eyebrow?: string;
-  headline?: string;
-  items?: { question: string; answer: string }[];
-  subtext?: string;
-}
-
-export function Faq(props: FaqProps) {
+export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
-
-  const eyebrow = props.eyebrow || faqSectionData.eyebrow;
-  const headline = props.headline || faqSectionData.headline;
-  const subtext = props.subtext || faqSectionData.subtext;
-  const faqItems = props.items || defaultFaqItems;
-  const ctaText = props.cta?.text || "Still have questions?";
-  const ctaLabel = props.cta?.label || "Contact your floor supervisor";
-  const ctaHref = props.cta?.href || "/contact";
 
   return (
     <section ref={sectionRef}>
@@ -46,29 +28,35 @@ export function Faq(props: FaqProps) {
             initial={{ opacity: 0, y: 24 }}
             transition={{ duration: 0.8, ease: EASE }}
           >
-            <p className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
-              {eyebrow}
-            </p>
+            {eyebrow && (
+              <p className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
+                {eyebrow}
+              </p>
+            )}
             <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
               {headline}
             </h2>
-            <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+            {subtext && (
+              <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+            )}
 
             {/* CTA */}
-            <motion.p
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              className="mt-8 text-muted-foreground text-sm"
-              initial={{ opacity: 0, y: 12 }}
-              transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
-            >
-              {ctaText}{" "}
-              <a
-                className="text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70"
-                href={ctaHref}
+            {cta && (
+              <motion.p
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                className="mt-8 text-muted-foreground text-sm"
+                initial={{ opacity: 0, y: 12 }}
+                transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
               >
-                {ctaLabel}
-              </a>
-            </motion.p>
+                {cta.text ?? ""}{" "}
+                <a
+                  className="text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70"
+                  href={cta.href ?? "#"}
+                >
+                  {cta.label ?? ""}
+                </a>
+              </motion.p>
+            )}
           </motion.div>
 
           {/* Accordion — right column */}
@@ -82,7 +70,7 @@ export function Faq(props: FaqProps) {
               collapsible
               type="single"
             >
-              {faqItems.map((item, i) => (
+              {items.map((item, i) => (
                 <motion.div
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   initial={{ opacity: 0, y: 16 }}

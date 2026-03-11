@@ -6,7 +6,9 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/core/lib/utils";
-import type { PricingTier } from "./pricing-data";
+import type { PricingBlock } from "@/types/block-types";
+
+type PricingTier = PricingBlock["tiers"][number];
 
 interface PricingCardProps {
   isAnnual: boolean;
@@ -32,7 +34,8 @@ function AnimatedPrice({ price }: { price: number }) {
 
 export function PricingCard({ tier, isAnnual }: PricingCardProps) {
   const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
-  const rec = tier.recommended;
+  const rec = tier.recommended ?? false;
+  const features = tier.features ?? [];
 
   return (
     <motion.div
@@ -97,15 +100,15 @@ export function PricingCard({ tier, isAnnual }: PricingCardProps) {
 
       {/* Features */}
       <ul className="mb-10 flex flex-1 flex-col gap-3.5">
-        {tier.features.map((feature) => (
+        {features.map((feature) => (
           <li
             className={cn(
               "text-sm leading-relaxed",
               rec ? "text-primary-foreground/80" : "text-muted-foreground"
             )}
-            key={feature}
+            key={feature.id ?? feature.text}
           >
-            {feature}
+            {feature.text}
           </li>
         ))}
       </ul>

@@ -8,7 +8,8 @@ import {
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { Testimonial } from "./testimonials-data";
+import { getMediaUrl } from "@/core/lib/utils";
+import type { TestimonialItem } from "./testimonials";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const WORD_STAGGER = 0.03;
@@ -17,7 +18,7 @@ const WORD_DURATION = 0.5;
 interface FeaturedQuoteProps {
   duration: number;
   paused: boolean;
-  testimonial: Testimonial;
+  testimonial: TestimonialItem;
 }
 
 export function FeaturedQuote({
@@ -28,6 +29,7 @@ export function FeaturedQuote({
   const displayQuote = testimonial.featuredQuote ?? testimonial.quote;
   const words = displayQuote.split(" ");
   const totalRevealTime = words.length * WORD_STAGGER + WORD_DURATION;
+  const avatarUrl = getMediaUrl(testimonial.avatar);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
@@ -136,10 +138,7 @@ export function FeaturedQuote({
                 }}
               >
                 <Avatar>
-                  <AvatarImage
-                    alt={testimonial.name}
-                    src={testimonial.avatarSrc}
-                  />
+                  <AvatarImage alt={testimonial.name} src={avatarUrl} />
                   <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>

@@ -17,21 +17,17 @@ import {
   useRef,
   useState,
 } from "react";
-
 import { Button } from "@/components/ui/button";
 import { getMediaUrl } from "@/core/lib/utils";
+import type { CinematicCtaBlock } from "@/types/block-types";
 
-import { cinematicCtaData } from "./cinematic-cta-data";
-
-interface CinematicCtaProps {
-  cta?: { label?: string; href?: string };
-  headline?: string;
-  label?: string;
-  subtext?: string;
-  videoSrc?: { url?: string } | string;
-}
-
-export function CinematicCta(props: CinematicCtaProps) {
+export function CinematicCta({
+  videoSrc,
+  label,
+  headline,
+  subtext,
+  cta,
+}: CinematicCtaBlock) {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -113,10 +109,7 @@ export function CinematicCta(props: CinematicCtaProps) {
   const [videoVisible, setVideoVisible] = useState(false);
   useMotionValueEvent(clipAmount, "change", (v) => setVideoVisible(v > 80));
 
-  const videoSrc = getMediaUrl(props.videoSrc) || cinematicCtaData.videoSrc;
-  const label = props.label || cinematicCtaData.label;
-  const headline = props.headline || cinematicCtaData.headline;
-  const subtext = props.subtext || cinematicCtaData.subtext;
+  const videoUrl = getMediaUrl(videoSrc);
 
   // Text fades in after curtains are mostly open
   const textOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
@@ -139,7 +132,7 @@ export function CinematicCta(props: CinematicCtaProps) {
           playsInline
           preload="metadata"
           ref={videoRef}
-          src={videoSrc}
+          src={videoUrl}
         />
 
         {/* Gradient overlay on video */}
@@ -166,15 +159,15 @@ export function CinematicCta(props: CinematicCtaProps) {
             {subtext}
           </motion.span>
 
-          {/* Optional CTA button */}
-          {props.cta?.label && props.cta?.href && (
+          {/* CTA button */}
+          {cta.label && cta.href && (
             <motion.div style={{ opacity: textOpacity, y: textY }}>
               <Button
                 asChild
                 className="mt-6 bg-white text-black hover:bg-white/90"
                 size="lg"
               >
-                <Link href={props.cta.href}>{props.cta.label}</Link>
+                <Link href={cta.href}>{cta.label}</Link>
               </Button>
             </motion.div>
           )}

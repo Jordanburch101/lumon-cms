@@ -3,8 +3,10 @@
 import { type MotionValue, motion, useTransform } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import type { ImageGalleryBlock } from "@/types/block-types";
 
-import type { GalleryItem } from "./image-gallery-data";
+type GalleryItem = ImageGalleryBlock["items"][number];
 
 interface GalleryCardProps {
   imageReady: boolean;
@@ -29,6 +31,9 @@ export function GalleryCard({
 
   // Keep ref in sync — useTransform callbacks capture the ref, not the prop
   readyRef.current = imageReady || isBase;
+
+  const imageSrc = getMediaUrl(item.image);
+  const blurDataURL = getBlurDataURL(item.image);
 
   // Each non-base card gets an equal slice of scroll for its clip reveal.
   // Base card (index 0) is always fully visible underneath.
@@ -85,18 +90,20 @@ export function GalleryCard({
         scale: shouldScale ? outScale : undefined,
       }}
     >
-      <Image
-        alt={item.imageAlt}
-        blurDataURL={item.blurDataURL}
-        className="object-cover"
-        fill
-        loading={index <= 2 ? "eager" : undefined}
-        onLoad={() => onImageLoad(index)}
-        placeholder={item.blurDataURL ? "blur" : "empty"}
-        priority={index <= 1}
-        sizes="100vw"
-        src={item.imageSrc}
-      />
+      {imageSrc ? (
+        <Image
+          alt={item.imageAlt}
+          blurDataURL={blurDataURL}
+          className="object-cover"
+          fill
+          loading={index <= 2 ? "eager" : undefined}
+          onLoad={() => onImageLoad(index)}
+          placeholder={blurDataURL ? "blur" : "empty"}
+          priority={index <= 1}
+          sizes="100vw"
+          src={imageSrc}
+        />
+      ) : null}
 
       <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 to-transparent" />
 
