@@ -1,27 +1,24 @@
-import config from "@payload-config";
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
-import { getPayload } from "payload";
 import { RenderBlocks } from "@/components/blocks/render-blocks";
+import { getCachedPage, getPageDirect } from "@/payload/lib/cached-payload";
 
 interface Args {
   params: Promise<{ slug?: string[] }>;
+}
+
+async function getPage(slug: string) {
+  const { isEnabled: isDraft } = await draftMode();
+
+  return isDraft ? getPageDirect(slug, true) : getCachedPage(slug);
 }
 
 export default async function Page({ params }: Args) {
   const { slug: slugSegments } = await params;
   const slug = slugSegments?.join("/") || "home";
 
-  const payload = await getPayload({ config });
-
-  const result = await payload.find({
-    collection: "pages",
-    where: { slug: { equals: slug } },
-    draft: false,
-    limit: 1,
-  });
-
-  const page = result.docs[0];
+  const page = await getPage(slug);
 
   if (!page) {
     notFound();
@@ -34,17 +31,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug: slugSegments } = await params;
   const slug = slugSegments?.join("/") || "home";
 
-  const payload = await getPayload({ config });
-
-  const result = await payload.find({
-    collection: "pages",
-    where: { slug: { equals: slug } },
-    draft: false,
-    limit: 1,
-    select: { meta: true, title: true },
-  });
-
-  const page = result.docs[0];
+  const page = await getPage(slug);
 
   if (!page) {
     return {};
