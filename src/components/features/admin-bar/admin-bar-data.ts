@@ -198,3 +198,30 @@ export function computePageStatus(input: PageStatusInput): PageStatus {
     versionCount: input.totalVersionCount,
   };
 }
+
+export function formatRelativeTime(
+  dateString: string,
+  now: Date = new Date()
+): string {
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffMonths = Math.floor(diffDays / 30);
+
+  if (diffSeconds < 60) {
+    return "just now";
+  }
+  if (diffMinutes < 60) {
+    return `${diffMinutes} min ago`;
+  }
+  if (diffHours < 24) {
+    return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`;
+  }
+  if (diffDays < 30) {
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`;
+  }
+  return `${diffMonths} ${diffMonths === 1 ? "month" : "months"} ago`;
+}

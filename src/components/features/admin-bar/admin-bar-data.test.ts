@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { computePageStatus } from "./admin-bar-data";
+import { computePageStatus, formatRelativeTime } from "./admin-bar-data";
 
 describe("computePageStatus", () => {
   it("returns 'published' when page is published with no draft versions", () => {
@@ -72,5 +72,44 @@ describe("computePageStatus", () => {
       lastEdited: null,
       versionCount: 4,
     });
+  });
+});
+
+describe("formatRelativeTime", () => {
+  it("returns 'just now' for times less than 60 seconds ago", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-03-12T11:59:30Z", now)).toBe("just now");
+  });
+
+  it("returns minutes for times less than 60 minutes ago", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-03-12T11:45:00Z", now)).toBe("15 min ago");
+  });
+
+  it("returns hours for times less than 24 hours ago", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-03-12T09:00:00Z", now)).toBe("3 hours ago");
+  });
+
+  it("returns '1 hour ago' (singular)", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-03-12T10:30:00Z", now)).toBe("1 hour ago");
+  });
+
+  it("returns days for times less than 30 days ago", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-03-09T12:00:00Z", now)).toBe("3 days ago");
+  });
+
+  it("returns '1 day ago' (singular)", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-03-11T12:00:00Z", now)).toBe("1 day ago");
+  });
+
+  it("returns months for times more than 30 days ago", () => {
+    const now = new Date("2026-03-12T12:00:00Z");
+    expect(formatRelativeTime("2026-01-05T12:00:00Z", now)).toBe(
+      "2 months ago"
+    );
   });
 });
