@@ -74,7 +74,7 @@ export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
                 <motion.div
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   initial={{ opacity: 0, y: 16 }}
-                  key={item.question}
+                  key={item.id}
                   transition={{
                     duration: 0.6,
                     ease: EASE,

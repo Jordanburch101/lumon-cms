@@ -43,7 +43,7 @@ export function Trust({ eyebrow, stats, logos }: TrustBlock) {
                 i >= 2 && "border-border border-t lg:border-t-0"
               )}
               initial={{ opacity: 0, y: 16 }}
-              key={stat.id ?? stat.label}
+              key={stat.id}
               transition={{
                 duration: 0.8,
                 ease: EASE,
@@ -80,14 +80,14 @@ export function Trust({ eyebrow, stats, logos }: TrustBlock) {
                     alt={logo.name}
                     className="h-6 w-auto opacity-[0.18] dark:invert"
                     height={24}
-                    key={logo.id ?? logo.name}
+                    key={logo.id}
                     src={logoUrl}
                     width={120}
                   />
                 ) : (
                   <span
                     className="font-semibold text-base text-foreground tracking-[0.04em] opacity-[0.18]"
-                    key={logo.id ?? logo.name}
+                    key={logo.id}
                   >
                     {logo.name}
                   </span>

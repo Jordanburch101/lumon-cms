@@ -106,7 +106,7 @@ export function PricingCard({ tier, isAnnual }: PricingCardProps) {
               "text-sm leading-relaxed",
               rec ? "text-primary-foreground/80" : "text-muted-foreground"
             )}
-            key={feature.id ?? feature.text}
+            key={feature.id}
           >
             {feature.text}
           </li>

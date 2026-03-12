@@ -70,7 +70,7 @@ export function Pricing({
               {tiers.map((tier) => (
                 <CarouselItem
                   className="basis-[85%] pl-4 sm:basis-[70%]"
-                  key={tier.name}
+                  key={tier.id}
                 >
                   <PricingCard isAnnual={isAnnual} tier={tier} />
                 </CarouselItem>
@@ -85,7 +85,7 @@ export function Pricing({
             <motion.div
               animate={inView ? { opacity: 1, y: 0 } : {}}
               initial={{ opacity: 0, y: 24 }}
-              key={tier.name}
+              key={tier.id}
               transition={{
                 duration: 0.8,
                 ease: EASE,
