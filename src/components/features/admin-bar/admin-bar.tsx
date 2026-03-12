@@ -185,6 +185,7 @@ export function AdminBar() {
       return;
     }
 
+    setPageStatus(null);
     const controller = new AbortController();
     const { collection, label, slug } = resolveCollection(pathname);
     fetch(

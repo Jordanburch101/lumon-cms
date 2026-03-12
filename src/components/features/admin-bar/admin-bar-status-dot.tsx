@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PageStatus, SnapPosition } from "./admin-bar-data";
 import { AdminBarStatusCard } from "./admin-bar-status-card";
 
@@ -31,6 +31,15 @@ export function AdminBarStatusDot({
 
   const handleLeave = useCallback(() => {
     leaveTimeout.current = setTimeout(() => setHovered(false), 100);
+  }, []);
+
+  // Cleanup pending timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (leaveTimeout.current) {
+        clearTimeout(leaveTimeout.current);
+      }
+    };
   }, []);
 
   return (
