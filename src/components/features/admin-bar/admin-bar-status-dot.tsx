@@ -86,7 +86,7 @@ export function AdminBarStatusDot({
               }}
               transition={{ duration: 0.15 }}
             >
-              <AdminBarStatusCard status={status} />
+              <AdminBarStatusCard animate status={status} />
             </motion.div>
           )}
         </AnimatePresence>

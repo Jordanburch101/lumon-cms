@@ -1,21 +1,42 @@
 "use client";
 
+import { motion } from "motion/react";
 import type { PageStatus } from "./admin-bar-data";
 import { formatRelativeTime } from "./admin-bar-data";
 
 interface AdminBarStatusCardProps {
+  animate?: boolean;
   status: PageStatus;
 }
 
-export function AdminBarStatusCard({ status }: AdminBarStatusCardProps) {
+export function AdminBarStatusCard({
+  animate: shouldAnimate = false,
+  status,
+}: AdminBarStatusCardProps) {
   return (
     <div className="relative min-w-[200px] rounded-[12px] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_4px_16px_rgba(0,0,0,0.08),0_8px_32px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)]">
-      {/* Liquid glass layers */}
+      {/* Backdrop blur — no opacity animation (breaks compositing) */}
       <div className="admin-glass-effect rounded-[inherit]" />
-      <div className="admin-glass-tint rounded-[inherit]" />
-      <div className="admin-glass-shine rounded-[inherit]" />
+      {/* Tint + shine fade in separately */}
+      <motion.div
+        animate={{ opacity: 1 }}
+        className="admin-glass-tint rounded-[inherit]"
+        initial={shouldAnimate ? { opacity: 0 } : undefined}
+        transition={{ duration: 0.15 }}
+      />
+      <motion.div
+        animate={{ opacity: 1 }}
+        className="admin-glass-shine rounded-[inherit]"
+        initial={shouldAnimate ? { opacity: 0 } : undefined}
+        transition={{ duration: 0.15 }}
+      />
 
-      <div className="relative z-[3] space-y-2 px-2.5 py-2">
+      <motion.div
+        animate={{ opacity: 1 }}
+        className="relative z-[3] space-y-2 px-2.5 py-2"
+        initial={shouldAnimate ? { opacity: 0 } : undefined}
+        transition={{ duration: 0.15 }}
+      >
         {/* Status badge */}
         <div className="flex items-center gap-2">
           <div
@@ -93,7 +114,7 @@ export function AdminBarStatusCard({ status }: AdminBarStatusCardProps) {
             )}
           </a>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
