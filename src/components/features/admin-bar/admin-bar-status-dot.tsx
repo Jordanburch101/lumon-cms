@@ -74,14 +74,10 @@ export function AdminBarStatusDot({
         <AnimatePresence>
           {hovered && (
             <motion.div
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ y: 0 }}
               className="absolute left-0 z-[10]"
-              exit={{
-                opacity: 0,
-                y: isTop ? -4 : 4,
-                transition: { duration: 0.1 },
-              }}
-              initial={{ opacity: 0, y: isTop ? -4 : 4 }}
+              exit={{ y: isTop ? -4 : 4, transition: { duration: 0.1 } }}
+              initial={{ y: isTop ? -4 : 4 }}
               onMouseEnter={handleEnter}
               onMouseLeave={handleLeave}
               style={{
