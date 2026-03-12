@@ -4,6 +4,7 @@ import {
   GridIcon,
   Logout03Icon,
   PencilEdit02Icon,
+  Search01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
@@ -12,15 +13,17 @@ import { cn } from "@/core/lib/utils";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
 
 interface AdminBarActionsProps {
+  onOpenPalette: () => void;
   page: PageContext | null;
   position: SnapPosition;
   user: AdminUser;
 }
 
 export function AdminBarActions({
-  user,
+  onOpenPalette,
   page,
   position,
+  user,
 }: AdminBarActionsProps) {
   const isTop = position.startsWith("top");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -99,6 +102,16 @@ export function AdminBarActions({
         <HugeiconsIcon icon={GridIcon} size={14} />
         <span>Collections</span>
       </motion.a>
+
+      {/* Palette trigger */}
+      <button
+        className="rounded-sm p-1 text-black/60 transition-colors hover:text-black/80 dark:text-white/70 dark:hover:text-white"
+        onClick={onOpenPalette}
+        title="Search (⌘⇧K)"
+        type="button"
+      >
+        <HugeiconsIcon icon={Search01Icon} size={14} />
+      </button>
 
       {/* User menu */}
       <div className="relative" ref={menuRef}>

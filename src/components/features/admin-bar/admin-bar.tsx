@@ -25,6 +25,7 @@ import {
 import { AdminBarSnap } from "./admin-bar-snap";
 import { AdminBarStatusDot } from "./admin-bar-status-dot";
 import { AdminBarToggle } from "./admin-bar-toggle";
+import { AdminCommandPalette } from "./admin-command-palette";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -121,6 +122,7 @@ export function AdminBar() {
   const [draftReady, setDraftReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [morphing, setMorphing] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [hoveredZone, setHoveredZone] = useState<SnapPosition | null>(null);
   const hoveredZoneRef = useRef<SnapPosition | null>(null);
   const [toggling, setToggling] = useState(false);
@@ -541,6 +543,7 @@ export function AdminBar() {
                     variants={itemVariants}
                   >
                     <AdminBarActions
+                      onOpenPalette={() => setPaletteOpen(true)}
                       page={page}
                       position={barState.position}
                       user={user}
@@ -576,6 +579,13 @@ export function AdminBar() {
           </motion.div>
         </div>
       </motion.div>
+
+      <AdminCommandPalette
+        handleToggleDraft={handleToggleDraft}
+        onOpenChange={setPaletteOpen}
+        open={paletteOpen}
+        pageContext={page}
+      />
     </>
   );
 }
