@@ -1,8 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValue } from "motion/react";
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AnimatePresence, animate, motion, useMotionValue } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { cn } from "@/core/lib/utils";
 import { AdminBarActions } from "./admin-bar-actions";
 import {
@@ -17,6 +20,75 @@ import {
 } from "./admin-bar-data";
 import { AdminBarSnap } from "./admin-bar-snap";
 import { AdminBarToggle } from "./admin-bar-toggle";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+const contentVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.04, delayChildren: 0.15 },
+  },
+  exit: {
+    opacity: 0,
+    y: 4,
+    transition: { duration: 0.15, ease: EASE },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.25, ease: EASE },
+  },
+};
+
+function AdminGlassFilter() {
+  return (
+    <svg aria-hidden="true" style={{ display: "none" }}>
+      <filter
+        filterUnits="objectBoundingBox"
+        height="100%"
+        id="admin-glass-distortion"
+        width="100%"
+        x="0%"
+        y="0%"
+      >
+        <feTurbulence
+          baseFrequency="0.01 0.01"
+          numOctaves={1}
+          result="turbulence"
+          seed={5}
+          type="fractalNoise"
+        />
+        <feComponentTransfer in="turbulence" result="mapped">
+          <feFuncR amplitude={1} exponent={10} offset={0.5} type="gamma" />
+          <feFuncG amplitude={0} exponent={1} offset={0} type="gamma" />
+          <feFuncB amplitude={0} exponent={1} offset={0.5} type="gamma" />
+        </feComponentTransfer>
+        <feGaussianBlur in="turbulence" result="softMap" stdDeviation={3} />
+        <feSpecularLighting
+          in="softMap"
+          lightingColor="white"
+          result="specLight"
+          specularConstant={1}
+          specularExponent={100}
+          surfaceScale={5}
+        >
+          <fePointLight x={-200} y={-200} z={300} />
+        </feSpecularLighting>
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="softMap"
+          scale={150}
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+    </svg>
+  );
+}
 
 function findNearestSnap(
   x: number,
@@ -47,19 +119,42 @@ function findNearestSnap(
   return nearest.position;
 }
 
+function LumonHexIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="text-black/80 dark:text-white/70"
+      fill="currentColor"
+      height={size}
+      viewBox="0 0 24 24"
+      width={size}
+    >
+      <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" />
+    </svg>
+  );
+}
+
 export function AdminBar() {
   const pathname = usePathname();
   const [user, setUser] = useState<AdminUser | null>(null);
   const [page, setPage] = useState<PageContext | null>(null);
   const [barState, setBarState] = useState<AdminBarState>(loadBarState);
   const [isDraft, setIsDraft] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
+  const [draftReady, setDraftReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [morphing, setMorphing] = useState(false);
   const [hoveredZone, setHoveredZone] = useState<SnapPosition | null>(null);
   const hoveredZoneRef = useRef<SnapPosition | null>(null);
   const [toggling, setToggling] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
+  const morphRef = useRef<HTMLDivElement>(null);
+  const [collapseDimensions, setCollapseDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
   // Auth check — always attempt fetch since payload-token is HttpOnly
   useEffect(() => {
@@ -85,22 +180,25 @@ export function AdminBar() {
       return;
     }
 
-    setPage(null); // reset while fetching
+    const controller = new AbortController();
     const { collection, label, slug } = resolveCollection(pathname);
     fetch(
       `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true`,
-      { credentials: "include" }
+      { credentials: "include", signal: controller.signal }
     )
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         const doc = data?.docs?.[0];
-        if (doc) {
-          setPage({ id: doc.id, slug: doc.slug, collection, label });
-        }
+        setPage(doc ? { id: doc.id, slug: doc.slug, collection, label } : null);
+        setPageReady(true);
       })
-      .catch(() => {
-        /* silent */
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setPage(null);
+          setPageReady(true);
+        }
       });
+    return () => controller.abort();
   }, [user, pathname]);
 
   // Read draft mode state from toggle API (HttpOnly cookie can't be read client-side)
@@ -109,16 +207,24 @@ export function AdminBar() {
       return;
     }
 
-    fetch("/api/draft/toggle", { credentials: "include" })
+    const controller = new AbortController();
+    fetch("/api/draft/toggle", {
+      credentials: "include",
+      signal: controller.signal,
+    })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) {
           setIsDraft(data.enabled);
         }
+        setDraftReady(true);
       })
-      .catch(() => {
-        /* silent */
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setDraftReady(true);
+        }
       });
+    return () => controller.abort();
   }, [user]);
 
   // Persist state changes
@@ -130,11 +236,13 @@ export function AdminBar() {
     });
   }, []);
 
-  // Toggle draft mode
+  // Toggle draft mode (ref-based guard keeps callback reference stable)
+  const togglingRef = useRef(false);
   const handleToggleDraft = useCallback(async () => {
-    if (toggling) {
+    if (togglingRef.current) {
       return;
     }
+    togglingRef.current = true;
     setToggling(true);
     try {
       const res = await fetch("/api/draft/toggle", {
@@ -149,9 +257,21 @@ export function AdminBar() {
     } catch {
       // Silent fail — convenience tool
     } finally {
+      togglingRef.current = false;
       setToggling(false);
     }
-  }, [toggling]);
+  }, []);
+
+  // Collapse — capture dimensions for centering wrapper
+  const handleCollapse = useCallback(() => {
+    if (morphRef.current) {
+      setCollapseDimensions({
+        width: morphRef.current.offsetWidth,
+        height: morphRef.current.offsetHeight,
+      });
+    }
+    updateBarState({ collapsed: true });
+  }, [updateBarState]);
 
   // Drag handlers
   const handleDragStart = useCallback(() => {
@@ -171,30 +291,60 @@ export function AdminBar() {
       window.innerWidth,
       window.innerHeight
     );
-    setHoveredZone(nearest);
-    hoveredZoneRef.current = nearest;
+    if (nearest !== hoveredZoneRef.current) {
+      setHoveredZone(nearest);
+      hoveredZoneRef.current = nearest;
+    }
   }, []);
 
   const handleDragEnd = useCallback(() => {
     const zone = hoveredZoneRef.current;
-    if (zone) {
-      updateBarState({ position: zone });
-    }
+
     setIsDragging(false);
     setHoveredZone(null);
     hoveredZoneRef.current = null;
+
+    if (!(zone && barRef.current)) {
+      animate(dragX, 0, { duration: 0.4, ease: EASE });
+      animate(dragY, 0, { duration: 0.4, ease: EASE });
+      return;
+    }
+
+    // FLIP: First — capture current visual position (includes drag transform)
+    const first = barRef.current.getBoundingClientRect();
+
+    // FLIP: Last — reset drag offset and update position class synchronously
     dragX.set(0);
     dragY.set(0);
+    flushSync(() => {
+      updateBarState({ position: zone });
+    });
+
+    // Bar is now at new CSS position with zero drag offset
+    const last = barRef.current.getBoundingClientRect();
+
+    // FLIP: Invert — offset so bar appears at its drop position
+    dragX.set(first.left - last.left);
+    dragY.set(first.top - last.top);
+
+    // FLIP: Play — animate from drop position to snap target
+    animate(dragX, 0, { duration: 0.4, ease: EASE });
+    animate(dragY, 0, { duration: 0.4, ease: EASE });
   }, [updateBarState, dragX, dragY]);
 
-  if (!user) {
+  if (!(user && pageReady && draftReady)) {
     return null;
   }
 
   const positionClass = SNAP_POSITIONS[barState.position].className;
 
+  const layoutTransition = barState.collapsed
+    ? { duration: 0.3, ease: EASE, delay: 0.1 }
+    : { duration: 0.4, ease: EASE };
+
   return (
     <>
+      <AdminGlassFilter />
       <AnimatePresence>
         {isDragging && <AdminBarSnap activeZone={hoveredZone} />}
       </AnimatePresence>
@@ -213,119 +363,152 @@ export function AdminBar() {
         style={{ x: dragX, y: dragY }}
         transition={{ duration: 0.3 }}
       >
-        <AnimatePresence mode="wait">
-          {barState.collapsed ? (
-            <motion.button
-              animate={{ scale: 1, opacity: 1 }}
-              aria-label="Expand admin bar"
-              className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-white/[0.06] bg-[#1c1c1e]/92 shadow-[0_0_0_0.5px_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-2xl transition-colors hover:bg-[#2c2c2e]/92"
-              exit={{ scale: 0.8, opacity: 0 }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              key="collapsed"
-              layout
-              onClick={() => updateBarState({ collapsed: false })}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              type="button"
-            >
-              <svg
-                aria-hidden="true"
-                className="text-white/70"
-                fill="currentColor"
-                height="15"
-                viewBox="0 0 24 24"
-                width="15"
-              >
-                <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" />
-              </svg>
-            </motion.button>
-          ) : (
+        <div
+          className="flex items-center justify-center"
+          style={
+            collapseDimensions
+              ? {
+                  width: collapseDimensions.width,
+                  height: collapseDimensions.height,
+                }
+              : undefined
+          }
+        >
+          <motion.div
+            aria-label={barState.collapsed ? "Expand admin bar" : undefined}
+            className={cn(
+              "relative flex items-center",
+              morphing && "overflow-hidden",
+              barState.collapsed
+                ? "h-9 w-9 cursor-pointer justify-center rounded-[10px] transition-colors hover:bg-black/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 dark:focus-visible:ring-white/30 dark:hover:bg-white/[0.08]"
+                : "rounded-[14px] py-1.5 pr-1.5",
+              isDragging
+                ? "shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(0,0,0,0.25)]"
+                : "shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_4px_20px_rgba(0,0,0,0.08),0_8px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_4px_20px_rgba(0,0,0,0.15),0_8px_40px_rgba(0,0,0,0.1)]",
+              isDraft && "ring-1 ring-amber-500/20 dark:ring-amber-400/15"
+            )}
+            layout
+            onClick={
+              barState.collapsed
+                ? () => {
+                    setCollapseDimensions(null);
+                    updateBarState({ collapsed: false });
+                  }
+                : undefined
+            }
+            onKeyDown={
+              barState.collapsed
+                ? (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setCollapseDimensions(null);
+                      updateBarState({ collapsed: false });
+                    }
+                  }
+                : undefined
+            }
+            onLayoutAnimationComplete={() => {
+              setMorphing(false);
+              setCollapseDimensions(null);
+            }}
+            onLayoutAnimationStart={() => setMorphing(true)}
+            ref={morphRef}
+            role={barState.collapsed ? "button" : undefined}
+            tabIndex={barState.collapsed ? 0 : undefined}
+            transition={{ layout: layoutTransition }}
+          >
+            {/* Liquid glass layers */}
+            <div className="admin-glass-effect rounded-[inherit]" />
+            <div className="admin-glass-tint rounded-[inherit]" />
+            <div className="admin-glass-shine rounded-[inherit]" />
+
+            {/* Hex icon — always visible, anchored via layout */}
             <motion.div
-              animate={{ scale: 1, opacity: 1 }}
               className={cn(
-                "flex items-center gap-0.5 rounded-[14px] border border-white/[0.06] bg-[#1c1c1e]/92 py-1.5 pr-1.5 pl-3.5 backdrop-blur-2xl",
-                isDragging
-                  ? "shadow-[0_0_0_0.5px_rgba(0,0,0,0.3),0_8px_40px_rgba(0,0,0,0.2)]"
-                  : "shadow-[0_0_0_0.5px_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)]"
+                "relative z-[3] flex items-center",
+                !barState.collapsed &&
+                  "cursor-grab pr-2 pl-3.5 active:cursor-grabbing"
               )}
-              exit={{ scale: 0.9, opacity: 0 }}
-              initial={{ scale: 0.9, opacity: 0 }}
-              key="expanded"
               layout
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >
-              {/* Drag handle area */}
-              <div className="flex cursor-grab items-center gap-2 border-white/[0.08] border-r pr-2 active:cursor-grabbing">
-                <svg
-                  aria-hidden="true"
-                  className="text-white/70"
-                  fill="currentColor"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  width="14"
-                >
-                  <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" />
-                </svg>
-                <div className="flex flex-col gap-[3px] opacity-30">
-                  <div className="flex gap-[3px]">
-                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
-                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
-                  </div>
-                  <div className="flex gap-[3px]">
-                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
-                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
-                  </div>
-                  <div className="flex gap-[3px]">
-                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
-                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions: Edit Page + Collections */}
-              <AdminBarActions
-                page={page}
-                position={barState.position}
-                user={user}
-              />
-
-              {/* Divider */}
-              <div className="mx-1 h-5 w-px bg-white/[0.08]" />
-
-              {/* Draft toggle */}
-              <AdminBarToggle
-                disabled={toggling}
-                isDraft={isDraft}
-                onToggle={handleToggleDraft}
-              />
-
-              {/* Divider */}
-              <div className="mx-1 h-5 w-px bg-white/[0.08]" />
-
-              {/* Collapse */}
-              <button
-                aria-label="Collapse admin bar"
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/50"
-                onClick={() => updateBarState({ collapsed: true })}
-                type="button"
+              <motion.div
+                animate={{ rotate: barState.collapsed ? 30 : 0 }}
+                transition={{ duration: 0.3, ease: EASE }}
               >
-                <svg
-                  aria-hidden="true"
-                  className="text-current"
-                  fill="none"
-                  height="14"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  width="14"
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </button>
+                <LumonHexIcon size={15} />
+              </motion.div>
             </motion.div>
-          )}
-        </AnimatePresence>
+
+            {/* Content — staggered entry, popLayout removes from flow on exit */}
+            <AnimatePresence mode="popLayout">
+              {!barState.collapsed && (
+                <motion.div
+                  animate="visible"
+                  className="relative z-[3] flex items-center gap-0.5"
+                  exit="exit"
+                  initial="hidden"
+                  key="content"
+                  variants={contentVariants}
+                >
+                  {/* grip dots */}
+                  <motion.div variants={itemVariants}>
+                    <div className="flex items-center border-black/[0.08] border-r pr-2 dark:border-white/[0.08]">
+                      <div className="flex flex-col gap-[3px] opacity-30">
+                        <div className="flex gap-[3px]">
+                          <div className="h-[2px] w-[2px] rounded-full bg-black dark:bg-white" />
+                          <div className="h-[2px] w-[2px] rounded-full bg-black dark:bg-white" />
+                        </div>
+                        <div className="flex gap-[3px]">
+                          <div className="h-[2px] w-[2px] rounded-full bg-black dark:bg-white" />
+                          <div className="h-[2px] w-[2px] rounded-full bg-black dark:bg-white" />
+                        </div>
+                        <div className="flex gap-[3px]">
+                          <div className="h-[2px] w-[2px] rounded-full bg-black dark:bg-white" />
+                          <div className="h-[2px] w-[2px] rounded-full bg-black dark:bg-white" />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-center gap-0.5"
+                    variants={itemVariants}
+                  >
+                    <AdminBarActions
+                      page={page}
+                      position={barState.position}
+                      user={user}
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-center"
+                    variants={itemVariants}
+                  >
+                    <div className="mx-1 h-5 w-px bg-black/[0.08] dark:bg-white/[0.08]" />
+                    <AdminBarToggle
+                      disabled={toggling}
+                      isDraft={isDraft}
+                      onToggle={handleToggleDraft}
+                    />
+                    <div className="mx-1 h-5 w-px bg-black/[0.08] dark:bg-white/[0.08]" />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <button
+                      aria-label="Collapse admin bar"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-black/40 transition-colors hover:bg-black/[0.04] hover:text-black/60 dark:text-white/30 dark:hover:bg-white/[0.06] dark:hover:text-white/50"
+                      onClick={handleCollapse}
+                      type="button"
+                    >
+                      <HugeiconsIcon icon={ArrowDown01Icon} size={14} />
+                    </button>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </motion.div>
     </>
   );

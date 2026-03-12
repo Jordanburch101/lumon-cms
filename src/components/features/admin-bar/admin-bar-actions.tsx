@@ -6,6 +6,7 @@ import {
   PencilEdit02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/core/lib/utils";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
@@ -27,80 +28,100 @@ export function AdminBarActions({
 
   const initial = (user.name?.[0] || user.email[0]).toUpperCase();
 
-  // Close menu on Escape key
+  // Close menu on Escape key or click outside
   useEffect(() => {
     if (!menuOpen) {
       return;
     }
-    const handler = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMenuOpen(false);
       }
     };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
+    const onClick = (e: MouseEvent) => {
+      if (!menuRef.current?.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+    };
   }, [menuOpen]);
 
   return (
     <>
       {/* Edit Page */}
       {page ? (
-        <a
-          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/70 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/90"
+        <motion.a
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/80 text-xs transition-colors hover:bg-black/[0.04] hover:text-black dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white/90"
           href={`/admin/collections/${page.collection}/${page.id}`}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          whileHover={{ scale: 1.02 }}
         >
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
           <span>{page.label}</span>
-        </a>
+        </motion.a>
       ) : (
-        <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/25 text-xs">
+        <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/35 text-xs dark:text-white/25">
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
           <span>Edit</span>
         </span>
       )}
 
       {/* Collections */}
-      <a
-        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/70 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/90"
+      <motion.a
+        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/80 text-xs transition-colors hover:bg-black/[0.04] hover:text-black dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white/90"
         href="/admin/collections"
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        whileHover={{ scale: 1.02 }}
       >
         <HugeiconsIcon icon={GridIcon} size={14} />
         <span>Collections</span>
-      </a>
+      </motion.a>
 
       {/* User menu */}
       <div className="relative" ref={menuRef}>
-        <button
+        <motion.button
+          aria-expanded={menuOpen}
+          aria-haspopup="true"
           aria-label="User menu"
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs transition-colors hover:bg-white/[0.06]"
-          onBlur={(e) => {
-            if (!menuRef.current?.contains(e.relatedTarget)) {
-              setMenuOpen(false);
-            }
-          }}
+          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs transition-colors hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
           onClick={() => setMenuOpen((prev) => !prev)}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
           type="button"
+          whileHover={{ scale: 1.05 }}
         >
-          <div className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-white/[0.1] font-semibold text-[10px] text-white/70">
+          <div className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-black/80 font-semibold text-[10px] text-white dark:bg-white/20 dark:text-white/90">
             {initial}
           </div>
-        </button>
+        </motion.button>
 
         {menuOpen && (
           <div
             className={cn(
-              "absolute right-0 min-w-[180px] rounded-[12px] border border-white/[0.06] bg-[#1c1c1e]/95 p-1.5 shadow-[0_0_0_0.5px_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-2xl",
+              "absolute right-0 min-w-[180px] rounded-[12px] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_4px_16px_rgba(0,0,0,0.08),0_8px_32px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)]",
               isTop ? "top-full mt-2" : "bottom-full mb-2"
             )}
+            role="menu"
           >
-            <div className="border-white/[0.06] border-b px-2.5 py-2">
-              <p className="font-medium text-white text-xs">
+            {/* Liquid glass layers */}
+            <div className="admin-glass-effect rounded-[inherit]" />
+            <div className="admin-glass-tint rounded-[inherit]" />
+            <div className="admin-glass-shine rounded-[inherit]" />
+
+            <div className="relative z-[3] border-black/[0.06] border-b px-2.5 py-2 dark:border-white/[0.06]">
+              <p className="font-medium text-black/90 text-xs dark:text-white">
                 {user.name || "Admin"}
               </p>
-              <p className="text-[11px] text-white/50">{user.email}</p>
+              <p className="text-[11px] text-black/60 dark:text-white/50">
+                {user.email}
+              </p>
             </div>
             <button
-              className="mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-white/50 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/80"
+              className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
               onClick={async () => {
                 try {
                   await fetch("/api/users/logout", {
@@ -112,6 +133,7 @@ export function AdminBarActions({
                 }
                 window.location.reload();
               }}
+              role="menuitem"
               type="button"
             >
               <HugeiconsIcon icon={Logout03Icon} size={14} />

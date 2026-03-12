@@ -11,8 +11,8 @@ interface AdminBarSnapProps {
 export function AdminBarSnap({ activeZone }: AdminBarSnapProps) {
   return (
     <motion.div
-      animate={{ opacity: 0.5 }}
-      className="pointer-events-none fixed inset-0 z-[9998]"
+      animate={{ opacity: 1 }}
+      className="pointer-events-none fixed inset-0 z-[9998] bg-black/40"
       exit={{ opacity: 0 }}
       initial={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
@@ -25,11 +25,11 @@ export function AdminBarSnap({ activeZone }: AdminBarSnapProps) {
       ).map(([position, { className, label }]) => (
         <div
           className={cn(
-            "fixed rounded-xl border border-dashed px-6 py-2 text-[9px] uppercase tracking-[0.15em] transition-colors duration-150",
+            "fixed rounded-xl border px-6 py-2 text-[9px] uppercase tracking-[0.15em] transition-all duration-150",
             className,
             activeZone === position
-              ? "border-foreground/20 bg-foreground/[0.02] text-foreground/35"
-              : "border-border/12 text-muted-foreground/20"
+              ? "border-white/60 bg-white/20 text-white shadow-[0_0_24px_rgba(255,255,255,0.15)]"
+              : "border-white/30 bg-white/10 text-white/60"
           )}
           key={position}
         >
