@@ -1,4 +1,5 @@
 import type { CollectionBeforeValidateHook, CollectionConfig } from "payload";
+import { isAdminOrEditor } from "../access";
 import { generateBlurDataURL } from "../hooks/generateBlurDataURL";
 import { optimizeVideo } from "../hooks/optimizeVideo";
 import { revalidateOnChange } from "../hooks/revalidateOnChange";
@@ -19,6 +20,9 @@ export const Media: CollectionConfig = {
   slug: "media",
   access: {
     read: () => true,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   hooks: {
     beforeValidate: [validateFileSize],

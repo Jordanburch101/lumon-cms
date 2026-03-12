@@ -20,6 +20,10 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    autoLogin:
+      process.env.NODE_ENV === "development" && process.env.AUTOLOGIN_EMAIL
+        ? { email: process.env.AUTOLOGIN_EMAIL }
+        : false,
   },
   collections: [Users, Media, Pages],
   editor: lexicalEditor(),

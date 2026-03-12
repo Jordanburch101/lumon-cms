@@ -1,3 +1,8 @@
+// Note: No CSRF token — this is a convenience-only endpoint that toggles
+// draft mode (no data mutation). The payload-token cookie is SameSite=Lax
+// and HttpOnly. If more admin API routes are added, implement a shared CSRF
+// pattern (e.g. Origin header check).
+
 import config from "@payload-config";
 import { draftMode } from "next/headers";
 import { getPayload } from "payload";

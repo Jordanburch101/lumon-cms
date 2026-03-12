@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { isAdminOrEditor } from "../access";
 
 import { BentoBlock } from "../block-schemas/Bento";
 import { CinematicCtaBlock } from "../block-schemas/CinematicCta";
@@ -22,6 +23,9 @@ export const Pages: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   hooks: {
     afterChange: [afterChange],
