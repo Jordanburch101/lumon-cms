@@ -8,9 +8,9 @@ import { AdminBarActions } from "./admin-bar-actions";
 import {
   type AdminBarState,
   type AdminUser,
-  getSlugFromPathname,
   loadBarState,
   type PageContext,
+  resolveCollection,
   SNAP_POSITIONS,
   type SnapPosition,
   saveBarState,
@@ -86,16 +86,16 @@ export function AdminBar() {
     }
 
     setPage(null); // reset while fetching
-    const slug = getSlugFromPathname(pathname);
+    const { collection, label, slug } = resolveCollection(pathname);
     fetch(
-      `/api/pages?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true`,
+      `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true`,
       { credentials: "include" }
     )
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         const doc = data?.docs?.[0];
         if (doc) {
-          setPage({ id: doc.id, slug: doc.slug });
+          setPage({ id: doc.id, slug: doc.slug, collection, label });
         }
       })
       .catch(() => {

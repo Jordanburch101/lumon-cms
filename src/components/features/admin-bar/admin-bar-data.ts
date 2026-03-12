@@ -11,8 +11,26 @@ export interface AdminBarState {
   position: SnapPosition;
 }
 
+export interface CollectionRoute {
+  collection: string;
+  label: string;
+  prefix: string;
+}
+
+/**
+ * Map URL prefixes to Payload collections.
+ * Order matters — first match wins. The fallback to "pages" is built-in.
+ * To add a new collection, add one entry:
+ *   { prefix: "/blog", collection: "posts", label: "Edit Post" },
+ */
+export const COLLECTION_ROUTES: CollectionRoute[] = [
+  // { prefix: "/blog", collection: "posts", label: "Edit Post" },
+];
+
 export interface PageContext {
+  collection: string;
   id: number;
+  label: string;
   slug: string;
 }
 
@@ -84,4 +102,30 @@ export function getSlugFromPathname(pathname: string): string {
     return "home";
   }
   return pathname.replace(LEADING_SLASH_RE, "").replace(TRAILING_SLASH_RE, "");
+}
+
+export function resolveCollection(pathname: string): {
+  collection: string;
+  label: string;
+  slug: string;
+} {
+  for (const route of COLLECTION_ROUTES) {
+    if (pathname === route.prefix || pathname.startsWith(`${route.prefix}/`)) {
+      const slug = pathname
+        .slice(route.prefix.length + 1)
+        .replace(TRAILING_SLASH_RE, "");
+      if (slug) {
+        return {
+          collection: route.collection,
+          label: route.label,
+          slug,
+        };
+      }
+    }
+  }
+  return {
+    collection: "pages",
+    label: "Edit Page",
+    slug: getSlugFromPathname(pathname),
+  };
 }

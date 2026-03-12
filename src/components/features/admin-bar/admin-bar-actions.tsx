@@ -47,15 +47,15 @@ export function AdminBarActions({
       {page ? (
         <a
           className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/70 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/90"
-          href={`/admin/collections/pages/${page.id}`}
+          href={`/admin/collections/${page.collection}/${page.id}`}
         >
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
-          <span>Edit Page</span>
+          <span>{page.label}</span>
         </a>
       ) : (
         <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/25 text-xs">
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
-          <span>Edit Page</span>
+          <span>Edit</span>
         </span>
       )}
 
