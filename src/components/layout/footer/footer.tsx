@@ -3,8 +3,10 @@ import Link from "next/link";
 import { footerColumns, legalLinks, socialLinks } from "./footer-data";
 import { NewsletterForm } from "./newsletter-form";
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = CURRENT_YEAR;
 
   return (
     <footer className="mt-16 border-t bg-background lg:mt-24">

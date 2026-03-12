@@ -16,14 +16,14 @@ export function AdminBarToggle({
   return (
     <fieldset
       aria-label="Content mode"
-      className="flex items-center rounded-lg border-none bg-white/[0.04] p-0.5"
+      className="flex items-center rounded-lg border-none bg-white/[0.06] p-0.5"
     >
       <button
         className={cn(
           "rounded-md px-2.5 py-1 font-medium text-[11px] transition-colors",
           isDraft
-            ? "text-muted-foreground hover:text-foreground/70"
-            : "bg-white/[0.08] text-foreground"
+            ? "text-white/40 hover:text-white/60"
+            : "bg-white/[0.1] text-white shadow-[0_1px_2px_rgba(0,0,0,0.2)]"
         )}
         disabled={disabled}
         onClick={isDraft ? onToggle : undefined}
@@ -35,8 +35,8 @@ export function AdminBarToggle({
         className={cn(
           "rounded-md px-2.5 py-1 font-medium text-[11px] transition-colors",
           isDraft
-            ? "bg-white/[0.08] text-foreground"
-            : "text-muted-foreground hover:text-foreground/70"
+            ? "bg-white/[0.1] text-white shadow-[0_1px_2px_rgba(0,0,0,0.2)]"
+            : "text-white/40 hover:text-white/60"
         )}
         disabled={disabled}
         onClick={isDraft ? undefined : onToggle}

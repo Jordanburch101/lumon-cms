@@ -46,14 +46,14 @@ export function AdminBarActions({
       {/* Edit Page */}
       {page ? (
         <a
-          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-foreground/70 text-xs transition-colors hover:bg-white/[0.05]"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/70 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/90"
           href={`/admin/collections/pages/${page.id}`}
         >
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
           <span>Edit Page</span>
         </a>
       ) : (
-        <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-muted-foreground/40 text-xs">
+        <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/25 text-xs">
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
           <span>Edit Page</span>
         </span>
@@ -61,7 +61,7 @@ export function AdminBarActions({
 
       {/* Collections */}
       <a
-        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-foreground/70 text-xs transition-colors hover:bg-white/[0.05]"
+        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-white/70 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/90"
         href="/admin/collections"
       >
         <HugeiconsIcon icon={GridIcon} size={14} />
@@ -72,7 +72,7 @@ export function AdminBarActions({
       <div className="relative" ref={menuRef}>
         <button
           aria-label="User menu"
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-muted-foreground text-xs transition-colors hover:bg-white/[0.05]"
+          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs transition-colors hover:bg-white/[0.06]"
           onBlur={(e) => {
             if (!menuRef.current?.contains(e.relatedTarget)) {
               setMenuOpen(false);
@@ -81,7 +81,7 @@ export function AdminBarActions({
           onClick={() => setMenuOpen((prev) => !prev)}
           type="button"
         >
-          <div className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-white/[0.08] font-semibold text-[10px] text-muted-foreground">
+          <div className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-white/[0.1] font-semibold text-[10px] text-white/70">
             {initial}
           </div>
         </button>
@@ -89,18 +89,18 @@ export function AdminBarActions({
         {menuOpen && (
           <div
             className={cn(
-              "absolute right-0 min-w-[180px] rounded-lg border border-border/10 bg-card/95 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl",
+              "absolute right-0 min-w-[180px] rounded-[12px] border border-white/[0.06] bg-[#1c1c1e]/95 p-1.5 shadow-[0_0_0_0.5px_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-2xl",
               isTop ? "top-full mt-2" : "bottom-full mb-2"
             )}
           >
-            <div className="border-border/10 border-b px-2.5 py-2">
-              <p className="font-medium text-foreground text-xs">
+            <div className="border-white/[0.06] border-b px-2.5 py-2">
+              <p className="font-medium text-white text-xs">
                 {user.name || "Admin"}
               </p>
-              <p className="text-[11px] text-muted-foreground">{user.email}</p>
+              <p className="text-[11px] text-white/50">{user.email}</p>
             </div>
             <button
-              className="mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-muted-foreground text-xs transition-colors hover:bg-white/[0.05] hover:text-foreground"
+              className="mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-white/50 text-xs transition-colors hover:bg-white/[0.06] hover:text-white/80"
               onClick={async () => {
                 try {
                   await fetch("/api/users/logout", {

@@ -218,7 +218,7 @@ export function AdminBar() {
             <motion.button
               animate={{ scale: 1, opacity: 1 }}
               aria-label="Expand admin bar"
-              className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-border/10 bg-card/92 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-colors hover:bg-card"
+              className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-white/[0.06] bg-[#1c1c1e]/92 shadow-[0_0_0_0.5px_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-2xl transition-colors hover:bg-[#2c2c2e]/92"
               exit={{ scale: 0.8, opacity: 0 }}
               initial={{ scale: 0.8, opacity: 0 }}
               key="collapsed"
@@ -229,7 +229,7 @@ export function AdminBar() {
             >
               <svg
                 aria-hidden="true"
-                className="text-foreground/70"
+                className="text-white/70"
                 fill="currentColor"
                 height="15"
                 viewBox="0 0 24 24"
@@ -242,10 +242,10 @@ export function AdminBar() {
             <motion.div
               animate={{ scale: 1, opacity: 1 }}
               className={cn(
-                "flex items-center gap-0.5 rounded-xl border border-border/10 bg-card/92 py-1.5 pr-1.5 pl-3.5 backdrop-blur-xl",
+                "flex items-center gap-0.5 rounded-[14px] border border-white/[0.06] bg-[#1c1c1e]/92 py-1.5 pr-1.5 pl-3.5 backdrop-blur-2xl",
                 isDragging
-                  ? "shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
-                  : "shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+                  ? "shadow-[0_0_0_0.5px_rgba(0,0,0,0.3),0_8px_40px_rgba(0,0,0,0.2)]"
+                  : "shadow-[0_0_0_0.5px_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)]"
               )}
               exit={{ scale: 0.9, opacity: 0 }}
               initial={{ scale: 0.9, opacity: 0 }}
@@ -254,10 +254,10 @@ export function AdminBar() {
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >
               {/* Drag handle area */}
-              <div className="flex cursor-grab items-center gap-2 border-border/10 border-r pr-2 active:cursor-grabbing">
+              <div className="flex cursor-grab items-center gap-2 border-white/[0.08] border-r pr-2 active:cursor-grabbing">
                 <svg
                   aria-hidden="true"
-                  className="text-foreground/70"
+                  className="text-white/70"
                   fill="currentColor"
                   height="14"
                   viewBox="0 0 24 24"
@@ -265,18 +265,18 @@ export function AdminBar() {
                 >
                   <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" />
                 </svg>
-                <div className="flex flex-col gap-[3px] opacity-25">
+                <div className="flex flex-col gap-[3px] opacity-30">
                   <div className="flex gap-[3px]">
-                    <div className="h-[2px] w-[2px] rounded-full bg-foreground" />
-                    <div className="h-[2px] w-[2px] rounded-full bg-foreground" />
+                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
+                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
                   </div>
                   <div className="flex gap-[3px]">
-                    <div className="h-[2px] w-[2px] rounded-full bg-foreground" />
-                    <div className="h-[2px] w-[2px] rounded-full bg-foreground" />
+                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
+                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
                   </div>
                   <div className="flex gap-[3px]">
-                    <div className="h-[2px] w-[2px] rounded-full bg-foreground" />
-                    <div className="h-[2px] w-[2px] rounded-full bg-foreground" />
+                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
+                    <div className="h-[2px] w-[2px] rounded-full bg-white" />
                   </div>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export function AdminBar() {
               />
 
               {/* Divider */}
-              <div className="mx-1 h-5 w-px bg-border/10" />
+              <div className="mx-1 h-5 w-px bg-white/[0.08]" />
 
               {/* Draft toggle */}
               <AdminBarToggle
@@ -299,12 +299,12 @@ export function AdminBar() {
               />
 
               {/* Divider */}
-              <div className="mx-1 h-5 w-px bg-border/10" />
+              <div className="mx-1 h-5 w-px bg-white/[0.08]" />
 
               {/* Collapse */}
               <button
                 aria-label="Collapse admin bar"
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-foreground/30 transition-colors hover:bg-white/[0.05] hover:text-foreground/50"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/50"
                 onClick={() => updateBarState({ collapsed: true })}
                 type="button"
               >
