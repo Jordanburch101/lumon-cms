@@ -7,7 +7,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/core/lib/utils";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
 
@@ -25,8 +25,15 @@ export function AdminBarActions({
   const isTop = position.startsWith("top");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstItemRef = useRef<HTMLButtonElement>(null);
 
   const initial = (user.name?.[0] || user.email[0]).toUpperCase();
+
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    triggerRef.current?.focus();
+  }, []);
 
   // Close menu on Escape key or click outside
   useEffect(() => {
@@ -35,7 +42,7 @@ export function AdminBarActions({
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setMenuOpen(false);
+        closeMenu();
       }
     };
     const onClick = (e: MouseEvent) => {
@@ -49,6 +56,13 @@ export function AdminBarActions({
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onClick);
     };
+  }, [menuOpen, closeMenu]);
+
+  // Focus first menu item when menu opens
+  useEffect(() => {
+    if (menuOpen) {
+      requestAnimationFrame(() => firstItemRef.current?.focus());
+    }
   }, [menuOpen]);
 
   return (
@@ -94,6 +108,7 @@ export function AdminBarActions({
           aria-label="User menu"
           className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs transition-colors hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
           onClick={() => setMenuOpen((prev) => !prev)}
+          ref={triggerRef}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           type="button"
           whileHover={{ scale: 1.05 }}
@@ -127,6 +142,7 @@ export function AdminBarActions({
             <button
               className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
               onClick={async () => {
+                setMenuOpen(false);
                 try {
                   await fetch("/api/users/logout", {
                     method: "POST",
@@ -137,6 +153,7 @@ export function AdminBarActions({
                 }
                 window.location.reload();
               }}
+              ref={firstItemRef}
               role="menuitem"
               type="button"
             >

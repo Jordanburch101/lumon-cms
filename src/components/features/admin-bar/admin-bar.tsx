@@ -12,6 +12,7 @@ import {
   type AdminBarState,
   type AdminUser,
   computePageStatus,
+  findNearestSnap,
   loadBarState,
   type PageContext,
   type PageStatus,
@@ -92,35 +93,6 @@ function AdminGlassFilter() {
       </filter>
     </svg>
   );
-}
-
-function findNearestSnap(
-  x: number,
-  y: number,
-  viewportWidth: number,
-  viewportHeight: number
-): SnapPosition {
-  const zones: { position: SnapPosition; x: number; y: number }[] = [
-    { position: "top-left", x: 16, y: 16 },
-    { position: "top-center", x: viewportWidth / 2, y: 16 },
-    { position: "top-right", x: viewportWidth - 16, y: 16 },
-    { position: "bottom-left", x: 16, y: viewportHeight - 16 },
-    { position: "bottom-center", x: viewportWidth / 2, y: viewportHeight - 16 },
-    { position: "bottom-right", x: viewportWidth - 16, y: viewportHeight - 16 },
-  ];
-
-  let nearest = zones[0];
-  let minDist = Number.POSITIVE_INFINITY;
-
-  for (const zone of zones) {
-    const dist = Math.hypot(zone.x - x, zone.y - y);
-    if (dist < minDist) {
-      minDist = dist;
-      nearest = zone;
-    }
-  }
-
-  return nearest.position;
 }
 
 function LumonHexIcon({ size = 14 }: { size?: number }) {

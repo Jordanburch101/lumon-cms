@@ -96,23 +96,23 @@ export function AdminBarStatusCard({
           <span className="text-[11px] text-black/50 dark:text-white/40">
             Versions
           </span>
-          <a
-            className="text-[11px] text-black/70 transition-colors hover:text-black/90 dark:text-white/60 dark:hover:text-white/80"
-            href={`/admin/collections/${status.collection}/${status.pageId}/versions`}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {status.versionCount > 0 ? (
-              <>
-                {status.versionCount}
-                <span className="ml-1 text-black/40 dark:text-white/30">
-                  {"\u2192"}
-                </span>
-              </>
-            ) : (
-              "\u2014"
-            )}
-          </a>
+          {status.versionCount > 0 ? (
+            <a
+              className="text-[11px] text-black/70 transition-colors hover:text-black/90 dark:text-white/60 dark:hover:text-white/80"
+              href={`/admin/collections/${status.collection}/${status.pageId}/versions`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {status.versionCount}
+              <span className="ml-1 text-black/40 dark:text-white/30">
+                {"\u2192"}
+              </span>
+            </a>
+          ) : (
+            <span className="text-[11px] text-black/70 dark:text-white/60">
+              {"\u2014"}
+            </span>
+          )}
         </div>
       </motion.div>
     </div>
