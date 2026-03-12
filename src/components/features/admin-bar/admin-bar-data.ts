@@ -129,3 +129,72 @@ export function resolveCollection(pathname: string): {
     slug: getSlugFromPathname(pathname),
   };
 }
+
+export type PageStatusState = "published" | "unpublished-changes" | "draft";
+
+export interface PageStatus {
+  color: string;
+  label: string;
+  lastEdited: string | null;
+  lastPublished: string | null;
+  state: PageStatusState;
+  versionCount: number;
+}
+
+export interface PageStatusInput {
+  _status: "published" | "draft";
+  draftVersionCount: number;
+  latestDraftUpdatedAt: string | null;
+  totalVersionCount: number;
+  updatedAt: string;
+}
+
+const STATUS_COLORS: Record<PageStatusState, string> = {
+  published: "#22c55e",
+  "unpublished-changes": "#f59e0b",
+  draft: "#9ca3af",
+};
+
+const STATUS_LABELS: Record<PageStatusState, string> = {
+  published: "Published",
+  "unpublished-changes": "Unpublished changes",
+  draft: "Draft",
+};
+
+export function computePageStatus(input: PageStatusInput): PageStatus {
+  if (input._status === "draft") {
+    return {
+      state: "draft",
+      color: STATUS_COLORS.draft,
+      label: STATUS_LABELS.draft,
+      lastPublished: null,
+      lastEdited: input.updatedAt,
+      versionCount: input.totalVersionCount,
+    };
+  }
+
+  const hasNewerDrafts =
+    input.draftVersionCount > 0 &&
+    input.latestDraftUpdatedAt !== null &&
+    new Date(input.latestDraftUpdatedAt) > new Date(input.updatedAt);
+
+  if (hasNewerDrafts) {
+    return {
+      state: "unpublished-changes",
+      color: STATUS_COLORS["unpublished-changes"],
+      label: STATUS_LABELS["unpublished-changes"],
+      lastPublished: input.updatedAt,
+      lastEdited: input.latestDraftUpdatedAt,
+      versionCount: input.totalVersionCount,
+    };
+  }
+
+  return {
+    state: "published",
+    color: STATUS_COLORS.published,
+    label: STATUS_LABELS.published,
+    lastPublished: input.updatedAt,
+    lastEdited: null,
+    versionCount: input.totalVersionCount,
+  };
+}
