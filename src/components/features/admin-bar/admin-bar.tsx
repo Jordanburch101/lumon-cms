@@ -232,16 +232,17 @@ export function AdminBar() {
 
     const controller = new AbortController();
     const opts = { credentials: "include" as const, signal: controller.signal };
-    const base = `/api/${pageCollection}/${pageId}/versions`;
+    const base = `/api/${pageCollection}/versions`;
 
     Promise.all([
       fetch(
-        `${base}?limit=1&sort=-updatedAt&where[version._status][equals]=draft`,
+        `${base}?limit=1&sort=-updatedAt&where[parent][equals]=${pageId}&where[version._status][equals]=draft`,
         opts
       ).then((r) => (r.ok ? r.json() : null)),
-      fetch(`${base}?limit=1&sort=-updatedAt`, opts).then((r) =>
-        r.ok ? r.json() : null
-      ),
+      fetch(
+        `${base}?limit=1&sort=-updatedAt&where[parent][equals]=${pageId}`,
+        opts
+      ).then((r) => (r.ok ? r.json() : null)),
     ])
       .then(([draftData, allData]) => {
         const input: PageStatusInput = {
