@@ -83,7 +83,7 @@ export function AdminBarStatusCard({ status }: AdminBarStatusCardProps) {
               <>
                 {status.versionCount}
                 <span className="ml-1 text-black/40 dark:text-white/30">
-                  \u2192
+                  {"\u2192"}
                 </span>
               </>
             ) : (
