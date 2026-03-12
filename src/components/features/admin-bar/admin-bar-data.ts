@@ -28,10 +28,12 @@ export const COLLECTION_ROUTES: CollectionRoute[] = [
 ];
 
 export interface PageContext {
+  _status?: "draft" | "published";
   collection: string;
   id: number;
   label: string;
   slug: string;
+  updatedAt?: string;
 }
 
 export interface AdminUser {

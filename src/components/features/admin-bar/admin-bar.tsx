@@ -11,8 +11,11 @@ import { AdminBarActions } from "./admin-bar-actions";
 import {
   type AdminBarState,
   type AdminUser,
+  computePageStatus,
   loadBarState,
   type PageContext,
+  type PageStatus,
+  type PageStatusInput,
   resolveCollection,
   SNAP_POSITIONS,
   type SnapPosition,
@@ -140,6 +143,7 @@ export function AdminBar() {
   const [page, setPage] = useState<PageContext | null>(null);
   const [barState, setBarState] = useState<AdminBarState>(loadBarState);
   const [isDraft, setIsDraft] = useState(false);
+  const [_pageStatus, setPageStatus] = useState<PageStatus | null>(null);
   const [pageReady, setPageReady] = useState(false);
   const [draftReady, setDraftReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -183,13 +187,24 @@ export function AdminBar() {
     const controller = new AbortController();
     const { collection, label, slug } = resolveCollection(pathname);
     fetch(
-      `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true`,
+      `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true&select[_status]=true&select[updatedAt]=true`,
       { credentials: "include", signal: controller.signal }
     )
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         const doc = data?.docs?.[0];
-        setPage(doc ? { id: doc.id, slug: doc.slug, collection, label } : null);
+        setPage(
+          doc
+            ? {
+                id: doc.id,
+                slug: doc.slug,
+                collection,
+                label,
+                _status: doc._status,
+                updatedAt: doc.updatedAt,
+              }
+            : null
+        );
         setPageReady(true);
       })
       .catch((err) => {
@@ -200,6 +215,58 @@ export function AdminBar() {
       });
     return () => controller.abort();
   }, [user, pathname]);
+
+  // Versions fetch — compute page status
+  useEffect(() => {
+    if (!(user && page?.id && page._status && page.updatedAt)) {
+      setPageStatus(null);
+      return;
+    }
+
+    const pageId = page.id;
+    const pageCollection = page.collection;
+    const pageCurrentStatus = page._status;
+    const pageUpdatedAt = page.updatedAt;
+
+    const controller = new AbortController();
+    const opts = { credentials: "include" as const, signal: controller.signal };
+    const base = `/api/${pageCollection}/${pageId}/versions`;
+
+    Promise.all([
+      fetch(
+        `${base}?limit=1&sort=-updatedAt&where[version._status][equals]=draft`,
+        opts
+      ).then((r) => (r.ok ? r.json() : null)),
+      fetch(`${base}?limit=1&sort=-updatedAt`, opts).then((r) =>
+        r.ok ? r.json() : null
+      ),
+    ])
+      .then(([draftData, allData]) => {
+        const input: PageStatusInput = {
+          _status: pageCurrentStatus,
+          updatedAt: pageUpdatedAt,
+          draftVersionCount: draftData?.totalDocs ?? 0,
+          latestDraftUpdatedAt: draftData?.docs?.[0]?.updatedAt ?? null,
+          totalVersionCount: allData?.totalDocs ?? 0,
+        };
+        setPageStatus(computePageStatus(input));
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setPageStatus(
+            computePageStatus({
+              _status: pageCurrentStatus,
+              updatedAt: pageUpdatedAt,
+              draftVersionCount: 0,
+              latestDraftUpdatedAt: null,
+              totalVersionCount: 0,
+            })
+          );
+        }
+      });
+
+    return () => controller.abort();
+  }, [user, page?.id, page?._status, page?.updatedAt, page?.collection]);
 
   // Read draft mode state from toggle API (HttpOnly cookie can't be read client-side)
   useEffect(() => {
