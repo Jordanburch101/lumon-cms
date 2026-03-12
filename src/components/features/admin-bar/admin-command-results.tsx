@@ -16,6 +16,7 @@ import {
   CommandItem,
   CommandSeparator,
 } from "@/components/ui/command";
+import { getBlurDataURL } from "@/core/lib/utils";
 import { STATUS_COLORS } from "./admin-bar-data";
 import type { MergedCollectionMeta, StaticCommand } from "./admin-command-data";
 
@@ -109,13 +110,16 @@ export function CollectionResultGroup({
                 meta.isUpload &&
                 (() => {
                   const thumbUrl = getThumbnailUrl(doc);
+                  const blur = getBlurDataURL(doc);
                   return (
                     <div className="flex size-6 shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
                       {thumbUrl ? (
                         <Image
                           alt=""
+                          blurDataURL={blur}
                           className="size-full object-cover"
                           height={24}
+                          placeholder={blur ? "blur" : "empty"}
                           src={thumbUrl}
                           width={24}
                         />

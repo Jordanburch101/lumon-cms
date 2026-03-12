@@ -1,7 +1,9 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import {
   buildSearchUrl,
+  clearCollectionMetaCache,
   type CollectionMeta,
+  fetchCollectionMeta,
   filterCommands,
   getStaticCommands,
   mergeCollectionMeta,
@@ -151,7 +153,7 @@ describe("buildSearchUrl", () => {
     const url = buildSearchUrl(meta, "hero");
     expect(url).toContain("&select[filename]=true");
     expect(url).toContain("&select[mimeType]=true");
-    expect(url).toContain("&select[sizes.thumbnail.url]=true");
+    expect(url).toContain("&select[sizes]=true");
   });
 
   test("adds subtitle field when override specifies one", () => {
@@ -245,5 +247,95 @@ describe("mergeCollectionMeta", () => {
     const result = mergeCollectionMeta(custom);
     const slugs = result.map((c) => c.slug);
     expect(slugs).toEqual(["pages", "alpacas", "zebras"]);
+  });
+});
+
+describe("fetchCollectionMeta", () => {
+  const mockCollections: CollectionMeta[] = [
+    {
+      slug: "pages",
+      label: "Pages",
+      titleField: "title",
+      hasVersions: true,
+      isUpload: false,
+    },
+    {
+      slug: "media",
+      label: "Media",
+      titleField: "filename",
+      hasVersions: false,
+      isUpload: true,
+    },
+  ];
+
+  afterEach(() => {
+    clearCollectionMetaCache();
+    mock.restore();
+  });
+
+  test("fetches from /api/admin/collections and returns merged meta", async () => {
+    globalThis.fetch = mock(() =>
+      Promise.resolve(new Response(JSON.stringify(mockCollections)))
+    );
+
+    const result = await fetchCollectionMeta();
+    expect(result).toHaveLength(2);
+    expect(result[0].slug).toBe("pages");
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  test("returns cached result on subsequent calls", async () => {
+    globalThis.fetch = mock(() =>
+      Promise.resolve(new Response(JSON.stringify(mockCollections)))
+    );
+
+    await fetchCollectionMeta();
+    const result = await fetchCollectionMeta();
+    expect(result).toHaveLength(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  test("clearCollectionMetaCache forces re-fetch", async () => {
+    globalThis.fetch = mock(() =>
+      Promise.resolve(new Response(JSON.stringify(mockCollections)))
+    );
+
+    await fetchCollectionMeta();
+    clearCollectionMetaCache();
+    await fetchCollectionMeta();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  test("throws on non-ok response", async () => {
+    globalThis.fetch = mock(() =>
+      Promise.resolve(new Response(null, { status: 401 }))
+    );
+
+    expect(fetchCollectionMeta()).rejects.toThrow(
+      "Failed to fetch collection metadata: 401"
+    );
+  });
+
+  test("passes signal to fetch", async () => {
+    const controller = new AbortController();
+    globalThis.fetch = mock(() =>
+      Promise.resolve(new Response(JSON.stringify(mockCollections)))
+    );
+
+    await fetchCollectionMeta(controller.signal);
+    const callArgs = (globalThis.fetch as ReturnType<typeof mock>).mock
+      .calls[0] as [string, RequestInit];
+    expect(callArgs[1].signal).toBe(controller.signal);
+  });
+
+  test("sends credentials include", async () => {
+    globalThis.fetch = mock(() =>
+      Promise.resolve(new Response(JSON.stringify(mockCollections)))
+    );
+
+    await fetchCollectionMeta();
+    const callArgs = (globalThis.fetch as ReturnType<typeof mock>).mock
+      .calls[0] as [string, RequestInit];
+    expect(callArgs[1].credentials).toBe("include");
   });
 });

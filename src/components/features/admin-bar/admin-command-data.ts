@@ -125,7 +125,7 @@ export function buildSearchUrl(
 
   if (meta.isUpload) {
     url +=
-      "&select[filename]=true&select[mimeType]=true&select[sizes.thumbnail.url]=true";
+      "&select[filename]=true&select[mimeType]=true&select[sizes]=true&select[blurDataURL]=true";
   }
 
   if (subtitleField) {
@@ -167,6 +167,10 @@ export function mergeCollectionMeta(
 // --- Metadata Fetcher (cached) ---
 
 let cachedMeta: MergedCollectionMeta[] | null = null;
+
+export function clearCollectionMetaCache() {
+  cachedMeta = null;
+}
 
 export async function fetchCollectionMeta(
   signal?: AbortSignal
