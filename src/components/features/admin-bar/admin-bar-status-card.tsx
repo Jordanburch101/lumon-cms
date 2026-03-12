@@ -78,6 +78,8 @@ export function AdminBarStatusCard({ status }: AdminBarStatusCardProps) {
           <a
             className="text-[11px] text-black/70 transition-colors hover:text-black/90 dark:text-white/60 dark:hover:text-white/80"
             href={`/admin/collections/${status.collection}/${status.pageId}/versions`}
+            rel="noopener noreferrer"
+            target="_blank"
           >
             {status.versionCount > 0 ? (
               <>

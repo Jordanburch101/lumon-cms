@@ -58,6 +58,8 @@ export function AdminBarActions({
         <motion.a
           className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/80 text-xs transition-colors hover:bg-black/[0.04] hover:text-black dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white/90"
           href={`/admin/collections/${page.collection}/${page.id}`}
+          rel="noopener noreferrer"
+          target="_blank"
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           whileHover={{ scale: 1.02 }}
         >
@@ -75,6 +77,8 @@ export function AdminBarActions({
       <motion.a
         className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/80 text-xs transition-colors hover:bg-black/[0.04] hover:text-black dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white/90"
         href="/admin/collections"
+        rel="noopener noreferrer"
+        target="_blank"
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
         whileHover={{ scale: 1.02 }}
       >
