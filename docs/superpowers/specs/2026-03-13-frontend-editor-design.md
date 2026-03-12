@@ -95,7 +95,9 @@ When edit mode activates, `EditableOverlay` takes over rendering: it fetches the
 
 ### Draft Mode Interaction
 
-Entering edit mode automatically enables Next.js draft mode via `POST /api/draft/toggle` (if not already enabled). This ensures the API fetch (`GET /api/pages/<id>?draft=true`) returns the latest draft content. When edit mode exits via Publish, draft mode is disabled. When edit mode exits via Discard, draft mode is left in whatever state the user had before (restored from a saved flag).
+Entering edit mode ensures Next.js draft mode is enabled. The implementation first calls `GET /api/draft/toggle` to check the current state. If `enabled: false`, it calls `POST /api/draft/toggle` to enable it. This two-step check is necessary because the toggle API flips the current state — calling POST when already enabled would disable it. The pre-edit draft mode state is saved so it can be restored on exit.
+
+When edit mode exits via Publish, draft mode is disabled (POST toggle if currently enabled). When edit mode exits via Discard, draft mode is restored to whatever state the user had before entering edit mode.
 
 ### "Edit Page" Button Behavior
 
@@ -387,7 +389,7 @@ src/
     features/
       frontend-editor/                 ← new feature folder
         edit-mode-context.tsx           React context + provider
-        editable-wrapper.tsx            Wraps blocks, applies edit behavior
+        editable-overlay.tsx            Client overlay that renders RenderBlocksClient in edit mode
         block-controls.tsx              Block toolbar + add-block button
         array-item-controls.tsx         Array item reorder/remove/add
         render-blocks-client.tsx        Client version of RenderBlocks for edit mode
