@@ -30,6 +30,7 @@ export const COLLECTION_ROUTES: CollectionRoute[] = [
 export interface PageContext {
   _status?: "draft" | "published";
   collection: string;
+  createdAt?: string;
   id: number;
   label: string;
   slug: string;
@@ -135,18 +136,24 @@ export function resolveCollection(pathname: string): {
 export type PageStatusState = "published" | "unpublished-changes" | "draft";
 
 export interface PageStatus {
+  collection: string;
   color: string;
+  createdAt: string | null;
   label: string;
   lastEdited: string | null;
   lastPublished: string | null;
+  pageId: number;
   state: PageStatusState;
   versionCount: number;
 }
 
 export interface PageStatusInput {
   _status: "published" | "draft";
+  collection: string;
+  createdAt: string | null;
   draftVersionCount: number;
   latestDraftUpdatedAt: string | null;
+  pageId: number;
   totalVersionCount: number;
   updatedAt: string;
 }
@@ -164,14 +171,21 @@ const STATUS_LABELS: Record<PageStatusState, string> = {
 };
 
 export function computePageStatus(input: PageStatusInput): PageStatus {
+  const shared = {
+    collection: input.collection,
+    createdAt: input.createdAt,
+    pageId: input.pageId,
+    versionCount: input.totalVersionCount,
+  };
+
   if (input._status === "draft") {
     return {
-      state: "draft",
+      ...shared,
+      state: "draft" as const,
       color: STATUS_COLORS.draft,
       label: STATUS_LABELS.draft,
       lastPublished: null,
       lastEdited: input.updatedAt,
-      versionCount: input.totalVersionCount,
     };
   }
 
@@ -182,22 +196,22 @@ export function computePageStatus(input: PageStatusInput): PageStatus {
 
   if (hasNewerDrafts) {
     return {
-      state: "unpublished-changes",
+      ...shared,
+      state: "unpublished-changes" as const,
       color: STATUS_COLORS["unpublished-changes"],
       label: STATUS_LABELS["unpublished-changes"],
       lastPublished: input.updatedAt,
       lastEdited: input.latestDraftUpdatedAt,
-      versionCount: input.totalVersionCount,
     };
   }
 
   return {
-    state: "published",
+    ...shared,
+    state: "published" as const,
     color: STATUS_COLORS.published,
     label: STATUS_LABELS.published,
     lastPublished: input.updatedAt,
     lastEdited: null,
-    versionCount: input.totalVersionCount,
   };
 }
 

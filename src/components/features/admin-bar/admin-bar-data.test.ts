@@ -1,9 +1,22 @@
 import { describe, expect, it } from "bun:test";
 import { computePageStatus, formatRelativeTime } from "./admin-bar-data";
 
+const SHARED_INPUT = {
+  collection: "pages",
+  createdAt: "2026-03-01T00:00:00Z",
+  pageId: 1,
+};
+
+const SHARED_OUTPUT = {
+  collection: "pages",
+  createdAt: "2026-03-01T00:00:00Z",
+  pageId: 1,
+};
+
 describe("computePageStatus", () => {
   it("returns 'published' when page is published with no draft versions", () => {
     const result = computePageStatus({
+      ...SHARED_INPUT,
       _status: "published",
       updatedAt: "2026-03-10T12:00:00Z",
       draftVersionCount: 0,
@@ -11,6 +24,7 @@ describe("computePageStatus", () => {
       totalVersionCount: 5,
     });
     expect(result).toEqual({
+      ...SHARED_OUTPUT,
       state: "published",
       color: "#22c55e",
       label: "Published",
@@ -22,6 +36,7 @@ describe("computePageStatus", () => {
 
   it("returns 'unpublished-changes' when published page has newer drafts", () => {
     const result = computePageStatus({
+      ...SHARED_INPUT,
       _status: "published",
       updatedAt: "2026-03-10T12:00:00Z",
       draftVersionCount: 2,
@@ -29,6 +44,7 @@ describe("computePageStatus", () => {
       totalVersionCount: 7,
     });
     expect(result).toEqual({
+      ...SHARED_OUTPUT,
       state: "unpublished-changes",
       color: "#f59e0b",
       label: "Unpublished changes",
@@ -40,6 +56,7 @@ describe("computePageStatus", () => {
 
   it("returns 'draft' when page status is draft", () => {
     const result = computePageStatus({
+      ...SHARED_INPUT,
       _status: "draft",
       updatedAt: "2026-03-09T15:00:00Z",
       draftVersionCount: 0,
@@ -47,6 +64,7 @@ describe("computePageStatus", () => {
       totalVersionCount: 1,
     });
     expect(result).toEqual({
+      ...SHARED_OUTPUT,
       state: "draft",
       color: "#9ca3af",
       label: "Draft",
@@ -58,6 +76,7 @@ describe("computePageStatus", () => {
 
   it("returns 'published' when draft versions exist but are older", () => {
     const result = computePageStatus({
+      ...SHARED_INPUT,
       _status: "published",
       updatedAt: "2026-03-11T12:00:00Z",
       draftVersionCount: 1,
@@ -65,6 +84,7 @@ describe("computePageStatus", () => {
       totalVersionCount: 4,
     });
     expect(result).toEqual({
+      ...SHARED_OUTPUT,
       state: "published",
       color: "#22c55e",
       label: "Published",

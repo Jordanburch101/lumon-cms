@@ -55,18 +55,41 @@ export function AdminBarStatusCard({ status }: AdminBarStatusCardProps) {
               </span>
             </div>
           )}
+
+          {status.createdAt && (
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-[11px] text-black/50 dark:text-white/40">
+                Created
+              </span>
+              <span className="text-[11px] text-black/70 dark:text-white/60">
+                {formatRelativeTime(status.createdAt)}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="h-px bg-black/[0.06] dark:bg-white/[0.06]" />
 
-        {/* Version count */}
+        {/* Version count + history link */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-[11px] text-black/50 dark:text-white/40">
             Versions
           </span>
-          <span className="text-[11px] text-black/70 dark:text-white/60">
-            {status.versionCount > 0 ? status.versionCount : "\u2014"}
-          </span>
+          <a
+            className="text-[11px] text-black/70 transition-colors hover:text-black/90 dark:text-white/60 dark:hover:text-white/80"
+            href={`/admin/collections/${status.collection}/${status.pageId}/versions`}
+          >
+            {status.versionCount > 0 ? (
+              <>
+                {status.versionCount}
+                <span className="ml-1 text-black/40 dark:text-white/30">
+                  \u2192
+                </span>
+              </>
+            ) : (
+              "\u2014"
+            )}
+          </a>
         </div>
       </div>
     </div>

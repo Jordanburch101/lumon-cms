@@ -189,7 +189,7 @@ export function AdminBar() {
     const controller = new AbortController();
     const { collection, label, slug } = resolveCollection(pathname);
     fetch(
-      `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true&select[_status]=true&select[updatedAt]=true`,
+      `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true&select[_status]=true&select[updatedAt]=true&select[createdAt]=true`,
       { credentials: "include", signal: controller.signal }
     )
       .then((res) => (res.ok ? res.json() : null))
@@ -203,6 +203,7 @@ export function AdminBar() {
                 collection,
                 label,
                 _status: doc._status,
+                createdAt: doc.createdAt,
                 updatedAt: doc.updatedAt,
               }
             : null
@@ -228,6 +229,7 @@ export function AdminBar() {
     const pageId = page.id;
     const pageCollection = page.collection;
     const pageCurrentStatus = page._status;
+    const pageCreatedAt = page.createdAt ?? null;
     const pageUpdatedAt = page.updatedAt;
 
     const controller = new AbortController();
@@ -247,6 +249,9 @@ export function AdminBar() {
       .then(([draftData, allData]) => {
         const input: PageStatusInput = {
           _status: pageCurrentStatus,
+          collection: pageCollection,
+          createdAt: pageCreatedAt,
+          pageId,
           updatedAt: pageUpdatedAt,
           draftVersionCount: draftData?.totalDocs ?? 0,
           latestDraftUpdatedAt: draftData?.docs?.[0]?.updatedAt ?? null,
@@ -259,6 +264,9 @@ export function AdminBar() {
           setPageStatus(
             computePageStatus({
               _status: pageCurrentStatus,
+              collection: pageCollection,
+              createdAt: pageCreatedAt,
+              pageId,
               updatedAt: pageUpdatedAt,
               draftVersionCount: 0,
               latestDraftUpdatedAt: null,
@@ -269,7 +277,14 @@ export function AdminBar() {
       });
 
     return () => controller.abort();
-  }, [user, page?.id, page?._status, page?.updatedAt, page?.collection]);
+  }, [
+    user,
+    page?.id,
+    page?._status,
+    page?.createdAt,
+    page?.updatedAt,
+    page?.collection,
+  ]);
 
   // Read draft mode state from toggle API (HttpOnly cookie can't be read client-side)
   useEffect(() => {
