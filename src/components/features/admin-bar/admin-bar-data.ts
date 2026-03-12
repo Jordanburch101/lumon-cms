@@ -158,7 +158,7 @@ export interface PageStatusInput {
   updatedAt: string;
 }
 
-const STATUS_COLORS: Record<PageStatusState, string> = {
+export const STATUS_COLORS: Record<PageStatusState, string> = {
   published: "#22c55e",
   "unpublished-changes": "#f59e0b",
   draft: "#9ca3af",
