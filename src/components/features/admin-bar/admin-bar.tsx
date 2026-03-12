@@ -22,6 +22,7 @@ import {
   saveBarState,
 } from "./admin-bar-data";
 import { AdminBarSnap } from "./admin-bar-snap";
+import { AdminBarStatusDot } from "./admin-bar-status-dot";
 import { AdminBarToggle } from "./admin-bar-toggle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -143,7 +144,7 @@ export function AdminBar() {
   const [page, setPage] = useState<PageContext | null>(null);
   const [barState, setBarState] = useState<AdminBarState>(loadBarState);
   const [isDraft, setIsDraft] = useState(false);
-  const [_pageStatus, setPageStatus] = useState<PageStatus | null>(null);
+  const [pageStatus, setPageStatus] = useState<PageStatus | null>(null);
   const [pageReady, setPageReady] = useState(false);
   const [draftReady, setDraftReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -498,12 +499,21 @@ export function AdminBar() {
               )}
               layout
             >
-              <motion.div
-                animate={{ rotate: barState.collapsed ? 30 : 0 }}
-                transition={{ duration: 0.3, ease: EASE }}
-              >
-                <LumonHexIcon size={15} />
-              </motion.div>
+              <div className="relative">
+                <motion.div
+                  animate={{ rotate: barState.collapsed ? 30 : 0 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                >
+                  <LumonHexIcon size={15} />
+                </motion.div>
+                {pageStatus && (
+                  <AdminBarStatusDot
+                    collapsed={barState.collapsed}
+                    position={barState.position}
+                    status={pageStatus}
+                  />
+                )}
+              </div>
             </motion.div>
 
             {/* Content — staggered entry, popLayout removes from flow on exit */}
