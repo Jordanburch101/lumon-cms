@@ -3,6 +3,12 @@ import type { Block } from "payload";
 export const CalloutBlock: Block = {
   slug: "callout",
   labels: { singular: "Callout", plural: "Callouts" },
+  admin: {
+    components: {
+      Block:
+        "@/components/features/rich-text/editor-previews/callout-preview#CalloutPreview",
+    },
+  },
   fields: [
     {
       name: "variant",

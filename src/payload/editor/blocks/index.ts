@@ -1,5 +1,5 @@
 export { AccordionBlock } from "./accordion";
-export { CalloutBlock } from "./callout";
 export { RichTextButtonBlock } from "./button";
+export { CalloutBlock } from "./callout";
 export { EmbedBlock } from "./embed";
 export { RichTextMediaBlock } from "./media";
