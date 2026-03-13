@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormFields } from "@payloadcms/ui";
+import { useBlockComponentContext } from "@payloadcms/richtext-lexical/client";
+import { RenderFields, useFormFields } from "@payloadcms/ui";
 import { cn } from "@/core/lib/utils";
 
 const variantStyles = {
@@ -33,6 +34,8 @@ const variantStyles = {
 type CalloutVariant = keyof typeof variantStyles;
 
 export function CalloutPreview() {
+  const { BlockCollapsible, formSchema } = useBlockComponentContext();
+
   const fields = useFormFields(([f]) => ({
     variant: f.variant?.value as CalloutVariant | undefined,
     title: f.title?.value as string | undefined,
@@ -43,31 +46,41 @@ export function CalloutPreview() {
   const style = variantStyles[variant];
 
   return (
-    <div
-      className={cn(
-        "rounded border-l-[3px] px-3.5 py-3",
-        style.border,
-        style.bg
-      )}
-    >
-      <div className="mb-1 flex items-center gap-1.5">
-        <span
-          className={cn(
-            "font-semibold text-[11px] uppercase tracking-[0.05em]",
-            style.text
-          )}
-        >
-          {style.label}
-        </span>
-      </div>
-      {fields.title && (
-        <p className="mb-1 font-medium text-foreground text-sm">
-          {fields.title}
+    <BlockCollapsible>
+      <div
+        className={cn(
+          "mb-3 rounded border-l-[3px] px-3.5 py-3",
+          style.border,
+          style.bg
+        )}
+      >
+        <div className="mb-1 flex items-center gap-1.5">
+          <span
+            className={cn(
+              "font-semibold text-[11px] uppercase tracking-[0.05em]",
+              style.text
+            )}
+          >
+            {style.label}
+          </span>
+        </div>
+        {fields.title && (
+          <p className="mb-1 font-medium text-foreground text-sm">
+            {fields.title}
+          </p>
+        )}
+        <p className="text-[13px] text-muted-foreground leading-relaxed">
+          {fields.content || "Callout content..."}
         </p>
-      )}
-      <p className="text-[13px] text-muted-foreground leading-relaxed">
-        {fields.content || "Callout content..."}
-      </p>
-    </div>
+      </div>
+      <RenderFields
+        fields={formSchema}
+        forceRender
+        parentIndexPath=""
+        parentPath=""
+        parentSchemaPath=""
+        permissions
+      />
+    </BlockCollapsible>
   );
 }

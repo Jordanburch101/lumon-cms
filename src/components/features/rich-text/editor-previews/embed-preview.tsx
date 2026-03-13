@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormFields } from "@payloadcms/ui";
+import { useBlockComponentContext } from "@payloadcms/richtext-lexical/client";
+import { RenderFields, useFormFields } from "@payloadcms/ui";
 import { cn } from "@/core/lib/utils";
 
 const YOUTUBE_RE = /youtube\.com|youtu\.be/;
@@ -21,6 +22,8 @@ function detectProvider(url: string): { name: string; color: string } {
 }
 
 export function EmbedPreview() {
+  const { BlockCollapsible, formSchema } = useBlockComponentContext();
+
   const fields = useFormFields(([f]) => ({
     url: f.url?.value as string | undefined,
     aspectRatio: f.aspectRatio?.value as string | undefined,
@@ -30,23 +33,33 @@ export function EmbedPreview() {
   const provider = detectProvider(url);
 
   return (
-    <div className="flex items-center gap-2.5 rounded-md border border-border p-3.5">
-      <div
-        className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-md",
-          provider.color
-        )}
-      >
-        <span className="font-bold text-white text-xs">▶</span>
+    <BlockCollapsible>
+      <div className="mb-3 flex items-center gap-2.5 rounded-md border border-border p-3.5">
+        <div
+          className={cn(
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-md",
+            provider.color
+          )}
+        >
+          <span className="font-bold text-white text-xs">▶</span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-medium text-foreground text-xs">
+            {url || "No URL entered"}
+          </p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">
+            {provider.name} · {fields.aspectRatio ?? "16:9"}
+          </p>
+        </div>
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate font-medium text-foreground text-xs">
-          {url || "No URL entered"}
-        </p>
-        <p className="mt-0.5 text-[10px] text-muted-foreground">
-          {provider.name} · {fields.aspectRatio ?? "16:9"}
-        </p>
-      </div>
-    </div>
+      <RenderFields
+        fields={formSchema}
+        forceRender
+        parentIndexPath=""
+        parentPath=""
+        parentSchemaPath=""
+        permissions
+      />
+    </BlockCollapsible>
   );
 }
