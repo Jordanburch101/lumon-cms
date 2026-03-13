@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Cancel01Icon,
   GridIcon,
   Logout03Icon,
   PencilEdit02Icon,
@@ -9,7 +10,10 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/core/lib/utils";
+import { SaveControls } from "../frontend-editor/save-controls";
+import { useEditMode } from "../frontend-editor/use-edit-mode";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
 
 interface AdminBarActionsProps {
@@ -30,6 +34,7 @@ export function AdminBarActions({
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const firstItemRef = useRef<HTMLButtonElement>(null);
+  const editMode = useEditMode();
 
   const initial = (user.name?.[0] || user.email[0]).toUpperCase();
 
@@ -68,21 +73,82 @@ export function AdminBarActions({
     }
   }, [menuOpen]);
 
+  const handleEnterEditMode = useCallback(async () => {
+    if (!(page && editMode)) {
+      return;
+    }
+
+    try {
+      // Ensure draft mode is enabled
+      const draftRes = await fetch("/api/draft/toggle", {
+        credentials: "include",
+      });
+      if (draftRes.ok) {
+        const draftData = await draftRes.json();
+        if (!draftData.enabled) {
+          await fetch("/api/draft/toggle", {
+            method: "POST",
+            credentials: "include",
+          });
+        }
+      }
+
+      // Fetch full page data with blocks
+      const res = await fetch(`/api/pages/${page.id}?draft=true&depth=2`, {
+        credentials: "include",
+      });
+      if (!res.ok) {
+        return;
+      }
+
+      const data = await res.json();
+      editMode.actions.enter(page.id, data.layout ?? []);
+    } catch {
+      // Silent fail — edit mode is a convenience feature
+    }
+  }, [page, editMode]);
+
+  const handleExit = useCallback(() => {
+    editMode?.actions.exit();
+  }, [editMode]);
+
+  // Edit mode active — show save controls instead of normal actions
+  if (editMode?.state.active) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
+          {editMode.state.dirtyCount > 0
+            ? `${editMode.state.dirtyCount} ${editMode.state.dirtyCount === 1 ? "change" : "changes"}`
+            : "Editing"}
+        </span>
+        <SaveControls />
+        <Button
+          className="h-7 w-7"
+          onClick={handleExit}
+          size="icon"
+          variant="ghost"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} size={14} />
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Edit Page */}
       {page ? (
-        <motion.a
+        <motion.button
           className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/80 text-xs transition-colors hover:bg-black/[0.04] hover:text-black dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white/90"
-          href={`/admin/collections/${page.collection}/${page.id}`}
-          rel="noopener noreferrer"
-          target="_blank"
+          onClick={handleEnterEditMode}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          type="button"
           whileHover={{ scale: 1.02 }}
         >
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
           <span>{page.label}</span>
-        </motion.a>
+        </motion.button>
       ) : (
         <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/35 text-xs dark:text-white/25">
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
@@ -152,6 +218,23 @@ export function AdminBarActions({
                 {user.email}
               </p>
             </div>
+
+            {/* Open in Admin */}
+            {page && (
+              <a
+                className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
+                href={`/admin/collections/${page.collection}/${page.id}`}
+                onClick={() => setMenuOpen(false)}
+                ref={firstItemRef as React.RefObject<HTMLAnchorElement>}
+                rel="noopener noreferrer"
+                role="menuitem"
+                target="_blank"
+              >
+                <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
+                Open in Admin
+              </a>
+            )}
+
             <button
               className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
               onClick={async () => {
@@ -166,7 +249,7 @@ export function AdminBarActions({
                 }
                 window.location.reload();
               }}
-              ref={firstItemRef}
+              ref={page ? undefined : firstItemRef}
               role="menuitem"
               type="button"
             >

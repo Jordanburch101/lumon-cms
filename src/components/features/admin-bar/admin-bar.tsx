@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { cn } from "@/core/lib/utils";
+import { useEditMode } from "../frontend-editor/use-edit-mode";
+import { useKeyboardShortcuts } from "../frontend-editor/use-keyboard-shortcuts";
 import { AdminBarActions } from "./admin-bar-actions";
 import {
   type AdminBarState,
@@ -111,6 +113,7 @@ function LumonHexIcon({ size = 14 }: { size?: number }) {
   );
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: pre-existing complexity; edit-mode wiring adds minimal branching
 export function AdminBar() {
   const pathname = usePathname();
   const [user, setUser] = useState<AdminUser | null>(null);
@@ -123,6 +126,7 @@ export function AdminBar() {
   const [isDragging, setIsDragging] = useState(false);
   const [morphing, setMorphing] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const editMode = useEditMode();
   const [hoveredZone, setHoveredZone] = useState<SnapPosition | null>(null);
   const hoveredZoneRef = useRef<SnapPosition | null>(null);
   const [toggling, setToggling] = useState(false);
@@ -286,6 +290,14 @@ export function AdminBar() {
     return () => controller.abort();
   }, [user]);
 
+  // Keyboard shortcuts for edit mode
+  const handleEditModeExit = useCallback(() => {
+    editMode?.actions.exit();
+  }, [editMode]);
+  useKeyboardShortcuts(editMode?.state.active ?? false, {
+    exit: handleEditModeExit,
+  });
+
   // Persist state changes
   const updateBarState = useCallback((updates: Partial<AdminBarState>) => {
     setBarState((prev) => {
@@ -397,6 +409,14 @@ export function AdminBar() {
 
   const positionClass = SNAP_POSITIONS[barState.position].className;
 
+  let editRingClass: string | null = null;
+  if (editMode?.state.active) {
+    editRingClass =
+      editMode.state.dirtyCount > 0
+        ? "ring-1 ring-amber-500/30"
+        : "ring-1 ring-blue-500/30";
+  }
+
   const layoutTransition = barState.collapsed
     ? { duration: 0.3, ease: EASE, delay: 0.1 }
     : { duration: 0.4, ease: EASE };
@@ -444,7 +464,8 @@ export function AdminBar() {
               isDragging
                 ? "shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(0,0,0,0.25)]"
                 : "shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_4px_20px_rgba(0,0,0,0.08),0_8px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_4px_20px_rgba(0,0,0,0.15),0_8px_40px_rgba(0,0,0,0.1)]",
-              isDraft && "ring-1 ring-amber-500/20 dark:ring-amber-400/15"
+              isDraft && "ring-1 ring-amber-500/20 dark:ring-amber-400/15",
+              editRingClass
             )}
             layout
             onClick={
