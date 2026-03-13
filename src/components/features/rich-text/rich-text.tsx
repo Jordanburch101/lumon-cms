@@ -1,11 +1,11 @@
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
-import {
-  RichText as PayloadRichText,
-  defaultJSXConverters,
-} from "@payloadcms/richtext-lexical/react";
 import type {
   JSXConverter,
   JSXConverters,
+} from "@payloadcms/richtext-lexical/react";
+import {
+  RichText as PayloadRichText,
+  defaultJSXConverters,
 } from "@payloadcms/richtext-lexical/react";
 import { cn } from "@/core/lib/utils";
 import { customBlockConverters, customNodeConverters } from "./converters";

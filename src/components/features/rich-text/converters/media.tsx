@@ -78,6 +78,7 @@ export function MediaConverter({
       )}
     >
       <div className={cn("relative overflow-hidden", rounded && "rounded-lg")}>
+        {/* biome-ignore lint/a11y/useMediaCaption: captions not available for user-uploaded media */}
         {isVideo ? (
           <video className="w-full" controls src={url} />
         ) : (
