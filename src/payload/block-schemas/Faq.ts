@@ -1,4 +1,5 @@
 import type { Block } from "payload";
+import { link } from "../fields/link/link";
 
 export const FaqBlock: Block = {
   slug: "faq",
@@ -16,14 +17,7 @@ export const FaqBlock: Block = {
         { name: "answer", type: "textarea", required: true },
       ],
     },
-    {
-      name: "cta",
-      type: "group",
-      fields: [
-        { name: "text", type: "text" },
-        { name: "label", type: "text" },
-        { name: "href", type: "text" },
-      ],
-    },
+    { name: "ctaText", type: "text" },
+    link({ name: "cta" }),
   ],
 };
