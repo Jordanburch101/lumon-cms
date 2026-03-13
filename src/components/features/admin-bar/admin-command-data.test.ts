@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import {
   buildSearchUrl,
-  clearCollectionMetaCache,
   type CollectionMeta,
+  clearCollectionMetaCache,
   fetchCollectionMeta,
   filterCommands,
   getStaticCommands,

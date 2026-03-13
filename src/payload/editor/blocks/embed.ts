@@ -3,12 +3,6 @@ import type { Block } from "payload";
 export const EmbedBlock: Block = {
   slug: "embed",
   labels: { singular: "Embed", plural: "Embeds" },
-  admin: {
-    components: {
-      Block:
-        "@/components/features/rich-text/editor-previews/embed-preview#EmbedPreview",
-    },
-  },
   fields: [
     { name: "url", type: "text", required: true },
     {
