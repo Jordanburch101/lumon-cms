@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Nunito_Sans } from "next/font/google";
 import { Suspense } from "react";
 import { AdminBar } from "@/components/features/admin-bar/admin-bar";
+import { EditModeProvider } from "@/components/features/frontend-editor/edit-mode-context";
 import { Footer } from "@/components/layout/footer/footer";
 import { Navbar } from "@/components/layout/navbar/navbar";
 import { Providers } from "@/providers/providers";
@@ -40,11 +41,13 @@ export default function FrontendLayout({
             />
           )}
           <Navbar />
-          <main>{children}</main>
+          <EditModeProvider>
+            <main>{children}</main>
+            <Suspense>
+              <AdminBar />
+            </Suspense>
+          </EditModeProvider>
           <Footer />
-          <Suspense>
-            <AdminBar />
-          </Suspense>
         </Providers>
       </body>
     </html>
