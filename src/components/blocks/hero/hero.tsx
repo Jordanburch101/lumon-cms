@@ -1,6 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { CMSLink } from "@/components/ui/cms-link";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { HeroBlock } from "@/types/block-types";
 
@@ -69,29 +68,14 @@ export function Hero({
           {subtext}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button
-            asChild
+          <CMSLink
             className="bg-white text-black hover:bg-white/90"
-            size="lg"
-          >
-            <Link href={primaryCta.href}>
-              <span data-field="primaryCta.label">{primaryCta.label}</span>
-            </Link>
-          </Button>
-          <Button
-            asChild
+            link={primaryCta}
+          />
+          <CMSLink
             className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
-            size="lg"
-            variant="outline"
-          >
-            <a
-              href={secondaryCta.href}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <span data-field="secondaryCta.label">{secondaryCta.label}</span>
-            </a>
-          </Button>
+            link={secondaryCta}
+          />
         </div>
       </div>
     </section>
