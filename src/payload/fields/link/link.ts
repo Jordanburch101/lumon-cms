@@ -121,18 +121,34 @@ export function link(opts?: LinkFieldOptions): GroupField {
     {
       name: "url",
       type: "text",
-      required: opts?.required,
       admin: {
         condition: (_, siblingData) => siblingData?.type === "external",
+      },
+      validate: (
+        val: string | null | undefined,
+        { siblingData }: { siblingData: Record<string, unknown> }
+      ) => {
+        if (opts?.required && siblingData?.type === "external" && !val) {
+          return "URL is required for external links";
+        }
+        return true;
       },
     },
     {
       name: "reference",
       type: "relationship",
       relationTo: [...linkableCollections],
-      required: opts?.required,
       admin: {
         condition: (_, siblingData) => siblingData?.type === "internal",
+      },
+      validate: (
+        val: unknown,
+        { siblingData }: { siblingData: Record<string, unknown> }
+      ) => {
+        if (opts?.required && siblingData?.type === "internal" && !val) {
+          return "A page reference is required for internal links";
+        }
+        return true;
       },
     },
     {
