@@ -4,6 +4,7 @@ import {
   createContext,
   type ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -246,6 +247,19 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
       dirtyCount: 0,
     }));
   }, []);
+
+  useEffect(() => {
+    if (!state.active || state.dirtyCount === 0) {
+      return;
+    }
+
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [state.active, state.dirtyCount]);
 
   const actions = useMemo<EditModeActions>(
     () => ({
