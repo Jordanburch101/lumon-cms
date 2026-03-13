@@ -5,11 +5,15 @@
       "args": ["shadcn@latest", "mcp"]
     },
     "payload": {
-      "type": "http",
-      "url": "http://localhost:3000/api/mcp",
-      "headers": {
-        "Authorization": "Bearer 2e25ef0a-9b3d-4bdb-ade4-b1c97cf7c4b7"
-      }
+      "command": "npx",
+      "args": [
+        "-y",
+        "supergateway",
+        "--streamableHttp",
+        "http://localhost:3000/api/mcp",
+        "--header",
+        "Authorization: Bearer 2e25ef0a-9b3d-4bdb-ade4-b1c97cf7c4b7"
+      ]
     }
   }
 }

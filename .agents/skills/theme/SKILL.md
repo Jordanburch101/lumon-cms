@@ -222,6 +222,48 @@ The site speaks in Severance's institutional register — corporate euphemism de
 - **Tone:** Deadpan authority. No exclamation marks. No casual language. No emoji.
 - **Footnotes:** Institutional boilerplate — "All metrics reflect live production data as of [date]"
 
+## Rich Text / Prose
+
+The `RichText` component (`src/components/features/rich-text/rich-text.tsx`) renders Lexical editor content with Tailwind Typography. All rich text content uses these prose classes:
+
+**Base prose:**
+```
+prose dark:prose-invert max-w-none
+```
+
+**Heading overrides:**
+```
+prose-headings:font-semibold prose-headings:leading-tight prose-headings:tracking-tight
+```
+
+**Body text:**
+```
+prose-p:text-muted-foreground prose-p:leading-relaxed
+```
+
+**Links:**
+```
+prose-a:text-foreground prose-a:underline-offset-4 prose-a:decoration-border hover:prose-a:decoration-foreground/50
+```
+
+**Code:**
+```
+prose-code:font-mono prose-code:bg-muted prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[0.9em] prose-code:before:content-none prose-code:after:content-none
+```
+
+**Images suppressed** — `prose-img:hidden` (the media converter renders images explicitly with Next.js `Image`)
+
+**Size variants:** `prose-sm`, `prose-base` (default), `prose-lg`
+
+**Custom block converters** use `not-prose` to escape typography and handle their own styling:
+- Callout: left-border accent with institutional labels (Notice, Advisory, Guidance, Alert)
+- Horizontal rule: gradient fade (`linear-gradient(90deg, transparent, var(--border), transparent)`)
+- Media: Next.js Image with size/alignment options, eyebrow-style credit badge
+- Checklist: shadcn-styled checkboxes (pure SVG, server-renderable)
+- Button: block-level CTA with variant/size options
+
+**Server rendering constraint:** All converters must be server-renderable. No Radix, no Hugeicons, no `"use client"`. Use inline SVG for icons.
+
 ## What to Avoid
 
 - **Generic SaaS patterns** — rounded-full pills with gradient backgrounds, "Get Started Free" buttons, testimonial carousels with star ratings

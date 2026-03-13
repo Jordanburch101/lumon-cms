@@ -42,8 +42,9 @@ src/
     block-schemas/  — Block field definitions (Hero, Bento, etc.)
     collections/    — Data models (Users, Media, Pages)
     hooks/          — Collection & field hooks
+    editor/         — Lexical rich text editor config + custom blocks
     jobs/           — Async job tasks (video optimization)
-    lib/            — Payload-specific utilities (ffmpeg, downloads)
+    lib/            — Payload-specific utilities (caching, ffmpeg, downloads)
   core/             — Upstream-safe agnostic code (hooks, utils)
     hooks/          — Generic reusable hooks
     lib/            — Generic utilities (cn, helpers)
@@ -120,10 +121,27 @@ When you encounter a task outside your current skillset — or the user asks "ho
 - **Config**: `src/payload.config.ts` — collections, plugins, db adapter, S3 storage
 - **Payload directory**: `src/payload/` — block schemas, collections, hooks, jobs, utilities
 - **Collections**: `src/payload/collections/` — Users, Media, Pages (with layout blocks field)
-- **Block schemas**: `src/payload/block-schemas/` — Hero, Bento, SplitMedia, Testimonials, ImageGallery, LatestArticles, CinematicCta, Pricing, Faq, Trust
+- **Block schemas**: `src/payload/block-schemas/` — Hero, Bento, SplitMedia, Testimonials, ImageGallery, LatestArticles, CinematicCta, Pricing, Faq, Trust, RichTextContent
 - **Block components**: `src/components/blocks/` — React renderers mapped via `render-blocks.tsx`
 - **Page rendering**: SSR catch-all `(frontend)/[[...slug]]/page.tsx` fetches pages via Payload Local API
 - **Operations**: Use the `payload-ops` skill for step-by-step recipes when adding blocks, collections, or modifying schemas. It encodes the project's naming conventions, file locations, and type system patterns.
+
+### Rich Text System
+
+- **Editor config**: `src/payload/editor/config.ts` — Lexical editor with custom blocks (callout, button, media, accordion, embed)
+- **Converters**: `src/components/features/rich-text/converters/` — Theme-aligned JSX converters for each block + checklist, horizontal rule
+- **RichText component**: `src/components/features/rich-text/rich-text.tsx` — Prose wrapper with size variants, block/node converter merging
+- Custom editor blocks are defined in `src/payload/editor/blocks/` and registered in the editor config
+- Frontend converters are registered in `src/components/features/rich-text/converters/index.tsx`
+
+### Caching & PPR
+
+- **Cache pattern**: `"use cache"` + `cacheTag` + `cacheLife("hours")` in `src/payload/lib/cached-payload/`
+- **Relationship walker**: `src/payload/lib/relationship-walker/` auto-tags nested media/relation IDs via `cacheTag`
+- **Revalidation**: `revalidateTag(tag, "default")` in afterChange/afterDelete hooks (`src/payload/hooks/revalidateOnChange/`)
+- **PPR**: Frontend layout wraps `<main>` in `<Suspense>` for Partial Prerendering — static shell (navbar, footer) renders instantly
+- **Draft mode**: `getPageDirect()` bypasses cache entirely
+- **Payload admin**: `(payload)/layout.tsx` patched with `connection()` + `<Suspense>` for `cacheComponents` compatibility — Payload doesn't officially support `cacheComponents` yet, so these patches may need reapplying after `payload generate:types`
 
 ### Payload MCP
 
@@ -142,6 +160,7 @@ The `@payloadcms/plugin-mcp` is configured and connected via `.mcp.json`. It use
 - To create a page with blocks, media must exist first (FK constraint)
 - `createPages` fails if a page with the same slug exists — use `updatePages` instead
 - API key for MCP is managed via admin panel: MCP > API Keys. Enable the checkbox and save to generate a key.
+- `(payload)` generated files (`layout.tsx`, `page.tsx`, `not-found.tsx`) are patched for `cacheComponents` — if Payload regenerates them, re-apply `connection()` + `<Suspense>` wrapping
 
 ### Admin credentials
 

@@ -16,6 +16,8 @@ Step-by-step recipes for adding blocks and collections to this codebase. Follow 
 | Concern | Location |
 |---------|----------|
 | Block schemas | `src/payload/block-schemas/{PascalName}.ts` |
+| Editor config | `src/payload/editor/config.ts` |
+| Editor blocks | `src/payload/editor/blocks/{camelName}.ts` |
 | Collections | `src/payload/collections/{PluralPascalName}.ts` |
 | Hooks | `src/payload/hooks/{camelName}.ts` |
 | Jobs | `src/payload/jobs/{kebab-name}.ts` (export as `{camelName}Task`) |
@@ -25,6 +27,8 @@ Step-by-step recipes for adding blocks and collections to this codebase. Follow 
 | Block type extraction | `src/types/block-types.ts` |
 | Block components | `src/components/blocks/{kebab-name}/` |
 | Block renderer | `src/components/blocks/render-blocks.tsx` |
+| Rich text converters | `src/components/features/rich-text/converters/{kebab-name}.tsx` |
+| Rich text converter index | `src/components/features/rich-text/converters/index.tsx` |
 | Frontend pages | `src/app/(frontend)/` |
 
 ## Naming Conventions
@@ -336,3 +340,75 @@ When adding, changing, or removing fields on an existing block:
 4. Run `bun check` to verify
 
 No changes needed to `block-types.ts`, `render-blocks.tsx`, or the collection file — those only change when adding or removing entire blocks.
+
+---
+
+## Recipe 4: Add a Rich Text Editor Block
+
+Rich text editor blocks appear inside the Lexical editor (callout boxes, media embeds, buttons, etc.) — different from layout blocks which are top-level page sections.
+
+### Steps
+
+**1. Create the editor block definition**
+
+File: `src/payload/editor/blocks/{camelName}.ts`
+
+```typescript
+import type { Block } from "payload";
+
+export const {PascalName}Block: Block = {
+  slug: "{camelName}",
+  labels: { singular: "{Human Name}", plural: "{Human Names}" },
+  fields: [
+    // Define fields here
+  ],
+};
+```
+
+**2. Register in editor config**
+
+File: `src/payload/editor/config.ts`
+
+- Add import: `import { {PascalName}Block } from "./blocks/{camelName}";`
+- Add to the `blocks` array in `BlocksFeature.configure()`
+
+**3. Create the frontend converter**
+
+File: `src/components/features/rich-text/converters/{kebab-name}.tsx`
+
+```typescript
+export function {PascalName}Converter({
+  node,
+}: {
+  node: {
+    fields: { /* match your block fields */ };
+  };
+}) {
+  return (
+    <div className="not-prose my-6">
+      {/* Render the block — use theme skill for styling */}
+    </div>
+  );
+}
+```
+
+Key patterns:
+- Use `not-prose` class to escape Tailwind Typography
+- Use `my-6` or `my-8` for vertical spacing
+- Server-renderable only — no client components, no Radix/Hugeicons (causes Suspense errors)
+- Use pure HTML/SVG for icons
+
+**4. Register the converter**
+
+File: `src/components/features/rich-text/converters/index.tsx`
+
+- Add import: `import { {PascalName}Converter } from "./{kebab-name}";`
+- Add to `customBlockConverters`: `{camelName}: {PascalName}Converter,`
+
+**5. Verify**
+
+```bash
+bun check
+```
+
+> **Important**: Rich text converters run in a server component context. Do not import `"use client"` components (shadcn, Radix, Hugeicons). Use inline SVG for icons and pure CSS for styling.
