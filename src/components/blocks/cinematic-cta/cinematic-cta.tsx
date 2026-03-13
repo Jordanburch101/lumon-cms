@@ -8,7 +8,6 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import Link from "next/link";
 import {
   type KeyboardEvent,
   type PointerEvent,
@@ -17,7 +16,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Button } from "@/components/ui/button";
+import { CMSLink } from "@/components/ui/cms-link";
 import { getMediaUrl } from "@/core/lib/utils";
 import type { CinematicCtaBlock } from "@/types/block-types";
 
@@ -164,17 +163,12 @@ export function CinematicCta({
           </motion.span>
 
           {/* CTA button */}
-          {cta.label && cta.href && (
+          {cta.label && (
             <motion.div style={{ opacity: textOpacity, y: textY }}>
-              <Button
-                asChild
+              <CMSLink
                 className="mt-6 bg-white text-black hover:bg-white/90"
-                size="lg"
-              >
-                <Link href={cta.href}>
-                  <span data-field="cta.label">{cta.label}</span>
-                </Link>
-              </Button>
+                link={cta}
+              />
             </motion.div>
           )}
 
