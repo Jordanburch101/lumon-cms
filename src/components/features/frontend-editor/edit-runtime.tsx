@@ -7,8 +7,9 @@ import type {
   BlockFieldMap,
   FieldDescriptor,
   FieldEntry,
+  GroupFieldDescriptor,
 } from "@/payload/lib/field-map/types";
-import { humanizeFieldPath } from "./edit-mode-data";
+import { getFieldValue, humanizeFieldPath } from "./edit-mode-data";
 import { activateTextEditor } from "./field-editors/text-editor";
 import { useEditMode } from "./use-edit-mode";
 
@@ -16,10 +17,37 @@ import { useEditMode } from "./use-edit-mode";
 const RE_ARRAY_MID = /\.\d+\./g;
 const RE_ARRAY_END = /\.\d+$/;
 
+const EDIT_ICON_SVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+
+/** Wrap the first TEXT_NODE child of el in a span and return it.
+ *  Preserves sibling elements (icons, etc.). Falls back to prepending
+ *  a span with full textContent when no text nodes are found. */
+function wrapLabelTextInSpan(el: HTMLElement): HTMLSpanElement {
+  const labelSpan = document.createElement("span");
+  const textNodes: Text[] = [];
+  for (const node of Array.from(el.childNodes)) {
+    if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+      textNodes.push(node as Text);
+    }
+  }
+  if (textNodes.length > 0) {
+    labelSpan.textContent = textNodes[0].textContent;
+    textNodes[0].replaceWith(labelSpan);
+    for (let t = 1; t < textNodes.length; t++) {
+      textNodes[t].remove();
+    }
+  } else {
+    labelSpan.textContent = el.textContent;
+    el.prepend(labelSpan);
+  }
+  return labelSpan;
+}
+
 export function useEditRuntime() {
   const editMode = useEditMode();
   const isActive = editMode?.state.active ?? false;
   const actions = editMode?.actions;
+  const blocks = editMode?.state.blocks;
   const cleanups = useRef<(() => void)[]>([]);
 
   useEffect(() => {
@@ -93,6 +121,98 @@ export function useEditRuntime() {
       }
     }
 
+    function bindGroupElement(el: HTMLElement) {
+      const fieldPath = el.dataset.fieldGroup;
+      const groupType = el.dataset.fieldGroupType;
+      if (!(fieldPath && groupType)) {
+        return;
+      }
+
+      const blockContainer = el.closest<HTMLElement>("[data-block-index]");
+      if (!blockContainer) {
+        return;
+      }
+
+      const blockIndex = Number(blockContainer.dataset.blockIndex);
+      const blockType = blockContainer.dataset.blockType;
+      if (!(blockType && blockType in fieldMap)) {
+        return;
+      }
+
+      const entry = fieldMap[blockType as keyof typeof fieldMap][fieldPath];
+      if (!entry || entry.type !== "group") {
+        return;
+      }
+
+      const groupDescriptor = entry as GroupFieldDescriptor;
+
+      // Add hover indicator
+      el.classList.add("editable-field");
+      const fieldLabel = humanizeFieldPath(fieldPath);
+      el.setAttribute("data-field-label", fieldLabel);
+
+      // Inline label editing: wrap only TEXT_NODE children in a span
+      // (preserves icons and other elements)
+      const labelSpan = wrapLabelTextInSpan(el);
+
+      const labelCleanup = activateTextEditor(
+        labelSpan,
+        blockIndex,
+        `${fieldPath}.label`,
+        updateField
+      );
+
+      // Create edit icon overlay
+      const editIcon = document.createElement("button");
+      editIcon.className = "group-edit-icon";
+      editIcon.setAttribute("aria-label", `Edit ${fieldLabel}`);
+      editIcon.innerHTML = EDIT_ICON_SVG;
+      el.style.position = "relative";
+      el.appendChild(editIcon);
+
+      const handleEditClick = (e: Event) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Read current values from edit mode state using getFieldValue
+        const block = (blocks ?? [])[blockIndex] as
+          | Record<string, unknown>
+          | undefined;
+        const currentValues = block
+          ? ((getFieldValue(block, fieldPath) as Record<string, unknown>) ?? {})
+          : {};
+
+        el.dispatchEvent(
+          new CustomEvent("edit:open-group-editor", {
+            bubbles: true,
+            detail: {
+              blockIndex,
+              fieldPath,
+              groupType,
+              fields: groupDescriptor.fields,
+              currentValues,
+              anchorEl: el,
+            },
+          })
+        );
+      };
+
+      editIcon.addEventListener("click", handleEditClick);
+
+      cleanups.current.push(() => {
+        el.classList.remove("editable-field");
+        el.removeAttribute("data-field-label");
+        el.style.position = "";
+        // Restore: replace the span with a text node
+        const restoredText = document.createTextNode(
+          labelSpan.textContent ?? ""
+        );
+        labelSpan.replaceWith(restoredText);
+        editIcon.remove();
+        labelCleanup();
+      });
+    }
+
     function scan() {
       for (const cleanup of cleanups.current) {
         cleanup();
@@ -122,6 +242,13 @@ export function useEditRuntime() {
 
         const blockIndex = Number(blockContainer.dataset.blockIndex);
         bindElement(el, blockIndex, fullPath);
+      }
+
+      // --- Group field elements ---
+      const groupElements =
+        container.querySelectorAll<HTMLElement>("[data-field-group]");
+      for (const el of groupElements) {
+        bindGroupElement(el);
       }
     }
 
@@ -160,7 +287,7 @@ export function useEditRuntime() {
       }
       cleanups.current = [];
     };
-  }, [isActive, actions]);
+  }, [isActive, actions, blocks]);
 }
 
 function isTextType(type: FieldDescriptor["type"]): boolean {

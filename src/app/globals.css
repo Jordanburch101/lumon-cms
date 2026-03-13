@@ -629,3 +629,34 @@
   color: oklch(0.12 0 0);
   background: oklch(0.88 0 0);
 }
+
+/* Group field edit icon */
+.group-edit-icon {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.group-edit-icon:hover {
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.editable-field:hover .group-edit-icon {
+  display: flex;
+}
