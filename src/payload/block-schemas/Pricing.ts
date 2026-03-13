@@ -1,4 +1,5 @@
 import type { Block } from "payload";
+import { link } from "../fields/link/link";
 
 export const PricingBlock: Block = {
   slug: "pricing",
@@ -22,14 +23,14 @@ export const PricingBlock: Block = {
           type: "array",
           fields: [{ name: "text", type: "text", required: true }],
         },
-        {
+        link({
           name: "cta",
-          type: "group",
-          fields: [
-            { name: "label", type: "text", required: true },
-            { name: "href", type: "text", required: true },
-          ],
-        },
+          required: true,
+          appearance: {
+            type: ["button"],
+            button: { variants: ["default", "outline"], sizes: ["lg"] },
+          },
+        }),
         { name: "badge", type: "text" },
         { name: "recommended", type: "checkbox", defaultValue: false },
       ],
