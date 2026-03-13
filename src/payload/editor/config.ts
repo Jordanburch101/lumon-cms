@@ -13,6 +13,7 @@ import {
   InlineToolbarFeature,
   ItalicFeature,
   LinkFeature,
+  lexicalEditor,
   OrderedListFeature,
   ParagraphFeature,
   StrikethroughFeature,
@@ -21,7 +22,6 @@ import {
   UnderlineFeature,
   UnorderedListFeature,
   UploadFeature,
-  lexicalEditor,
 } from "@payloadcms/richtext-lexical";
 import {
   AccordionBlock,

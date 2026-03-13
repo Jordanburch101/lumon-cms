@@ -3,7 +3,10 @@ import {
   RichText as PayloadRichText,
   defaultJSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import type { JSXConverters } from "@payloadcms/richtext-lexical/react";
+import type {
+  JSXConverter,
+  JSXConverters,
+} from "@payloadcms/richtext-lexical/react";
 import { cn } from "@/core/lib/utils";
 import { customBlockConverters, customNodeConverters } from "./converters";
 
@@ -72,9 +75,11 @@ export function RichText({
   }
 
   // Build block converters: custom defaults + consumer overrides - disabled blocks
+  // biome-ignore lint/suspicious/noExplicitAny: matches Payload's JSXConverter generic
+  const consumerBlocks = (consumerConverters as { blocks?: Record<string, JSXConverter<any>> }).blocks ?? {};
   const blockConverters = {
     ...customBlockConverters,
-    ...((consumerConverters as { blocks?: Record<string, unknown> }).blocks ?? {}),
+    ...consumerBlocks,
   };
 
   for (const slug of disableBlocks) {
