@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
   motion,
   useInView,
@@ -10,10 +8,10 @@ import {
   useTransform,
 } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { CMSLink } from "@/components/ui/cms-link";
 import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { SplitMediaBlock } from "@/types/block-types";
 
@@ -182,25 +180,14 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
           {row.body}
         </motion.p>
 
-        {row.cta?.label && row.cta.href && (
+        {row.cta?.label && (
           <motion.div
             animate={inView ? { opacity: 1, y: 0 } : {}}
             className="mt-6 lg:mt-8"
             initial={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.6, ease: EASE, delay: 0.55 }}
           >
-            <Link
-              className="group inline-flex items-center gap-2 font-medium text-foreground text-sm transition-colors hover:text-foreground/70"
-              href={row.cta.href}
-            >
-              <span data-field={`rows.${index}.cta.label`}>
-                {row.cta.label}
-              </span>
-              <HugeiconsIcon
-                className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                icon={ArrowRight01Icon}
-              />
-            </Link>
+            <CMSLink className="group text-foreground" link={row.cta} />
           </motion.div>
         )}
       </motion.div>
