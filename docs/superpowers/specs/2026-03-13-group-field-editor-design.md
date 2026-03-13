@@ -65,7 +65,7 @@ A new `GroupFieldDescriptor` type. The generator detects groups with `custom.gro
 interface GroupFieldDescriptor {
   type: "group"                              // discriminant — matches existing FieldEntry convention
   groupType: string                          // "link" | future types
-  fields: Record<string, FieldDescriptor>    // nested field descriptors
+  fields: BlockFieldMap                      // nested field descriptors — uses BlockFieldMap for consistency with ArrayFieldDescriptor
 }
 ```
 
