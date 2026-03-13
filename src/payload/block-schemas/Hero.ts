@@ -1,4 +1,5 @@
 import type { Block } from "payload";
+import { link } from "../fields/link/link";
 
 export const HeroBlock: Block = {
   slug: "hero",
@@ -7,21 +8,21 @@ export const HeroBlock: Block = {
     { name: "mediaSrc", type: "upload", relationTo: "media", required: true },
     { name: "headline", type: "text", required: true },
     { name: "subtext", type: "text", required: true },
-    {
+    link({
       name: "primaryCta",
-      type: "group",
-      fields: [
-        { name: "label", type: "text", required: true },
-        { name: "href", type: "text", required: true },
-      ],
-    },
-    {
+      required: true,
+      appearance: {
+        type: ["button"],
+        button: { variants: ["default", "outline"], sizes: ["lg"] },
+      },
+    }),
+    link({
       name: "secondaryCta",
-      type: "group",
-      fields: [
-        { name: "label", type: "text", required: true },
-        { name: "href", type: "text", required: true },
-      ],
-    },
+      required: true,
+      appearance: {
+        type: ["button"],
+        button: { variants: ["outline", "default"], sizes: ["lg"] },
+      },
+    }),
   ],
 };
