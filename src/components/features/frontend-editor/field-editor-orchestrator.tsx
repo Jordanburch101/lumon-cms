@@ -143,7 +143,6 @@ export function FieldEditorOrchestrator() {
       {groupEditor && (
         <GroupEditorRenderer
           onClose={() => setGroupEditor(null)}
-          onUpdateField={handleUpdateField}
           state={groupEditor}
         />
       )}
@@ -321,15 +320,9 @@ function UploadFieldEditor({
 
 function GroupEditorRenderer({
   state,
-  onUpdateField: _onUpdateField,
   onClose,
 }: {
   onClose: () => void;
-  onUpdateField: (
-    blockIndex: number,
-    fieldPath: string,
-    value: unknown
-  ) => void;
   state: GroupEditorState;
 }) {
   const EditorComponent = getGroupEditor(state.groupType);

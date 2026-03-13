@@ -47,7 +47,8 @@ export function useEditRuntime() {
   const editMode = useEditMode();
   const isActive = editMode?.state.active ?? false;
   const actions = editMode?.actions;
-  const blocks = editMode?.state.blocks;
+  const blocksRef = useRef(editMode?.state.blocks);
+  blocksRef.current = editMode?.state.blocks;
   const cleanups = useRef<(() => void)[]>([]);
 
   useEffect(() => {
@@ -175,7 +176,7 @@ export function useEditRuntime() {
         e.preventDefault();
 
         // Read current values from edit mode state using getFieldValue
-        const block = (blocks ?? [])[blockIndex] as
+        const block = (blocksRef.current ?? [])[blockIndex] as
           | Record<string, unknown>
           | undefined;
         const currentValues = block
@@ -287,7 +288,7 @@ export function useEditRuntime() {
       }
       cleanups.current = [];
     };
-  }, [isActive, actions, blocks]);
+  }, [isActive, actions]);
 }
 
 function isTextType(type: FieldDescriptor["type"]): boolean {
@@ -306,7 +307,9 @@ function resolveEntry(
   const isLast =
     i === parts.length - 1 || (i === parts.length - 2 && parts[i + 1] === "*");
   if (isLast) {
-    return entry.type !== "array" ? (entry as FieldDescriptor) : null;
+    return entry.type !== "array" && entry.type !== "group"
+      ? (entry as FieldDescriptor)
+      : null;
   }
   return null;
 }
@@ -344,6 +347,8 @@ function lookupDescriptor(
       if (parts[i + 1] === "*") {
         i++;
       }
+    } else if (entry.type === "group") {
+      current = (entry as GroupFieldDescriptor).fields;
     }
   }
 
