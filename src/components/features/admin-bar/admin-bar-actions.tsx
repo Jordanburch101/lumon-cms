@@ -33,7 +33,7 @@ export function AdminBarActions({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const firstItemRef = useRef<HTMLButtonElement>(null);
+  const firstItemRef = useRef<HTMLElement>(null);
   const editMode = useEditMode();
 
   const initial = (user.name?.[0] || user.email[0]).toUpperCase();
@@ -225,7 +225,7 @@ export function AdminBarActions({
                 className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
                 href={`/admin/collections/${page.collection}/${page.id}`}
                 onClick={() => setMenuOpen(false)}
-                ref={firstItemRef as React.RefObject<HTMLAnchorElement>}
+                ref={firstItemRef as React.RefObject<HTMLAnchorElement | null>}
                 rel="noopener noreferrer"
                 role="menuitem"
                 target="_blank"
@@ -249,7 +249,7 @@ export function AdminBarActions({
                 }
                 window.location.reload();
               }}
-              ref={page ? undefined : firstItemRef}
+              ref={page ? undefined : (firstItemRef as React.RefObject<HTMLButtonElement | null>)}
               role="menuitem"
               type="button"
             >

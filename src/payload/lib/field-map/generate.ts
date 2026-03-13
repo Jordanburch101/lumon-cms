@@ -56,7 +56,9 @@ function applyOptions(desc: FieldDescriptor, field: Field): void {
     return;
   }
   desc.options = field.options.map((opt) =>
-    typeof opt === "string" ? { label: opt, value: opt } : opt
+    typeof opt === "string"
+      ? { label: opt, value: opt }
+      : { label: typeof opt.label === "string" ? opt.label : opt.value, value: opt.value }
   );
 }
 

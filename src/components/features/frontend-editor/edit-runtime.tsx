@@ -26,6 +26,8 @@ export function useEditRuntime() {
       return;
     }
 
+    const { updateField } = actions;
+
     function bindElement(
       el: HTMLElement,
       blockIndex: number,
@@ -48,7 +50,7 @@ export function useEditRuntime() {
           el,
           blockIndex,
           fullPath,
-          actions.updateField
+          updateField
         );
         cleanups.current.push(cleanup);
       } else {
