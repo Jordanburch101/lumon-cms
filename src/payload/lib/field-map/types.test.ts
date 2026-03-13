@@ -1,5 +1,12 @@
 import { describe, expect, it } from "bun:test";
-import type { ArrayFieldDescriptor, FieldDescriptor, FieldMap } from "./types";
+import type {
+  ArrayFieldDescriptor,
+  BlockFieldMap,
+  FieldDescriptor,
+  FieldEntry,
+  FieldMap,
+  GroupFieldDescriptor,
+} from "./types";
 
 describe("FieldMap types", () => {
   it("allows a simple text field descriptor", () => {
@@ -26,5 +33,37 @@ describe("FieldMap types", () => {
       },
     };
     expect(Object.keys(map.hero)).toContain("headline");
+  });
+});
+
+describe("GroupFieldDescriptor", () => {
+  it("is a valid FieldEntry in a BlockFieldMap", () => {
+    const group: GroupFieldDescriptor = {
+      type: "group",
+      groupType: "link",
+      fields: {
+        label: { type: "text" },
+        url: { type: "text" },
+        reference: { type: "relationship", relationTo: ["pages"] },
+        newTab: { type: "checkbox" },
+      },
+    };
+
+    const map: BlockFieldMap = {
+      title: { type: "text", required: true },
+      primaryCta: group,
+    };
+
+    const entry: FieldEntry = map.primaryCta;
+    expect(entry.type).toBe("group");
+    if (entry.type === "group") {
+      expect(entry.groupType).toBe("link");
+      expect(Object.keys(entry.fields)).toEqual([
+        "label",
+        "url",
+        "reference",
+        "newTab",
+      ]);
+    }
   });
 });
