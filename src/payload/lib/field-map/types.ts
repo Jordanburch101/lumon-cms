@@ -1,5 +1,18 @@
 /** Descriptor for a single editable field. */
 export interface FieldDescriptor {
+  hasMany?: boolean;
+  localized?: boolean;
+  max?: number;
+  maxLength?: number;
+  // number
+  min?: number;
+  // text / textarea
+  minLength?: number;
+  // select / radio
+  options?: { label: string; value: string }[];
+  // upload / relationship
+  relationTo?: string | string[];
+  required?: boolean;
   type:
     | "text"
     | "textarea"
@@ -14,27 +27,14 @@ export interface FieldDescriptor {
     | "json"
     | "upload"
     | "relationship";
-  required?: boolean;
-  hasMany?: boolean;
-  localized?: boolean;
-  // number
-  min?: number;
-  max?: number;
-  // text / textarea
-  minLength?: number;
-  maxLength?: number;
-  // select / radio
-  options?: { label: string; value: string }[];
-  // upload / relationship
-  relationTo?: string | string[];
 }
 
 /** Descriptor for an array field containing nested fields. */
 export interface ArrayFieldDescriptor {
-  type: "array";
-  minRows?: number;
-  maxRows?: number;
   fields: BlockFieldMap;
+  maxRows?: number;
+  minRows?: number;
+  type: "array";
 }
 
 /** A single entry in a block's field map — either a leaf field or a nested array. */

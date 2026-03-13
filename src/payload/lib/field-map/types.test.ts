@@ -1,10 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import type {
-  BlockFieldMap,
-  FieldDescriptor,
-  FieldMap,
-  ArrayFieldDescriptor,
-} from "./types";
+import type { ArrayFieldDescriptor, FieldDescriptor, FieldMap } from "./types";
 
 describe("FieldMap types", () => {
   it("allows a simple text field descriptor", () => {
