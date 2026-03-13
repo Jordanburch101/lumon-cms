@@ -1,4 +1,5 @@
 import type { Block } from "payload";
+import { link } from "../fields/link/link";
 
 export const CinematicCtaBlock: Block = {
   slug: "cinematicCta",
@@ -8,13 +9,12 @@ export const CinematicCtaBlock: Block = {
     { name: "label", type: "text", required: true },
     { name: "headline", type: "text", required: true },
     { name: "subtext", type: "text", required: true },
-    {
+    link({
       name: "cta",
-      type: "group",
-      fields: [
-        { name: "label", type: "text", required: true },
-        { name: "href", type: "text", required: true },
-      ],
-    },
+      appearance: {
+        type: ["button"],
+        button: { variants: ["default", "outline"], sizes: ["lg"] },
+      },
+    }),
   ],
 };
