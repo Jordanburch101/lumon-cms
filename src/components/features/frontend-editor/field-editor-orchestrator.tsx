@@ -1,5 +1,7 @@
 "use client";
 
+import "./group-editors";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
