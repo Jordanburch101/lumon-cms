@@ -17,14 +17,14 @@ const RE_ARRAY_END = /\.\d+$/;
 
 export function useEditRuntime() {
   const editMode = useEditMode();
+  const isActive = editMode?.state.active ?? false;
+  const actions = editMode?.actions;
   const cleanups = useRef<(() => void)[]>([]);
 
   useEffect(() => {
-    if (!editMode?.state.active) {
+    if (!(isActive && actions)) {
       return;
     }
-
-    const { actions } = editMode;
 
     function bindElement(
       el: HTMLElement,
@@ -112,8 +112,10 @@ export function useEditRuntime() {
 
     scan();
 
+    let scanTimer: ReturnType<typeof setTimeout>;
     const observer = new MutationObserver(() => {
-      setTimeout(scan, 400);
+      clearTimeout(scanTimer);
+      scanTimer = setTimeout(scan, 400);
     });
 
     const overlay = document.querySelector(".frontend-editor-overlay");
@@ -128,7 +130,7 @@ export function useEditRuntime() {
       }
       cleanups.current = [];
     };
-  }, [editMode]);
+  }, [isActive, actions]);
 }
 
 function isTextType(type: FieldDescriptor["type"]): boolean {

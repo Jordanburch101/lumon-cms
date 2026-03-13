@@ -5,6 +5,7 @@ import { renderBlock } from "@/components/blocks/render-blocks";
 import { BlockControls } from "./block-controls";
 import { AddBlockButton } from "./block-picker";
 import { useEditRuntime } from "./edit-runtime";
+import { FieldEditorOrchestrator } from "./field-editor-orchestrator";
 import { useEditMode } from "./use-edit-mode";
 
 /**
@@ -64,6 +65,7 @@ export function EditableOverlay() {
           </div>
         ))}
       </div>
+      <FieldEditorOrchestrator />
     </div>
   );
 }
