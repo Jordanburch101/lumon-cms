@@ -389,6 +389,43 @@
   display: none;
 }
 
+/* Frontend Editor - Edit Mode */
+.frontend-editor-overlay [data-block-type]:hover {
+  outline: 1px dashed oklch(var(--border) / 0.1);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.frontend-editor-overlay [data-array-item]:hover {
+  outline: 1px dashed oklch(var(--border) / 0.08);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.frontend-editor-overlay [data-field][contenteditable="true"]:hover {
+  cursor: text;
+  background: oklch(var(--primary) / 0.04);
+  border-radius: 4px;
+}
+
+.frontend-editor-overlay [data-field][contenteditable="true"]:focus {
+  outline: 1px solid oklch(var(--primary) / 0.15);
+  outline-offset: 2px;
+  background: oklch(var(--primary) / 0.06);
+  border-radius: 4px;
+}
+
+.frontend-editor-overlay img[data-field],
+.frontend-editor-overlay video[data-field] {
+  cursor: pointer;
+}
+
+.frontend-editor-overlay img[data-field]:hover,
+.frontend-editor-overlay video[data-field]:hover {
+  outline: 2px solid oklch(var(--primary) / 0.3);
+  outline-offset: 2px;
+}
+
 /* ── MDR Terminal CRT Effects ── */
 
 @keyframes crt-flicker {
