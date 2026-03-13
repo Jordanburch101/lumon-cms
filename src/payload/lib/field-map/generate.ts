@@ -6,6 +6,7 @@ import type {
   BlockMetaMap,
   FieldDescriptor,
   FieldMap,
+  GroupFieldDescriptor,
 } from "./types";
 
 /** Field types that are skipped (not editable on frontend). */
@@ -149,6 +150,24 @@ function processNamedField(
   map: BlockFieldMap
 ): void {
   if (field.type === "group") {
+    // Tagged groups emit a GroupFieldDescriptor instead of flattening
+    const groupType =
+      "custom" in field &&
+      field.custom &&
+      typeof field.custom === "object" &&
+      "groupType" in field.custom
+        ? (field.custom as { groupType: string }).groupType
+        : null;
+
+    if (groupType) {
+      map[key] = {
+        type: "group",
+        groupType,
+        fields: walkFields(field.fields),
+      } satisfies GroupFieldDescriptor;
+      return;
+    }
+
     Object.assign(map, walkFields(field.fields, `${key}.`));
     return;
   }
