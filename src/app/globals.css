@@ -46,6 +46,36 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(
+      --radix-collapsible-content-height,
+      var(--radix-accordion-content-height)
+    );
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(
+      --radix-collapsible-content-height,
+      var(--radix-accordion-content-height)
+    );
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
 }
 
 :root {
@@ -509,4 +539,93 @@
       opacity: 1;
     }
   }
+}
+
+/* ─── Frontend Editor: Editable field hover indicators ───────────── */
+/* Marching ants (scissor cutting guide) border + floating label      */
+
+.editable-field,
+.editable-field-text {
+  position: relative;
+}
+
+/* Marching ants border via ::before */
+.editable-field:hover::before,
+.editable-field-text:hover::before {
+  --ants-color: oklch(0.2 0 0 / 0.55);
+  position: absolute;
+  inset: -5px;
+  z-index: 49;
+  pointer-events: none;
+  content: "";
+  /* top edge */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--ants-color) 0 5px,
+      transparent 5px 10px
+    )
+    0 0 / 100% 1.5px no-repeat,
+    /* bottom edge */
+    repeating-linear-gradient(
+      90deg,
+      var(--ants-color) 0 5px,
+      transparent 5px 10px
+    ) 0 100% / 100% 1.5px no-repeat,
+    /* left edge */
+    repeating-linear-gradient(
+      0deg,
+      var(--ants-color) 0 5px,
+      transparent 5px 10px
+    ) 0 0 / 1.5px 100% no-repeat,
+    /* right edge */
+    repeating-linear-gradient(
+      0deg,
+      var(--ants-color) 0 5px,
+      transparent 5px 10px
+    ) 100% 0 / 1.5px 100% no-repeat;
+  border-radius: 6px;
+  animation: marching-ants 0.4s linear infinite;
+}
+
+:is(.dark) .editable-field:hover::before,
+:is(.dark) .editable-field-text:hover::before {
+  --ants-color: oklch(0.9 0 0 / 0.5);
+}
+
+@keyframes marching-ants {
+  to {
+    background-position:
+      10px 0, /* top moves right */
+      -10px 100%, /* bottom moves left */
+      0 -10px, /* left moves up */
+      100% 10px; /* right moves down */
+  }
+}
+
+/* Floating label badge via ::after */
+.editable-field:hover::after,
+.editable-field-text:hover::after {
+  position: absolute;
+  top: -1.75rem;
+  left: -5px;
+  z-index: 50;
+  padding: 2px 8px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.7;
+  color: oklch(0.97 0 0);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  pointer-events: none;
+  content: attr(data-field-label);
+  background: oklch(0.2 0 0);
+  border-radius: 5px;
+}
+
+:is(.dark) .editable-field:hover::after,
+:is(.dark) .editable-field-text:hover::after {
+  color: oklch(0.12 0 0);
+  background: oklch(0.88 0 0);
 }

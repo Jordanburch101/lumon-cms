@@ -249,7 +249,11 @@ export function AdminBarActions({
                 }
                 window.location.reload();
               }}
-              ref={page ? undefined : (firstItemRef as React.RefObject<HTMLButtonElement | null>)}
+              ref={
+                page
+                  ? undefined
+                  : (firstItemRef as React.RefObject<HTMLButtonElement | null>)
+              }
               role="menuitem"
               type="button"
             >

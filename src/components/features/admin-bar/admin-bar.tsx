@@ -4,7 +4,7 @@ import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, animate, motion, useMotionValue } from "motion/react";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { cn } from "@/core/lib/utils";
 import { useEditMode } from "../frontend-editor/use-edit-mode";
@@ -294,9 +294,11 @@ export function AdminBar() {
   const handleEditModeExit = useCallback(() => {
     editMode?.actions.exit();
   }, [editMode]);
-  useKeyboardShortcuts(editMode?.state.active ?? false, {
-    exit: handleEditModeExit,
-  });
+  const shortcutHandlers = useMemo(
+    () => ({ exit: handleEditModeExit }),
+    [handleEditModeExit]
+  );
+  useKeyboardShortcuts(editMode?.state.active ?? false, shortcutHandlers);
 
   // Persist state changes
   const updateBarState = useCallback((updates: Partial<AdminBarState>) => {

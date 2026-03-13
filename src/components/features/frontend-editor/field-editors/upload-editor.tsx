@@ -11,14 +11,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RE_VIDEO_EXT } from "../edit-mode-data";
 
-// Hoisted regex — lint/performance/useTopLevelRegex
+// Hoisted regexes — lint/performance/useTopLevelRegex
 const RE_EXTENSION = /\.[^.]+$/;
 
 interface MediaItem {
   alt?: string;
   filename?: string;
   id: number;
+  mimeType?: string;
   url: string;
 }
 
@@ -50,27 +52,41 @@ function MediaGrid({
 
   return (
     <div className="mt-2 grid max-h-80 grid-cols-4 gap-2 overflow-y-auto">
-      {media.map((item) => (
-        <button
-          className={`group relative aspect-square overflow-hidden rounded-md border transition-colors hover:border-primary ${
-            item.id === currentMediaId ? "border-primary" : "border-border"
-          }`}
-          key={item.id}
-          onClick={() => {
-            onSelect(item.id, item.url);
-            onOpenChange(false);
-          }}
-          type="button"
-        >
-          <Image
-            alt={item.alt ?? item.filename ?? ""}
-            className="object-cover"
-            fill
-            sizes="80px"
-            src={item.url}
-          />
-        </button>
-      ))}
+      {media.map((item) => {
+        const isVideo =
+          item.mimeType?.startsWith("video/") || RE_VIDEO_EXT.test(item.url);
+
+        return (
+          <button
+            className={`group relative aspect-square overflow-hidden rounded-md border transition-colors hover:border-primary ${
+              item.id === currentMediaId ? "border-primary" : "border-border"
+            }`}
+            key={item.id}
+            onClick={() => {
+              onSelect(item.id, item.url);
+              onOpenChange(false);
+            }}
+            type="button"
+          >
+            {isVideo ? (
+              <div className="flex h-full flex-col items-center justify-center gap-1 bg-muted text-muted-foreground">
+                <span className="text-lg">&#9654;</span>
+                <span className="max-w-full truncate px-1 text-[9px]">
+                  {item.filename ?? "Video"}
+                </span>
+              </div>
+            ) : (
+              <Image
+                alt={item.alt ?? item.filename ?? ""}
+                className="object-cover"
+                fill
+                sizes="80px"
+                src={item.url}
+              />
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -122,7 +138,7 @@ export function UploadEditor({
       return;
     }
     setLoading(true);
-    fetch("/api/media?limit=20&sort=-createdAt")
+    fetch("/api/media?limit=20&sort=-createdAt", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         const docs: MediaItem[] = data?.docs ?? [];
@@ -152,6 +168,7 @@ export function UploadEditor({
       const res = await fetch("/api/media", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (res.ok) {

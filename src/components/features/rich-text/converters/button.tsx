@@ -15,8 +15,14 @@ export function ButtonConverter({
         } | null;
         newTab?: boolean | null;
         appearanceType?: "button" | "link" | null;
-        buttonVariant?: string | null;
-        buttonSize?: string | null;
+        buttonVariant?:
+          | "default"
+          | "outline"
+          | "secondary"
+          | "ghost"
+          | "link"
+          | null;
+        buttonSize?: "xs" | "sm" | "default" | "lg" | null;
       };
     };
   };

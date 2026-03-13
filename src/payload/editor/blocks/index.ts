@@ -1,3 +1,4 @@
+// biome-ignore lint/performance/noBarrelFile: intentional public API surface for editor blocks
 export { AccordionBlock } from "./accordion";
 export { RichTextButtonBlock } from "./button";
 export { CalloutBlock } from "./callout";

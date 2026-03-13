@@ -275,8 +275,8 @@ describe("fetchCollectionMeta", () => {
 
   test("fetches from /api/admin/collections and returns merged meta", async () => {
     globalThis.fetch = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockCollections)))
-    );
+      Promise.resolve(Response.json(mockCollections))
+    ) as unknown as typeof fetch;
 
     const result = await fetchCollectionMeta();
     expect(result).toHaveLength(2);
@@ -286,8 +286,8 @@ describe("fetchCollectionMeta", () => {
 
   test("returns cached result on subsequent calls", async () => {
     globalThis.fetch = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockCollections)))
-    );
+      Promise.resolve(Response.json(mockCollections))
+    ) as unknown as typeof fetch;
 
     await fetchCollectionMeta();
     const result = await fetchCollectionMeta();
@@ -297,8 +297,8 @@ describe("fetchCollectionMeta", () => {
 
   test("clearCollectionMetaCache forces re-fetch", async () => {
     globalThis.fetch = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockCollections)))
-    );
+      Promise.resolve(Response.json(mockCollections))
+    ) as unknown as typeof fetch;
 
     await fetchCollectionMeta();
     clearCollectionMetaCache();
@@ -309,9 +309,9 @@ describe("fetchCollectionMeta", () => {
   test("throws on non-ok response", async () => {
     globalThis.fetch = mock(() =>
       Promise.resolve(new Response(null, { status: 401 }))
-    );
+    ) as unknown as typeof fetch;
 
-    expect(fetchCollectionMeta()).rejects.toThrow(
+    await expect(fetchCollectionMeta()).rejects.toThrow(
       "Failed to fetch collection metadata: 401"
     );
   });
@@ -319,23 +319,23 @@ describe("fetchCollectionMeta", () => {
   test("passes signal to fetch", async () => {
     const controller = new AbortController();
     globalThis.fetch = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockCollections)))
-    );
+      Promise.resolve(Response.json(mockCollections))
+    ) as unknown as typeof fetch;
 
     await fetchCollectionMeta(controller.signal);
-    const callArgs = (globalThis.fetch as ReturnType<typeof mock>).mock
-      .calls[0] as [string, RequestInit];
+    const callArgs = (globalThis.fetch as unknown as ReturnType<typeof mock>)
+      .mock.calls[0] as [string, RequestInit];
     expect(callArgs[1].signal).toBe(controller.signal);
   });
 
   test("sends credentials include", async () => {
     globalThis.fetch = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockCollections)))
-    );
+      Promise.resolve(Response.json(mockCollections))
+    ) as unknown as typeof fetch;
 
     await fetchCollectionMeta();
-    const callArgs = (globalThis.fetch as ReturnType<typeof mock>).mock
-      .calls[0] as [string, RequestInit];
+    const callArgs = (globalThis.fetch as unknown as ReturnType<typeof mock>)
+      .mock.calls[0] as [string, RequestInit];
     expect(callArgs[1].credentials).toBe("include");
   });
 });

@@ -53,14 +53,18 @@ describe("setFieldValue", () => {
 
   it("sets a dotted group field", () => {
     const updated = setFieldValue(sampleBlocks[0], "primaryCta.href", "/new");
-    expect(updated.primaryCta.href).toBe("/new");
-    expect(updated.primaryCta.label).toBe("Go"); // sibling preserved
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.primaryCta!.href).toBe("/new");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.primaryCta!.label).toBe("Go"); // sibling preserved
   });
 
   it("sets an array item field", () => {
     const updated = setFieldValue(sampleBlocks[1], "items.1.answer", "Updated");
-    expect(updated.items[1].answer).toBe("Updated");
-    expect(updated.items[0].answer).toBe("A1"); // other items unchanged
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![1].answer).toBe("Updated");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![0].answer).toBe("A1"); // other items unchanged
   });
 });
 
@@ -99,17 +103,22 @@ describe("duplicateBlock", () => {
 describe("moveArrayItem", () => {
   it("moves an item within an array field", () => {
     const updated = moveArrayItem(sampleBlocks[1], "items", 0, 2);
-    expect(updated.items[0].question).toBe("Q2");
-    expect(updated.items[2].question).toBe("Q1");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![0].question).toBe("Q2");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![2].question).toBe("Q1");
   });
 });
 
 describe("removeArrayItem", () => {
   it("removes an item from an array field", () => {
     const updated = removeArrayItem(sampleBlocks[1], "items", 1);
-    expect(updated.items.length).toBe(2);
-    expect(updated.items[0].question).toBe("Q1");
-    expect(updated.items[1].question).toBe("Q3");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items!.length).toBe(2);
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![0].question).toBe("Q1");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![1].question).toBe("Q3");
   });
 });
 
@@ -120,7 +129,9 @@ describe("addArrayItem", () => {
       question: "",
       answer: "",
     });
-    expect(updated.items.length).toBe(4);
-    expect(updated.items[3].id).toBe("d");
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items!.length).toBe(4);
+    // biome-ignore lint/style/noNonNullAssertion: test data guarantees these fields exist
+    expect(updated.items![3].id).toBe("d");
   });
 });

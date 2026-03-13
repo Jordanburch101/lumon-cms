@@ -38,7 +38,15 @@ export function setFieldValue<T extends BlockRecord>(
   for (let i = 0; i < segments.length - 1; i++) {
     const seg = segments[i];
     const index = Number(seg);
-    current = Number.isNaN(index) ? current[seg] : current[index];
+    const key = Number.isNaN(index) ? seg : index;
+
+    // Create missing intermediary objects/arrays along the path
+    if (current[key] == null || typeof current[key] !== "object") {
+      const nextSeg = segments[i + 1];
+      current[key] = Number.isNaN(Number(nextSeg)) ? {} : [];
+    }
+
+    current = current[key] as BlockRecord;
   }
 
   const lastSeg = segments.at(-1) as string;
@@ -120,4 +128,23 @@ export function addArrayItem<T extends BlockRecord>(
     return block;
   }
   return setFieldValue(block, arrayPath, [...arr, item]);
+}
+
+/** Matches common video file extensions. */
+export const RE_VIDEO_EXT = /\.(mp4|webm|mov|avi|mkv)(\?|$)/i;
+
+const RE_HUMANIZE_CAMEL = /([a-z])([A-Z])/g;
+const RE_HUMANIZE_FIRST = /^./;
+const RE_DIGITS_ONLY = /^\d+$/;
+
+/** Convert a dot-path like "primaryCta.label" or "testimonials.2.name" to a readable label. */
+export function humanizeFieldPath(path: string): string {
+  const parts = path.split(".");
+  let label = parts.at(-1) ?? path;
+  if (RE_DIGITS_ONLY.test(label) && parts.length > 1) {
+    label = parts.at(-2) ?? label;
+  }
+  return label
+    .replace(RE_HUMANIZE_CAMEL, "$1 $2")
+    .replace(RE_HUMANIZE_FIRST, (c) => c.toUpperCase());
 }

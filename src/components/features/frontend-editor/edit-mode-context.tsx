@@ -82,6 +82,11 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
 
   const dirtyPaths = useRef(new Set<string>());
 
+  /** Replace all index-prefixed dirty keys with a single structural marker. */
+  const invalidateIndexedKeys = useCallback(() => {
+    dirtyPaths.current = new Set(["__structure"]);
+  }, []);
+
   const enter = useCallback((pageId: number, blocks: LayoutBlock[]) => {
     dirtyPaths.current.clear();
     setState({
@@ -125,27 +130,41 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const moveBlockAction = useCallback((from: number, to: number) => {
-    setState((prev) => {
-      dirtyPaths.current.add("__structure");
-      return {
-        ...prev,
-        blocks: moveBlock(prev.blocks, from, to),
-        dirtyCount: dirtyPaths.current.size,
-      };
-    });
-  }, []);
+  const moveBlockAction = useCallback(
+    (from: number, to: number) => {
+      setState((prev) => {
+        // Clear index-based dirty keys — indices are now stale
+        invalidateIndexedKeys();
+        return {
+          ...prev,
+          blocks: moveBlock(prev.blocks, from, to),
+          dirtyCount: dirtyPaths.current.size,
+        };
+      });
+    },
+    [
+      // Clear index-based dirty keys — indices are now stale
+      invalidateIndexedKeys,
+    ]
+  );
 
-  const removeBlockAction = useCallback((index: number) => {
-    setState((prev) => {
-      dirtyPaths.current.add("__structure");
-      return {
-        ...prev,
-        blocks: removeBlock(prev.blocks, index),
-        dirtyCount: dirtyPaths.current.size,
-      };
-    });
-  }, []);
+  const removeBlockAction = useCallback(
+    (index: number) => {
+      setState((prev) => {
+        // Clear index-based dirty keys — indices are now stale
+        invalidateIndexedKeys();
+        return {
+          ...prev,
+          blocks: removeBlock(prev.blocks, index),
+          dirtyCount: dirtyPaths.current.size,
+        };
+      });
+    },
+    [
+      // Clear index-based dirty keys — indices are now stale
+      invalidateIndexedKeys,
+    ]
+  );
 
   const duplicateBlockAction = useCallback((index: number) => {
     setState((prev) => {

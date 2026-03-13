@@ -8,6 +8,7 @@ import type {
   FieldDescriptor,
   FieldEntry,
 } from "@/payload/lib/field-map/types";
+import { humanizeFieldPath } from "./edit-mode-data";
 import { activateTextEditor } from "./field-editors/text-editor";
 import { useEditMode } from "./use-edit-mode";
 
@@ -45,15 +46,25 @@ export function useEditRuntime() {
         return;
       }
 
+      // Add hover indicator class and field label for all editable elements
+      const fieldLabel = humanizeFieldPath(fullPath);
+      el.setAttribute("data-field-label", fieldLabel);
+
       if (isTextType(descriptor.type)) {
+        el.classList.add("editable-field-text");
         const cleanup = activateTextEditor(
           el,
           blockIndex,
           fullPath,
           updateField
         );
-        cleanups.current.push(cleanup);
+        cleanups.current.push(() => {
+          el.classList.remove("editable-field-text");
+          el.removeAttribute("data-field-label");
+          cleanup();
+        });
       } else {
+        el.classList.add("editable-field");
         const eventName =
           descriptor.type === "upload"
             ? "edit:open-upload"
@@ -74,6 +85,8 @@ export function useEditRuntime() {
         el.style.cursor = "pointer";
         el.addEventListener("click", handler);
         cleanups.current.push(() => {
+          el.classList.remove("editable-field");
+          el.removeAttribute("data-field-label");
           el.style.cursor = "";
           el.removeEventListener("click", handler);
         });
@@ -125,7 +138,22 @@ export function useEditRuntime() {
       observer.observe(overlay, { childList: true, subtree: true });
     }
 
+    // Capture-phase listener: suppress all default interactive behaviour
+    // (link navigation, button submits, etc.) inside the overlay while editing.
+    // Our custom click handlers still fire because we only preventDefault, not stopPropagation.
+    function suppressInteraction(e: Event) {
+      const target = (e.target as HTMLElement).closest(
+        "a, button, form, details, summary, [role='link'], [role='button']"
+      );
+      if (target) {
+        e.preventDefault();
+      }
+    }
+
+    overlay?.addEventListener("click", suppressInteraction, true);
+
     return () => {
+      overlay?.removeEventListener("click", suppressInteraction, true);
       observer.disconnect();
       for (const cleanup of cleanups.current) {
         cleanup();
@@ -144,7 +172,6 @@ function resolveFieldPath(fullPath: string): string {
 }
 
 function resolveEntry(
-  _current: BlockFieldMap,
   parts: string[],
   i: number,
   entry: FieldEntry
@@ -180,7 +207,7 @@ function lookupDescriptor(
       return null;
     }
 
-    const resolved = resolveEntry(current, parts, i, entry);
+    const resolved = resolveEntry(parts, i, entry);
     if (resolved !== null || i === parts.length - 1) {
       return resolved;
     }

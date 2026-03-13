@@ -163,7 +163,7 @@ export function CinematicCta({
           </motion.span>
 
           {/* CTA button */}
-          {cta.label && (
+          {cta?.label && (
             <motion.div style={{ opacity: textOpacity, y: textY }}>
               <CMSLink
                 className="mt-6 bg-white text-black hover:bg-white/90"

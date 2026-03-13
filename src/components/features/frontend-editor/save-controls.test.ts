@@ -17,9 +17,11 @@ describe("save flow logic", () => {
     });
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
-    const call = mockFetch.mock.calls[0];
+    const call = (
+      mockFetch.mock.calls as unknown as [string, RequestInit][]
+    )[0];
     expect(call[0]).toBe("/api/pages/1");
-    const body = JSON.parse((call[1] as any).body);
+    const body = JSON.parse((call[1] as RequestInit).body as string);
     expect(body._status).toBe("draft");
     expect(body.layout[0].blockType).toBe("hero");
   });

@@ -75,8 +75,8 @@ export function RichText({
   }
 
   // Build block converters: custom defaults + consumer overrides - disabled blocks
-  // biome-ignore lint/suspicious/noExplicitAny: matches Payload's JSXConverter generic
   const consumerBlocks =
+    // biome-ignore lint/suspicious/noExplicitAny: matches Payload's JSXConverter generic
     (consumerConverters as { blocks?: Record<string, JSXConverter<any>> })
       .blocks ?? {};
   const blockConverters = {

@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -22,7 +23,7 @@ import { UploadEditor } from "./field-editors/upload-editor";
 import { useEditMode } from "./use-edit-mode";
 
 interface PopoverEditorState {
-  anchorRect: DOMRect;
+  anchorElement: HTMLElement;
   blockIndex: number;
   descriptor: FieldDescriptor;
   fieldPath: string;
@@ -50,14 +51,11 @@ export function FieldEditorOrchestrator() {
 
     const handlePopover = (e: Event) => {
       const detail = (e as CustomEvent).detail;
-      const rect = (
-        detail.currentElement as HTMLElement
-      ).getBoundingClientRect();
       setPopover({
         blockIndex: detail.blockIndex,
         fieldPath: detail.fieldPath,
         descriptor: detail.descriptor,
-        anchorRect: rect,
+        anchorElement: detail.currentElement as HTMLElement,
       });
     };
 
@@ -129,12 +127,13 @@ function PopoverFieldEditor({
   ) => void;
   state: PopoverEditorState;
 }) {
-  const { blockIndex, fieldPath, descriptor, anchorRect } = state;
+  const { blockIndex, fieldPath, descriptor, anchorElement } = state;
   const block = blocks[blockIndex] as Record<string, unknown>;
   const currentValue = getFieldValue(
     block as Record<string, unknown>,
     fieldPath
   );
+  const anchorRef = useRef<HTMLElement>(anchorElement);
 
   return (
     <Popover
@@ -145,18 +144,7 @@ function PopoverFieldEditor({
       }}
       open
     >
-      <PopoverAnchor asChild>
-        <div
-          style={{
-            height: anchorRect.height,
-            left: anchorRect.left,
-            pointerEvents: "none",
-            position: "fixed",
-            top: anchorRect.top,
-            width: anchorRect.width,
-          }}
-        />
-      </PopoverAnchor>
+      <PopoverAnchor virtualRef={anchorRef} />
       <PopoverContent className="w-48 p-3">
         <PopoverEditorContent
           currentValue={currentValue}
@@ -184,7 +172,7 @@ function PopoverEditorContent({
           defaultValue={currentValue as number}
           max={descriptor.max}
           min={descriptor.min}
-          onChange={(e) => onUpdate(Number(e.target.value))}
+          onBlur={(e) => onUpdate(Number(e.target.value))}
           type="number"
         />
       );
@@ -220,14 +208,30 @@ function PopoverEditorContent({
         </div>
       );
 
-    case "date":
+    case "date": {
+      const dateStr = currentValue as string;
+      const dateOnly = dateStr?.includes("T") ? dateStr.split("T")[0] : dateStr;
+      const parts = dateOnly ? dateOnly.split("-").map(Number) : [];
+      const dateObj =
+        parts.length === 3 && parts[0] && parts[1] && parts[2]
+          ? new Date(parts[0], parts[1] - 1, parts[2])
+          : undefined;
+
       return (
-        <Input
-          defaultValue={currentValue as string}
-          onChange={(e) => onUpdate(e.target.value)}
-          type="date"
+        <Calendar
+          className="p-0"
+          defaultMonth={dateObj}
+          mode="single"
+          onSelect={(day) => {
+            if (day) {
+              const iso = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
+              onUpdate(iso);
+            }
+          }}
+          selected={dateObj}
         />
       );
+    }
 
     default:
       return (
@@ -255,7 +259,12 @@ function UploadFieldEditor({
 }) {
   const { blockIndex, fieldPath } = state;
   const block = blocks[blockIndex] as Record<string, unknown>;
-  const currentMediaId = (getFieldValue(block, fieldPath) as number) ?? null;
+  const mediaValue = getFieldValue(block, fieldPath) as
+    | number
+    | { id: number }
+    | null;
+  const currentMediaId =
+    typeof mediaValue === "number" ? mediaValue : (mediaValue?.id ?? null);
 
   return (
     <UploadEditor
