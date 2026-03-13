@@ -55,3 +55,6 @@ payload.db-journal
 src/app/(payload)/admin/importMap.js
 src/payload-types.ts
 .superpowers/
+
+# Generated
+src/generated/
