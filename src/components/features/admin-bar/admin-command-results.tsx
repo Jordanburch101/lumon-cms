@@ -16,7 +16,7 @@ import {
   CommandItem,
   CommandSeparator,
 } from "@/components/ui/command";
-import { getBlurDataURL } from "@/core/lib/utils";
+
 import { STATUS_COLORS } from "./admin-bar-data";
 import type { MergedCollectionMeta, StaticCommand } from "./admin-command-data";
 
@@ -110,7 +110,9 @@ export function CollectionResultGroup({
                 meta.isUpload &&
                 (() => {
                   const thumbUrl = getThumbnailUrl(doc);
-                  const blur = getBlurDataURL(doc);
+                  const blur =
+                    (typeof doc.blurDataURL === "string" && doc.blurDataURL) ||
+                    undefined;
                   return (
                     <div className="flex size-6 shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
                       {thumbUrl ? (
@@ -138,18 +140,21 @@ export function CollectionResultGroup({
               </span>
 
               {/* Subtitle (right-aligned) */}
-              {meta.subtitleField && doc[meta.subtitleField] != null && (
-                <span className="ml-auto truncate text-muted-foreground text-xs">
-                  {String(doc[meta.subtitleField])}
-                </span>
-              )}
+              {meta.subtitleField != null &&
+                doc[meta.subtitleField] != null && (
+                  <span className="ml-auto truncate text-muted-foreground text-xs">
+                    {String(doc[meta.subtitleField])}
+                  </span>
+                )}
 
               {/* MIME type for uploads without subtitle override */}
-              {!meta.subtitleField && meta.isUpload && doc.mimeType && (
-                <span className="ml-auto text-muted-foreground text-xs">
-                  {String(doc.mimeType)}
-                </span>
-              )}
+              {!meta.subtitleField &&
+                meta.isUpload &&
+                typeof doc.mimeType === "string" && (
+                  <span className="ml-auto text-muted-foreground text-xs">
+                    {doc.mimeType}
+                  </span>
+                )}
             </div>
           </CommandItem>
         ))}

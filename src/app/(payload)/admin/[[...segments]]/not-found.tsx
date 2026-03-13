@@ -3,6 +3,7 @@
 
 import config from "@payload-config";
 import { generatePageMetadata, NotFoundPage } from "@payloadcms/next/views";
+import { connection } from "next/server";
 import { importMap } from "../importMap";
 
 interface Args {
@@ -13,7 +14,9 @@ interface Args {
 export const generateMetadata = ({ params, searchParams }: Args) =>
   generatePageMetadata({ config, params, searchParams });
 
-const NotFound = ({ params, searchParams }: Args) =>
-  NotFoundPage({ config, importMap, params, searchParams });
+const NotFound = async ({ params, searchParams }: Args) => {
+  await connection();
+  return NotFoundPage({ config, importMap, params, searchParams });
+};
 
 export default NotFound;

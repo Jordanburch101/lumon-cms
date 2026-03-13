@@ -140,28 +140,31 @@ export function buildSearchUrl(
 export function mergeCollectionMeta(
   raw: CollectionMeta[]
 ): MergedCollectionMeta[] {
-  return raw
-    .map((meta) => {
-      const override = PALETTE_OVERRIDES[meta.slug];
-      if (override?.hidden) {
-        return null;
-      }
-      return {
-        ...meta,
-        priority: override?.priority,
-        showThumbnail: override?.showThumbnail,
-        subtitleField: override?.subtitleField,
-      } satisfies MergedCollectionMeta;
-    })
-    .filter((m): m is MergedCollectionMeta => m !== null)
-    .sort((a, b) => {
-      const ap = a.priority ?? Number.POSITIVE_INFINITY;
-      const bp = b.priority ?? Number.POSITIVE_INFINITY;
-      if (ap !== bp) {
-        return ap - bp;
-      }
-      return a.label.localeCompare(b.label);
+  const merged: MergedCollectionMeta[] = [];
+  for (const meta of raw) {
+    const override = PALETTE_OVERRIDES[meta.slug];
+    if (override?.hidden) {
+      continue;
+    }
+    merged.push({
+      ...meta,
+      ...(override?.priority != null && { priority: override.priority }),
+      ...(override?.showThumbnail != null && {
+        showThumbnail: override.showThumbnail,
+      }),
+      ...(override?.subtitleField != null && {
+        subtitleField: override.subtitleField,
+      }),
     });
+  }
+  return merged.sort((a, b) => {
+    const ap = a.priority ?? Number.POSITIVE_INFINITY;
+    const bp = b.priority ?? Number.POSITIVE_INFINITY;
+    if (ap !== bp) {
+      return ap - bp;
+    }
+    return a.label.localeCompare(b.label);
+  });
 }
 
 // --- Metadata Fetcher (cached) ---

@@ -4,8 +4,10 @@
 import config from "@payload-config";
 import "@payloadcms/next/css";
 import { handleServerFunctions, RootLayout } from "@payloadcms/next/layouts";
+import { connection } from "next/server";
 import type { ServerFunctionClient } from "payload";
 import type React from "react";
+import { Suspense } from "react";
 import { importMap } from "./admin/importMap";
 import "./custom.scss";
 
@@ -18,14 +20,23 @@ const serverFunctions: ServerFunctionClient = async (args) => {
   return handleServerFunctions({ ...args, config, importMap });
 };
 
+async function DynamicRootLayout({ children }: Args) {
+  await connection();
+  return (
+    <RootLayout
+      config={config}
+      importMap={importMap}
+      serverFunction={serverFunctions}
+    >
+      {children}
+    </RootLayout>
+  );
+}
+
 const Layout = ({ children }: Args) => (
-  <RootLayout
-    config={config}
-    importMap={importMap}
-    serverFunction={serverFunctions}
-  >
-    {children}
-  </RootLayout>
+  <Suspense>
+    <DynamicRootLayout>{children}</DynamicRootLayout>
+  </Suspense>
 );
 
 export default Layout;

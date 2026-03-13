@@ -1,4 +1,5 @@
 import config from "@payload-config";
+import { connection } from "next/server";
 import { getPayload } from "payload";
 
 const INTERNAL_SLUGS = new Set([
@@ -11,6 +12,7 @@ const INTERNAL_SLUGS = new Set([
 ]);
 
 export async function GET(request: Request) {
+  await connection();
   try {
     const payload = await getPayload({ config });
 

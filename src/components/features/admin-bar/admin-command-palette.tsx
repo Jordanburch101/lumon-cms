@@ -54,7 +54,11 @@ export function AdminCommandPalette({
   // Keyboard shortcut: Cmd+Shift+K
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "k") {
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.shiftKey &&
+        e.key.toLowerCase() === "k"
+      ) {
         e.preventDefault();
         onOpenChange(true);
       }
