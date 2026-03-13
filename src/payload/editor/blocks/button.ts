@@ -3,12 +3,6 @@ import type { Block } from "payload";
 export const RichTextButtonBlock: Block = {
   slug: "richTextButton",
   labels: { singular: "Button", plural: "Buttons" },
-  admin: {
-    components: {
-      Block:
-        "@/components/features/rich-text/editor-previews/button-preview#ButtonPreview",
-    },
-  },
   fields: [
     { name: "label", type: "text", required: true },
     { name: "href", type: "text", required: true },
