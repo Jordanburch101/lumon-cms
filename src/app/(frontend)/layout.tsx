@@ -40,7 +40,9 @@ export default function FrontendLayout({
             />
           )}
           <Navbar />
-          <main>{children}</main>
+          <Suspense>
+            <main>{children}</main>
+          </Suspense>
           <Footer />
           <Suspense>
             <AdminBar />

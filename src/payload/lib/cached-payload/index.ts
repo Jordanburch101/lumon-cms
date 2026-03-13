@@ -1,33 +1,32 @@
 import config from "@payload-config";
-import { cacheLife, cacheTag } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { getPayload } from "payload";
-import { tagResolvedRelationships } from "../relationship-walker";
 
 /**
- * Fetch a page by slug with caching and relationship tagging.
- * Uses Next.js `'use cache'` — invalidated via `revalidateTag`.
+ * Fetch a page by slug with caching.
+ *
+ * Uses `unstable_cache` with per-slug cache keys and the `collection:pages` tag
+ * for broad invalidation. Individual page revalidation happens via
+ * `revalidateTag('collection:pages')` in the afterChange hook.
  */
-export async function getCachedPage(slug: string) {
-  "use cache";
-  cacheLife("hours");
+export const getCachedPage = unstable_cache(
+  async (slug: string) => {
+    const payload = await getPayload({ config });
+    const result = await payload.find({
+      collection: "pages",
+      where: { slug: { equals: slug } },
+      draft: false,
+      limit: 1,
+    });
 
-  const payload = await getPayload({ config });
-  const result = await payload.find({
-    collection: "pages",
-    where: { slug: { equals: slug } },
-    draft: false,
-    limit: 1,
-  });
-
-  const page = result.docs[0] ?? null;
-
-  if (page) {
-    cacheTag("collection:pages", `doc:pages:${page.id}`);
-    tagResolvedRelationships(page);
+    return result.docs[0] ?? null;
+  },
+  ["pages"],
+  {
+    revalidate: 3600,
+    tags: ["collection:pages"],
   }
-
-  return page;
-}
+);
 
 /**
  * Fetch a page by slug WITHOUT caching. Used for draft/preview mode.

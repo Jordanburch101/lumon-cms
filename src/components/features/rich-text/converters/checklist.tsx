@@ -1,42 +1,39 @@
+import type { JSXConverter } from "@payloadcms/richtext-lexical/react";
 import { defaultJSXConverters } from "@payloadcms/richtext-lexical/react";
+import type { ReactNode } from "react";
 import { cn } from "@/core/lib/utils";
 
-type ListNode = {
+interface ChecklistItem {
+  checked?: boolean;
+  children?: Record<string, unknown>[];
+  id?: string;
+  type: string;
+  [key: string]: unknown;
+}
+
+interface ListNode {
+  children: ChecklistItem[];
   listType: string;
   tag: string;
-  children: Array<{
-    type: string;
-    checked?: boolean;
-    children?: Array<Record<string, unknown>>;
-    [key: string]: unknown;
-  }>;
   [key: string]: unknown;
-};
-
-type ConverterArgs = {
-  node: ListNode;
-  nodesToJSX: (args: {
-    nodes: Array<Record<string, unknown>>;
-  }) => JSX.Element[];
-  parent: Record<string, unknown>;
-};
+}
 
 const defaultListConverter = defaultJSXConverters.list;
 
 function CheckIcon({ checked }: { checked: boolean }) {
   return (
     <span
-      aria-checked={checked}
+      aria-hidden="true"
       className={cn(
         "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-[4px] border",
         checked
           ? "border-primary bg-primary text-primary-foreground"
           : "border-input bg-transparent dark:bg-input/30"
       )}
-      role="checkbox"
     >
       {checked && (
         <svg
+          aria-hidden="true"
           className="size-3.5"
           fill="none"
           stroke="currentColor"
@@ -52,11 +49,16 @@ function CheckIcon({ checked }: { checked: boolean }) {
   );
 }
 
-export function listConverter(args: ConverterArgs) {
-  const { node, nodesToJSX } = args;
+// biome-ignore lint/suspicious/noExplicitAny: Must match Payload's JSXConverter signature
+export const listConverter: JSXConverter<any> = (args) => {
+  const node = args.node as unknown as ListNode;
+  const nodesToJSX = args.nodesToJSX as (args: {
+    nodes: Record<string, unknown>[];
+  }) => ReactNode[];
 
   if (node.listType !== "check") {
-    return (defaultListConverter as (args: ConverterArgs) => JSX.Element)(args);
+    // biome-ignore lint/suspicious/noExplicitAny: delegate to default converter
+    return (defaultListConverter as unknown as (a: any) => ReactNode)(args);
   }
 
   return (
@@ -64,7 +66,7 @@ export function listConverter(args: ConverterArgs) {
       {node.children.map((item, i) => {
         const checked = item.checked ?? false;
         return (
-          <li className="flex items-start gap-3" key={(item.id as string) ?? i}>
+          <li className="flex items-start gap-3" key={item.id ?? i}>
             <CheckIcon checked={checked} />
             <span
               className={cn(
@@ -79,4 +81,4 @@ export function listConverter(args: ConverterArgs) {
       })}
     </ul>
   );
-}
+};
