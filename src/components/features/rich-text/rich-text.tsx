@@ -4,8 +4,8 @@ import type {
   JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
 import {
-  RichText as PayloadRichText,
   defaultJSXConverters,
+  RichText as PayloadRichText,
 } from "@payloadcms/richtext-lexical/react";
 import { cn } from "@/core/lib/utils";
 import { customBlockConverters, customNodeConverters } from "./converters";
@@ -30,11 +30,11 @@ const proseClasses = [
 type RichTextSize = keyof typeof sizeClasses;
 
 export interface RichTextProps {
-  data: SerializedEditorState | null | undefined;
-  size?: RichTextSize;
-  converters?: Partial<JSXConverters>;
-  disableBlocks?: string[];
   className?: string;
+  converters?: Partial<JSXConverters>;
+  data: SerializedEditorState | null | undefined;
+  disableBlocks?: string[];
+  size?: RichTextSize;
 }
 
 function hasContent(data: SerializedEditorState): boolean {
@@ -76,7 +76,9 @@ export function RichText({
 
   // Build block converters: custom defaults + consumer overrides - disabled blocks
   // biome-ignore lint/suspicious/noExplicitAny: matches Payload's JSXConverter generic
-  const consumerBlocks = (consumerConverters as { blocks?: Record<string, JSXConverter<any>> }).blocks ?? {};
+  const consumerBlocks =
+    (consumerConverters as { blocks?: Record<string, JSXConverter<any>> })
+      .blocks ?? {};
   const blockConverters = {
     ...customBlockConverters,
     ...consumerBlocks,

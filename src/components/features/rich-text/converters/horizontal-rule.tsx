@@ -1,3 +1,12 @@
 export function HorizontalRuleConverter() {
-  return <hr className="my-8 border-border" />;
+  return (
+    <div
+      aria-hidden="true"
+      className="my-8 h-px"
+      style={{
+        background:
+          "linear-gradient(90deg, transparent, var(--border), transparent)",
+      }}
+    />
+  );
 }

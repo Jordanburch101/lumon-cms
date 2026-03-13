@@ -34,18 +34,20 @@ export function ButtonConverter({
   const size = node.fields.size ?? "md";
 
   return (
-    <a
-      className={cn(
-        "not-prose my-4 inline-flex items-center rounded-md font-semibold transition-colors",
-        variantClasses[variant],
-        sizeClasses[size]
-      )}
-      href={node.fields.href}
-      {...(node.fields.newTab
-        ? { target: "_blank", rel: "noopener noreferrer" }
-        : {})}
-    >
-      {node.fields.label}
-    </a>
+    <div className="not-prose my-6">
+      <a
+        className={cn(
+          "inline-flex items-center rounded-md font-semibold transition-colors",
+          variantClasses[variant],
+          sizeClasses[size]
+        )}
+        href={node.fields.href}
+        {...(node.fields.newTab
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
+      >
+        {node.fields.label}
+      </a>
+    </div>
   );
 }

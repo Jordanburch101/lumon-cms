@@ -2,28 +2,28 @@ import { cn } from "@/core/lib/utils";
 
 const variantConfig = {
   info: {
-    border: "border-l-blue-500",
-    bg: "bg-blue-500/5",
-    text: "text-blue-500",
-    label: "Info",
+    border: "border-l-foreground/25",
+    bg: "bg-muted/50",
+    text: "text-muted-foreground",
+    label: "Notice",
   },
   warning: {
-    border: "border-l-amber-500",
-    bg: "bg-amber-500/5",
-    text: "text-amber-500",
-    label: "Warning",
+    border: "border-l-foreground/40",
+    bg: "bg-muted/60",
+    text: "text-foreground/70",
+    label: "Advisory",
   },
   tip: {
-    border: "border-l-green-500",
-    bg: "bg-green-500/5",
-    text: "text-green-500",
-    label: "Tip",
+    border: "border-l-primary/40",
+    bg: "bg-primary/5",
+    text: "text-primary/80",
+    label: "Guidance",
   },
   error: {
-    border: "border-l-red-500",
-    bg: "bg-red-500/5",
-    text: "text-red-500",
-    label: "Error",
+    border: "border-l-destructive/50",
+    bg: "bg-destructive/5",
+    text: "text-destructive/80",
+    label: "Alert",
   },
 } as const;
 
@@ -42,7 +42,7 @@ export function CalloutConverter({
   return (
     <div
       className={cn(
-        "not-prose my-6 rounded-md border-l-[3px] px-4 py-3",
+        "not-prose my-6 rounded-r-md border-l-[3px] px-4 py-3",
         style.border,
         style.bg
       )}
@@ -50,7 +50,7 @@ export function CalloutConverter({
       <div className="mb-1.5 flex items-center gap-1.5">
         <span
           className={cn(
-            "font-semibold text-[11px] uppercase tracking-[0.05em]",
+            "font-medium text-[11px] uppercase tracking-[0.2em]",
             style.text
           )}
         >
@@ -58,7 +58,7 @@ export function CalloutConverter({
         </span>
       </div>
       {node.fields.title && (
-        <p className="mb-1 font-semibold text-foreground">
+        <p className="mb-1 font-semibold text-foreground text-sm">
           {node.fields.title}
         </p>
       )}

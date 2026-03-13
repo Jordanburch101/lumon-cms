@@ -64,7 +64,7 @@ export function MediaConverter({
   const alt = typeof mediaSrc === "object" ? (mediaSrc.alt ?? "") : "";
 
   const creditElement = credit ? (
-    <span className="absolute right-2 bottom-2 flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-[11px] text-white/80 backdrop-blur-sm">
+    <span className="absolute right-2 bottom-2 flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 font-medium text-[11px] text-white/70 uppercase tracking-[0.2em] backdrop-blur-sm">
       {credit}
     </span>
   ) : null;

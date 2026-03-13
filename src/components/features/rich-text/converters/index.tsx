@@ -2,6 +2,7 @@ import type { JSXConverter } from "@payloadcms/richtext-lexical/react";
 import { AccordionConverter } from "./accordion";
 import { ButtonConverter } from "./button";
 import { CalloutConverter } from "./callout";
+import { listConverter } from "./checklist";
 import { EmbedConverter } from "./embed";
 import { HorizontalRuleConverter } from "./horizontal-rule";
 import { MediaConverter } from "./media";
@@ -17,4 +18,5 @@ export const customBlockConverters: Record<string, JSXConverter<any>> = {
 
 export const customNodeConverters = {
   horizontalrule: () => <HorizontalRuleConverter />,
+  list: listConverter,
 };
