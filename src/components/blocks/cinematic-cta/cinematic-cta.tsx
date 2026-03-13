@@ -167,6 +167,8 @@ export function CinematicCta({
             <motion.div style={{ opacity: textOpacity, y: textY }}>
               <CMSLink
                 className="mt-6 bg-white text-black hover:bg-white/90"
+                data-field-group="cta"
+                data-field-group-type="link"
                 link={cta}
               />
             </motion.div>
