@@ -29,15 +29,26 @@ export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
             transition={{ duration: 0.8, ease: EASE }}
           >
             {eyebrow && (
-              <p className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
+              <p
+                className="mb-4 font-medium text-[11px] text-muted-foreground uppercase tracking-[0.2em]"
+                data-field="eyebrow"
+              >
                 {eyebrow}
               </p>
             )}
-            <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+            <h2
+              className="font-semibold text-3xl leading-tight sm:text-4xl"
+              data-field="headline"
+            >
               {headline}
             </h2>
             {subtext && (
-              <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+              <p
+                className="mt-3 text-base text-muted-foreground"
+                data-field="subtext"
+              >
+                {subtext}
+              </p>
             )}
 
             {/* CTA */}
@@ -73,8 +84,9 @@ export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
               {items.map((item, i) => (
                 <motion.div
                   animate={inView ? { opacity: 1, y: 0 } : {}}
+                  data-array-item={`items.${i}`}
                   initial={{ opacity: 0, y: 16 }}
-                  key={item.question}
+                  key={item.id}
                   transition={{
                     duration: 0.6,
                     ease: EASE,
@@ -88,10 +100,16 @@ export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
                     )}
                     value={`faq-${String(i)}`}
                   >
-                    <AccordionTrigger className="py-5 text-left font-semibold text-[15px]/relaxed hover:no-underline">
+                    <AccordionTrigger
+                      className="py-5 text-left font-semibold text-[15px]/relaxed hover:no-underline"
+                      data-field={`items.${i}.question`}
+                    >
                       {item.question}
                     </AccordionTrigger>
-                    <AccordionContent className="pb-6 text-muted-foreground text-sm/relaxed">
+                    <AccordionContent
+                      className="pb-6 text-muted-foreground text-sm/relaxed"
+                      data-field={`items.${i}.answer`}
+                    >
                       {item.answer}
                     </AccordionContent>
                   </AccordionItem>

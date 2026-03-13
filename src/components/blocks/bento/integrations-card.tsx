@@ -31,7 +31,7 @@ export function IntegrationsCard() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             className="flex items-center gap-1.5"
             initial={{ opacity: 0, y: 6 }}
-            key={item.name}
+            key={item.id ?? item.name}
             transition={{
               delay: 0.05 + i * 0.08,
               duration: 0.4,

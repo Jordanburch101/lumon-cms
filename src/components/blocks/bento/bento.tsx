@@ -16,10 +16,18 @@ export function BentoShowcase({
     <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <div className="mb-8 max-w-2xl">
-          <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+          <h2
+            className="font-semibold text-3xl leading-tight sm:text-4xl"
+            data-field="headline"
+          >
             {headline}
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+          <p
+            className="mt-3 text-base text-muted-foreground"
+            data-field="subtext"
+          >
+            {subtext}
+          </p>
         </div>
         <div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[240px_240px_56px]">

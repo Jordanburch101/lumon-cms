@@ -22,6 +22,7 @@ export function Trust({ eyebrow, stats, logos }: TrustBlock) {
           <motion.p
             animate={inView ? { opacity: 1, y: 0 } : {}}
             className="mb-18 text-center font-medium text-[11px] text-muted-foreground uppercase tracking-[0.25em]"
+            data-field="eyebrow"
             initial={{ opacity: 0, y: 24 }}
             transition={{ duration: 0.8, ease: EASE }}
           >
@@ -42,22 +43,29 @@ export function Trust({ eyebrow, stats, logos }: TrustBlock) {
                 // Horizontal dividers: bottom row on mobile, removed at desktop
                 i >= 2 && "border-border border-t lg:border-t-0"
               )}
+              data-array-item={`stats.${i}`}
               initial={{ opacity: 0, y: 16 }}
-              key={stat.id ?? stat.label}
+              key={stat.id}
               transition={{
                 duration: 0.8,
                 ease: EASE,
                 delay: 0.15 * i,
               }}
             >
-              <div className="font-bold text-4xl text-foreground tracking-tighter sm:text-5xl lg:text-7xl">
+              <div
+                className="font-bold text-4xl text-foreground tracking-tighter sm:text-5xl lg:text-7xl"
+                data-field={`stats.${i}.value`}
+              >
                 <FlipCounter
                   delay={0.15 * i + 0.2}
                   inView={inView}
                   stat={stat}
                 />
               </div>
-              <p className="mt-2 font-medium text-[10px] text-muted-foreground uppercase tracking-[0.2em] sm:text-xs lg:mt-4">
+              <p
+                className="mt-2 font-medium text-[10px] text-muted-foreground uppercase tracking-[0.2em] sm:text-xs lg:mt-4"
+                data-field={`stats.${i}.label`}
+              >
                 {stat.label}
               </p>
             </motion.div>
@@ -73,21 +81,25 @@ export function Trust({ eyebrow, stats, logos }: TrustBlock) {
             transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
           >
             <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-16">
-              {logos.map((logo) => {
+              {logos.map((logo, i) => {
                 const logoUrl = getMediaUrl(logo.logo);
                 return logoUrl ? (
-                  <Image
-                    alt={logo.name}
-                    className="h-6 w-auto opacity-[0.18] dark:invert"
-                    height={24}
-                    key={logo.id ?? logo.name}
-                    src={logoUrl}
-                    width={120}
-                  />
+                  <div data-array-item={`logos.${i}`} key={logo.id}>
+                    <Image
+                      alt={logo.name}
+                      className="h-6 w-auto opacity-[0.18] dark:invert"
+                      data-field={`logos.${i}.logo`}
+                      height={24}
+                      src={logoUrl}
+                      width={120}
+                    />
+                  </div>
                 ) : (
                   <span
                     className="font-semibold text-base text-foreground tracking-[0.04em] opacity-[0.18]"
-                    key={logo.id ?? logo.name}
+                    data-array-item={`logos.${i}`}
+                    data-field={`logos.${i}.name`}
+                    key={logo.id}
                   >
                     {logo.name}
                   </span>

@@ -17,6 +17,7 @@ const WORD_DURATION = 0.5;
 
 interface FeaturedQuoteProps {
   duration: number;
+  fieldPrefix: string;
   paused: boolean;
   testimonial: TestimonialItem;
 }
@@ -24,6 +25,7 @@ interface FeaturedQuoteProps {
 export function FeaturedQuote({
   testimonial,
   duration,
+  fieldPrefix,
   paused,
 }: FeaturedQuoteProps) {
   const displayQuote = testimonial.featuredQuote ?? testimonial.quote;
@@ -138,15 +140,28 @@ export function FeaturedQuote({
                 }}
               >
                 <Avatar>
-                  <AvatarImage alt={testimonial.name} src={avatarUrl} />
+                  <AvatarImage
+                    alt={testimonial.name}
+                    data-field={`${fieldPrefix}.avatar`}
+                    src={avatarUrl}
+                  />
                   <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <span className="block font-medium text-foreground text-sm">
+                  <span
+                    className="block font-medium text-foreground text-sm"
+                    data-field={`${fieldPrefix}.name`}
+                  >
                     {testimonial.name}
                   </span>
                   <span className="block text-muted-foreground text-xs">
-                    {testimonial.role}, {testimonial.department}
+                    <span data-field={`${fieldPrefix}.role`}>
+                      {testimonial.role}
+                    </span>
+                    {", "}
+                    <span data-field={`${fieldPrefix}.department`}>
+                      {testimonial.department}
+                    </span>
                   </span>
                 </div>
               </motion.div>

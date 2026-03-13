@@ -10,6 +10,7 @@
     "check": "ultracite check",
     "fix": "ultracite fix",
     "generate:types": "bun -e \"process.argv=['bun','payload','generate:types'];const{bin}=await import('./node_modules/payload/dist/bin/index.js');await bin()\"",
+    "generate:field-map": "bun scripts/generate-field-map.ts",
     "test": "bun test",
     "test:watch": "bun test --watch"
   },

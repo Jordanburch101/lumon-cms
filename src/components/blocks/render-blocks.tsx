@@ -11,7 +11,7 @@ import { SplitMedia } from "./split-media/split-media";
 import { Testimonials } from "./testimonials/testimonials";
 import { Trust } from "./trust/trust";
 
-function renderBlock(block: LayoutBlock) {
+export function renderBlock(block: LayoutBlock) {
   switch (block.blockType) {
     case "hero":
       return <Hero {...block} />;
@@ -47,8 +47,12 @@ export function RenderBlocks({ blocks }: { blocks: LayoutBlock[] }) {
 
   return (
     <div className="flex flex-col gap-16 lg:gap-32">
-      {blocks.map((block) => (
-        <div data-section={block.blockType} key={block.id}>
+      {blocks.map((block, index) => (
+        <div
+          data-block-index={index}
+          data-block-type={block.blockType}
+          key={block.id}
+        >
           {renderBlock(block)}
         </div>
       ))}

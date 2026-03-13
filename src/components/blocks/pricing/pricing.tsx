@@ -36,10 +36,18 @@ export function Pricing({
           initial={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+          <h2
+            className="font-semibold text-3xl leading-tight sm:text-4xl"
+            data-field="headline"
+          >
             {headline}
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+          <p
+            className="mt-3 text-base text-muted-foreground"
+            data-field="subtext"
+          >
+            {subtext}
+          </p>
         </motion.div>
 
         {/* Billing toggle */}
@@ -67,12 +75,18 @@ export function Pricing({
             }}
           >
             <CarouselContent className="-ml-4">
-              {tiers.map((tier) => (
+              {tiers.map((tier, i) => (
                 <CarouselItem
                   className="basis-[85%] pl-4 sm:basis-[70%]"
-                  key={tier.name}
+                  key={tier.id}
                 >
-                  <PricingCard isAnnual={isAnnual} tier={tier} />
+                  <div data-array-item={`tiers.${i}`}>
+                    <PricingCard
+                      isAnnual={isAnnual}
+                      tier={tier}
+                      tierIndex={i}
+                    />
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -84,15 +98,16 @@ export function Pricing({
           {tiers.map((tier, i) => (
             <motion.div
               animate={inView ? { opacity: 1, y: 0 } : {}}
+              data-array-item={`tiers.${i}`}
               initial={{ opacity: 0, y: 24 }}
-              key={tier.name}
+              key={tier.id}
               transition={{
                 duration: 0.8,
                 ease: EASE,
                 delay: 0.1 + i * 0.05,
               }}
             >
-              <PricingCard isAnnual={isAnnual} tier={tier} />
+              <PricingCard isAnnual={isAnnual} tier={tier} tierIndex={i} />
             </motion.div>
           ))}
         </div>
