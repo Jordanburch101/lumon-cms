@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import type { Block } from "payload";
+import { link } from "@/payload/fields/link/link";
 import { introspectBlock, introspectBlocks } from "./generate";
 
 const SimpleBlock: Block = {
@@ -284,6 +285,27 @@ describe("introspectBlock", () => {
       expect(result.fields["cta.href"]).toEqual({ type: "text" });
       // No group entry
       expect(result.fields.cta).toBeUndefined();
+    });
+  });
+
+  describe("link() field with custom.groupType", () => {
+    it("produces a GroupFieldDescriptor when introspected", () => {
+      const linkField = link({ name: "cta" });
+      const testBlock: Block = {
+        slug: "test-link",
+        labels: { singular: "Test", plural: "Tests" },
+        fields: [linkField],
+      };
+      const result = introspectBlock(testBlock);
+      const cta = result.fields.cta;
+      expect(cta).toBeDefined();
+      expect(cta.type).toBe("group");
+      if (cta.type === "group") {
+        expect(cta.groupType).toBe("link");
+        expect(cta.fields.label).toBeDefined();
+        expect(cta.fields.url).toBeDefined();
+        expect(cta.fields.newTab).toBeDefined();
+      }
     });
   });
 });

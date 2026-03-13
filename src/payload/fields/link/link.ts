@@ -168,6 +168,7 @@ export function link(opts?: LinkFieldOptions): GroupField {
     name,
     type: "group",
     label,
+    custom: { groupType: "link" },
     admin: {
       components: {
         Label: {
