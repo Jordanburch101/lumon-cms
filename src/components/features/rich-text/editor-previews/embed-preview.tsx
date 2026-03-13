@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormFields } from "@payloadcms/ui";
 import { cn } from "@/core/lib/utils";
 
 const YOUTUBE_RE = /youtube\.com|youtu\.be/;
@@ -19,13 +20,13 @@ function detectProvider(url: string): { name: string; color: string } {
   return { name: "Embed", color: "bg-muted-foreground" };
 }
 
-interface EmbedPreviewProps {
-  formData: Record<string, unknown>;
-  nodeKey: string;
-}
+export function EmbedPreview() {
+  const fields = useFormFields(([f]) => ({
+    url: f.url?.value as string | undefined,
+    aspectRatio: f.aspectRatio?.value as string | undefined,
+  }));
 
-export function EmbedPreview({ formData }: EmbedPreviewProps) {
-  const url = (formData.url as string) ?? "";
+  const url = fields.url ?? "";
   const provider = detectProvider(url);
 
   return (
@@ -43,7 +44,7 @@ export function EmbedPreview({ formData }: EmbedPreviewProps) {
           {url || "No URL entered"}
         </p>
         <p className="mt-0.5 text-[10px] text-muted-foreground">
-          {provider.name} · {(formData.aspectRatio as string) ?? "16:9"}
+          {provider.name} · {fields.aspectRatio ?? "16:9"}
         </p>
       </div>
     </div>

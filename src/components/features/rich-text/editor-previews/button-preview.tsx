@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormFields } from "@payloadcms/ui";
 import { cn } from "@/core/lib/utils";
 
 const variantClasses = {
@@ -17,15 +18,15 @@ const sizeClasses = {
 type ButtonVariant = keyof typeof variantClasses;
 type ButtonSize = keyof typeof sizeClasses;
 
-interface ButtonPreviewProps {
-  formData: Record<string, unknown>;
-  nodeKey: string;
-}
+export function ButtonPreview() {
+  const fields = useFormFields(([f]) => ({
+    label: f.label?.value as string | undefined,
+    variant: f.variant?.value as ButtonVariant | undefined,
+    size: f.size?.value as ButtonSize | undefined,
+  }));
 
-export function ButtonPreview({ formData }: ButtonPreviewProps) {
-  const label = formData.label as string | undefined;
-  const variant = (formData.variant as ButtonVariant) ?? "primary";
-  const size = (formData.size as ButtonSize) ?? "md";
+  const variant = fields.variant ?? "primary";
+  const size = fields.size ?? "md";
 
   return (
     <span
@@ -35,7 +36,7 @@ export function ButtonPreview({ formData }: ButtonPreviewProps) {
         sizeClasses[size]
       )}
     >
-      {label || "Button"}
+      {fields.label || "Button"}
     </span>
   );
 }

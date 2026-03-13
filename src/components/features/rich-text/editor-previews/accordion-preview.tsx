@@ -2,16 +2,16 @@
 
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useFormFields } from "@payloadcms/ui";
 
-interface AccordionPreviewProps {
-  formData: Record<string, unknown>;
-  nodeKey: string;
-}
+export function AccordionPreview() {
+  const fields = useFormFields(([f]) => ({
+    items: f.items?.value as
+      | Array<{ title?: string; content?: string; id?: string }>
+      | undefined,
+  }));
 
-export function AccordionPreview({ formData }: AccordionPreviewProps) {
-  const items = (formData.items as
-    | Array<{ title?: string; content?: string; id?: string }>
-    | undefined) ?? [];
+  const items = fields.items ?? [];
 
   return (
     <div className="overflow-hidden rounded-md border border-border">
