@@ -10,7 +10,7 @@ import { SplitMedia } from "./split-media/split-media";
 import { Testimonials } from "./testimonials/testimonials";
 import { Trust } from "./trust/trust";
 
-function renderBlock(block: LayoutBlock) {
+export function renderBlock(block: LayoutBlock) {
   switch (block.blockType) {
     case "hero":
       return <Hero {...block} />;

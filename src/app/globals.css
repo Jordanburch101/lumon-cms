@@ -382,6 +382,13 @@
   }
 }
 
+/* ── Frontend editor ── */
+
+/* When editing, hide SSR content inside main and show overlay */
+[data-editing="true"] > .flex > [data-block-type] {
+  display: none;
+}
+
 /* ── MDR Terminal CRT Effects ── */
 
 @keyframes crt-flicker {
