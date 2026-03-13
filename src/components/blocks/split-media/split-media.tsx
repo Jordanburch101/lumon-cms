@@ -76,6 +76,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
           <video
             autoPlay
             className="h-full w-full object-cover brightness-75"
+            data-field={`rows.${index}.mediaSrc`}
             loop
             muted
             playsInline
@@ -86,6 +87,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
             alt={row.mediaAlt}
             blurDataURL={blurDataURL}
             className="object-cover brightness-75"
+            data-field={`rows.${index}.mediaSrc`}
             fill
             placeholder={blurDataURL ? "blur" : "empty"}
             sizes="(max-width: 1024px) 100vw, 65vw"
@@ -97,16 +99,24 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
       {/* Bottom overlay */}
       <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm text-white">
+          <span
+            className="font-medium text-sm text-white"
+            data-field={`rows.${index}.mediaOverlay.title`}
+          >
             {row.mediaOverlay.title}
           </span>
           {row.mediaOverlay.badge && (
             <Badge className="bg-white/20 text-[10px] text-white">
-              {row.mediaOverlay.badge}
+              <span data-field={`rows.${index}.mediaOverlay.badge`}>
+                {row.mediaOverlay.badge}
+              </span>
             </Badge>
           )}
         </div>
-        <p className="mt-1 text-white/60 text-xs leading-relaxed">
+        <p
+          className="mt-1 text-white/60 text-xs leading-relaxed"
+          data-field={`rows.${index}.mediaOverlay.description`}
+        >
           {row.mediaOverlay.description}
         </p>
       </div>
@@ -145,6 +155,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
         <motion.span
           animate={inView ? { opacity: 1 } : {}}
           className="mb-4 font-medium text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]"
+          data-field={`rows.${index}.mediaLabel`}
           initial={{ opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
@@ -154,6 +165,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
         <motion.h3
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="font-semibold text-2xl leading-snug tracking-tight sm:text-3xl lg:text-4xl"
+          data-field={`rows.${index}.headline`}
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.35 }}
         >
@@ -163,6 +175,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
         <motion.p
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="mt-4 max-w-md text-base text-muted-foreground leading-relaxed lg:mt-6 lg:text-foreground/80 lg:text-lg"
+          data-field={`rows.${index}.body`}
           initial={{ opacity: 0, y: 16 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.45 }}
         >
@@ -180,7 +193,9 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
               className="group inline-flex items-center gap-2 font-medium text-foreground text-sm transition-colors hover:text-foreground/70"
               href={row.cta.href}
             >
-              {row.cta.label}
+              <span data-field={`rows.${index}.cta.label`}>
+                {row.cta.label}
+              </span>
               <HugeiconsIcon
                 className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
                 icon={ArrowRight01Icon}
@@ -199,6 +214,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
         "lg:min-h-[580px] lg:gap-0",
         mediaFirst ? "lg:grid-cols-[1fr_0.6fr]" : "lg:grid-cols-[0.6fr_1fr]"
       )}
+      data-array-item={`rows.${index}`}
       ref={rowRef}
     >
       {media}

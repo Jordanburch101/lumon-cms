@@ -13,6 +13,7 @@ type PricingTier = PricingBlock["tiers"][number];
 interface PricingCardProps {
   isAnnual: boolean;
   tier: PricingTier;
+  tierIndex: number;
 }
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -32,7 +33,7 @@ function AnimatedPrice({ price }: { price: number }) {
   return <motion.span>{display}</motion.span>;
 }
 
-export function PricingCard({ tier, isAnnual }: PricingCardProps) {
+export function PricingCard({ tier, isAnnual, tierIndex }: PricingCardProps) {
   const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
   const rec = tier.recommended ?? false;
   const features = tier.features ?? [];
@@ -59,13 +60,17 @@ export function PricingCard({ tier, isAnnual }: PricingCardProps) {
           "font-medium text-[11px] uppercase tracking-[0.2em]",
           rec ? "text-primary-foreground/60" : "text-muted-foreground"
         )}
+        data-field={`tiers.${tierIndex}.name`}
       >
         {tier.name}
       </span>
 
       {/* Price */}
       <div className="mt-6 flex items-baseline gap-1.5">
-        <span className="font-semibold text-5xl tracking-tight">
+        <span
+          className="font-semibold text-5xl tracking-tight"
+          data-field={`tiers.${tierIndex}.monthlyPrice`}
+        >
           <AnimatedPrice price={price} />
         </span>
         {price > 0 && (
@@ -86,6 +91,7 @@ export function PricingCard({ tier, isAnnual }: PricingCardProps) {
           "mt-3 text-sm leading-relaxed",
           rec ? "text-primary-foreground/60" : "text-muted-foreground"
         )}
+        data-field={`tiers.${tierIndex}.description`}
       >
         {tier.description}
       </p>
@@ -100,12 +106,13 @@ export function PricingCard({ tier, isAnnual }: PricingCardProps) {
 
       {/* Features */}
       <ul className="mb-10 flex flex-1 flex-col gap-3.5">
-        {features.map((feature) => (
+        {features.map((feature, j) => (
           <li
             className={cn(
               "text-sm leading-relaxed",
               rec ? "text-primary-foreground/80" : "text-muted-foreground"
             )}
+            data-field={`tiers.${tierIndex}.features.${j}.text`}
             key={feature.id}
           >
             {feature.text}

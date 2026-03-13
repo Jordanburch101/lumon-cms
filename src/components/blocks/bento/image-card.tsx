@@ -20,6 +20,7 @@ export function ImageCard({ image }: { image: BentoBlock["image"] }) {
         <video
           autoPlay
           className="h-full w-full object-cover brightness-75"
+          data-field="image.src"
           loop
           muted
           playsInline
@@ -31,6 +32,7 @@ export function ImageCard({ image }: { image: BentoBlock["image"] }) {
           alt={alt}
           blurDataURL={blurDataURL}
           className="object-cover brightness-75"
+          data-field="image.src"
           fill
           placeholder={blurDataURL ? "blur" : "empty"}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -44,14 +46,22 @@ export function ImageCard({ image }: { image: BentoBlock["image"] }) {
       {/* Content overlay at bottom */}
       <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm text-white">{title}</span>
+          <span
+            className="font-medium text-sm text-white"
+            data-field="image.title"
+          >
+            {title}
+          </span>
           {badge && (
             <Badge className="bg-white/20 text-[10px] text-white">
-              {badge}
+              <span data-field="image.badge">{badge}</span>
             </Badge>
           )}
         </div>
-        <p className="mt-1 text-white/60 text-xs leading-relaxed">
+        <p
+          className="mt-1 text-white/60 text-xs leading-relaxed"
+          data-field="image.description"
+        >
           {description}
         </p>
       </div>

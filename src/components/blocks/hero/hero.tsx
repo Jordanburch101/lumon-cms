@@ -31,6 +31,7 @@ export function Hero({
         <video
           autoPlay
           className="absolute inset-0 h-full w-full object-cover"
+          data-field="mediaSrc"
           loop
           muted
           playsInline
@@ -42,6 +43,7 @@ export function Hero({
           alt="Hero background"
           blurDataURL={blurDataURL}
           className="object-cover"
+          data-field="mediaSrc"
           fill
           placeholder={blurDataURL ? "blur" : "empty"}
           priority
@@ -54,17 +56,27 @@ export function Hero({
 
       {/* Content */}
       <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-16 lg:px-6">
-        <h1 className="max-w-2xl font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-6xl">
+        <h1
+          className="max-w-2xl font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-6xl"
+          data-field="headline"
+        >
           {headline}
         </h1>
-        <p className="mt-4 max-w-xl text-base text-white/70">{subtext}</p>
+        <p
+          className="mt-4 max-w-xl text-base text-white/70"
+          data-field="subtext"
+        >
+          {subtext}
+        </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button
             asChild
             className="bg-white text-black hover:bg-white/90"
             size="lg"
           >
-            <Link href={primaryCta.href}>{primaryCta.label}</Link>
+            <Link href={primaryCta.href}>
+              <span data-field="primaryCta.label">{primaryCta.label}</span>
+            </Link>
           </Button>
           <Button
             asChild
@@ -77,7 +89,7 @@ export function Hero({
               rel="noopener noreferrer"
               target="_blank"
             >
-              {secondaryCta.label}
+              <span data-field="secondaryCta.label">{secondaryCta.label}</span>
             </a>
           </Button>
         </div>

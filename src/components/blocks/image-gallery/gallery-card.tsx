@@ -84,6 +84,7 @@ export function GalleryCard({
   return (
     <motion.figure
       className="absolute inset-0"
+      data-array-item={`items.${index}`}
       style={{
         zIndex: index,
         clipPath: isBase ? undefined : clip,
@@ -95,6 +96,7 @@ export function GalleryCard({
           alt={item.imageAlt}
           blurDataURL={blurDataURL}
           className="object-cover"
+          data-field={`items.${index}.image`}
           fill
           loading={index <= 2 ? "eager" : undefined}
           onLoad={() => onImageLoad(index)}
@@ -110,12 +112,14 @@ export function GalleryCard({
       <figcaption className="absolute inset-x-0 bottom-0 z-10 p-8 lg:p-16">
         <motion.span
           className="block font-medium text-[11px] text-white/50 uppercase tracking-[0.2em]"
+          data-field={`items.${index}.label`}
           style={{ opacity: finalTextOpacity, y: finalTextY }}
         >
           {item.label}
         </motion.span>
         <motion.p
           className="mt-2 max-w-md font-light text-lg text-white/85 italic leading-relaxed lg:text-xl"
+          data-field={`items.${index}.caption`}
           style={{ opacity: finalTextOpacity, y: finalTextY }}
         >
           &ldquo;{item.caption}&rdquo;

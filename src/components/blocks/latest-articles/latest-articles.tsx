@@ -34,10 +34,18 @@ export function LatestArticles({
           transition={{ duration: 0.8, ease: EASE }}
         >
           <div className="max-w-2xl">
-            <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+            <h2
+              className="font-semibold text-3xl leading-tight sm:text-4xl"
+              data-field="headline"
+            >
               {headline}
             </h2>
-            <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+            <p
+              className="mt-3 text-base text-muted-foreground"
+              data-field="subtext"
+            >
+              {subtext}
+            </p>
           </div>
           <Link
             className="group hidden shrink-0 items-center gap-2 font-medium text-foreground text-sm transition-colors hover:text-foreground/70 lg:inline-flex"

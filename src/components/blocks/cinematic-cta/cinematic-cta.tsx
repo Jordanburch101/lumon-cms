@@ -127,6 +127,7 @@ export function CinematicCta({
         <video
           autoPlay
           className="absolute inset-0 h-full w-full scale-125 object-cover"
+          data-field="videoSrc"
           loop
           muted
           playsInline
@@ -142,18 +143,21 @@ export function CinematicCta({
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4">
           <motion.span
             className="block font-medium text-[11px] text-white/50 uppercase tracking-[0.2em]"
+            data-field="label"
             style={{ opacity: textOpacity, y: textY }}
           >
             {label}
           </motion.span>
           <motion.p
             className="mt-4 max-w-lg text-center font-light text-white/85 text-xl italic leading-relaxed lg:text-2xl"
+            data-field="headline"
             style={{ opacity: textOpacity, y: textY }}
           >
             &ldquo;{headline}&rdquo;
           </motion.p>
           <motion.span
             className="mt-3 block text-[11px] text-white/30 uppercase tracking-[0.2em]"
+            data-field="subtext"
             style={{ opacity: textOpacity, y: textY }}
           >
             {subtext}
@@ -167,7 +171,9 @@ export function CinematicCta({
                 className="mt-6 bg-white text-black hover:bg-white/90"
                 size="lg"
               >
-                <Link href={cta.href}>{cta.label}</Link>
+                <Link href={cta.href}>
+                  <span data-field="cta.label">{cta.label}</span>
+                </Link>
               </Button>
             </motion.div>
           )}

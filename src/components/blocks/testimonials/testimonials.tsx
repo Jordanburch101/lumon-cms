@@ -72,10 +72,18 @@ export function Testimonials({
           initial={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          <h2 className="font-semibold text-3xl leading-tight sm:text-4xl">
+          <h2
+            className="font-semibold text-3xl leading-tight sm:text-4xl"
+            data-field="headline"
+          >
             {headline}
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">{subtext}</p>
+          <p
+            className="mt-3 text-base text-muted-foreground"
+            data-field="subtext"
+          >
+            {subtext}
+          </p>
         </motion.div>
 
         {/* Content grid */}
@@ -87,38 +95,56 @@ export function Testimonials({
         >
           {/* Featured spotlight — 3 of 5 columns */}
           <div className="lg:col-span-3">
-            <FeaturedQuote
-              duration={ADVANCE_MS}
-              paused={!isVisible}
-              testimonial={activeTestimonial}
-            />
+            <div
+              data-array-item={`testimonials.${testimonials.indexOf(activeTestimonial)}`}
+            >
+              <FeaturedQuote
+                duration={ADVANCE_MS}
+                fieldPrefix={`testimonials.${testimonials.indexOf(activeTestimonial)}`}
+                paused={!isVisible}
+                testimonial={activeTestimonial}
+              />
+            </div>
           </div>
 
           {/* Short quote cards — 2 of 5 columns */}
           <div className="lg:col-span-2">
             {/* Desktop: 2x2 grid */}
             <div className="hidden gap-3 lg:grid lg:grid-cols-2">
-              {shortTestimonials.map((t) => (
-                <QuoteCard
-                  isActive={activeTestimonial.id === t.id}
-                  key={t.id}
-                  onSelect={() => handleSelectShort(t)}
-                  testimonial={t}
-                />
-              ))}
+              {shortTestimonials.map((t) => {
+                const origIdx = testimonials.indexOf(t);
+                return (
+                  <div data-array-item={`testimonials.${origIdx}`} key={t.id}>
+                    <QuoteCard
+                      fieldPrefix={`testimonials.${origIdx}`}
+                      isActive={activeTestimonial.id === t.id}
+                      onSelect={() => handleSelectShort(t)}
+                      testimonial={t}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* Mobile: horizontal scroll */}
             <div className="flex gap-3 overflow-x-auto pb-2 lg:hidden">
-              {shortTestimonials.map((t) => (
-                <div className="w-[260px] shrink-0" key={t.id}>
-                  <QuoteCard
-                    isActive={activeTestimonial.id === t.id}
-                    onSelect={() => handleSelectShort(t)}
-                    testimonial={t}
-                  />
-                </div>
-              ))}
+              {shortTestimonials.map((t) => {
+                const origIdx = testimonials.indexOf(t);
+                return (
+                  <div
+                    className="w-[260px] shrink-0"
+                    data-array-item={`testimonials.${origIdx}`}
+                    key={t.id}
+                  >
+                    <QuoteCard
+                      fieldPrefix={`testimonials.${origIdx}`}
+                      isActive={activeTestimonial.id === t.id}
+                      onSelect={() => handleSelectShort(t)}
+                      testimonial={t}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </motion.div>

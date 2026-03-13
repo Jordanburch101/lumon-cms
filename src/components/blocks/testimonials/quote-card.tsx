@@ -6,12 +6,18 @@ import { cn, getMediaUrl } from "@/core/lib/utils";
 import type { TestimonialItem } from "./testimonials";
 
 interface QuoteCardProps {
+  fieldPrefix: string;
   isActive: boolean;
   onSelect: () => void;
   testimonial: TestimonialItem;
 }
 
-export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
+export function QuoteCard({
+  testimonial,
+  fieldPrefix,
+  isActive,
+  onSelect,
+}: QuoteCardProps) {
   const avatarUrl = getMediaUrl(testimonial.avatar);
 
   return (
@@ -27,19 +33,32 @@ export function QuoteCard({ testimonial, isActive, onSelect }: QuoteCardProps) {
       type="button"
       whileHover={isActive ? {} : { scale: 1.02 }}
     >
-      <p className="text-muted-foreground text-sm leading-relaxed">
+      <p
+        className="text-muted-foreground text-sm leading-relaxed"
+        data-field={`${fieldPrefix}.quote`}
+      >
         &ldquo;{testimonial.quote}&rdquo;
       </p>
       <div className="flex items-center gap-2.5">
         <Avatar>
-          <AvatarImage alt={testimonial.name} src={avatarUrl} />
+          <AvatarImage
+            alt={testimonial.name}
+            data-field={`${fieldPrefix}.avatar`}
+            src={avatarUrl}
+          />
           <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <span className="block truncate font-medium text-foreground text-xs">
+          <span
+            className="block truncate font-medium text-foreground text-xs"
+            data-field={`${fieldPrefix}.name`}
+          >
             {testimonial.name}
           </span>
-          <span className="block truncate text-[11px] text-muted-foreground">
+          <span
+            className="block truncate text-[11px] text-muted-foreground"
+            data-field={`${fieldPrefix}.department`}
+          >
             {testimonial.department}
           </span>
         </div>
