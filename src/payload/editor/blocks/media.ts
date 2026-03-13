@@ -3,6 +3,12 @@ import type { Block } from "payload";
 export const RichTextMediaBlock: Block = {
   slug: "richTextMedia",
   labels: { singular: "Media", plural: "Media" },
+  admin: {
+    components: {
+      Block:
+        "@/components/features/rich-text/editor-previews/media-preview#MediaPreview",
+    },
+  },
   fields: [
     { name: "mediaSrc", type: "upload", relationTo: "media", required: true },
     { name: "caption", type: "text" },
