@@ -1,4 +1,5 @@
 import type { Block } from "payload";
+import { link } from "../fields/link/link";
 
 export const SplitMediaBlock: Block = {
   slug: "splitMedia",
@@ -19,14 +20,13 @@ export const SplitMediaBlock: Block = {
           required: true,
         },
         { name: "mediaAlt", type: "text", required: true },
-        {
+        link({
           name: "cta",
-          type: "group",
-          fields: [
-            { name: "label", type: "text" },
-            { name: "href", type: "text" },
-          ],
-        },
+          appearance: {
+            type: ["link"],
+            link: { variants: ["arrow", "plain"] },
+          },
+        }),
         {
           name: "mediaOverlay",
           type: "group",
