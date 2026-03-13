@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { renderBlock } from "@/components/blocks/render-blocks";
+import { BlockControls } from "./block-controls";
+import { AddBlockButton } from "./block-picker";
 import { useEditRuntime } from "./edit-runtime";
 import { useEditMode } from "./use-edit-mode";
 
@@ -29,16 +31,36 @@ export function EditableOverlay() {
     return null;
   }
 
+  const blocks = editMode.state.blocks;
+
   return (
     <div className="frontend-editor-overlay">
-      <div className="flex flex-col gap-16 lg:gap-32">
-        {editMode.state.blocks.map((block, index) => (
-          <div
-            data-block-index={index}
-            data-block-type={block.blockType}
-            key={block.id}
-          >
-            {renderBlock(block)}
+      {/* Add button before the first block */}
+      <AddBlockButton index={0} />
+
+      <div className="flex flex-col">
+        {blocks.map((block, index) => (
+          <div key={block.id}>
+            {/* Block wrapper with relative positioning for the toolbar */}
+            <div
+              className="relative"
+              data-block-index={index}
+              data-block-type={block.blockType}
+            >
+              {/* Block controls toolbar — top-right overlay */}
+              <div className="absolute top-3 right-3 z-10">
+                <BlockControls
+                  blockIndex={index}
+                  blockType={block.blockType}
+                  totalBlocks={blocks.length}
+                />
+              </div>
+
+              {renderBlock(block)}
+            </div>
+
+            {/* Add button after each block */}
+            <AddBlockButton index={index + 1} />
           </div>
         ))}
       </div>
