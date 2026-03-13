@@ -5,8 +5,10 @@ import {
   ArrowUpIcon,
   Copy01Icon,
   Delete02Icon,
+  PencilEdit02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +30,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/core/lib/utils";
 import { blockMeta } from "@/generated/field-map";
+import { BlockEditorDialog } from "./block-editor-dialog";
 import { useEditModeRequired } from "./use-edit-mode";
 
 export interface BlockControlsProps {
@@ -46,6 +49,7 @@ export function BlockControls({
   totalBlocks,
 }: BlockControlsProps) {
   const { actions } = useEditModeRequired();
+  const [editorOpen, setEditorOpen] = useState(false);
 
   const label =
     blockMeta[blockType as keyof typeof blockMeta]?.label ?? blockType;
@@ -70,6 +74,27 @@ export function BlockControls({
         <Badge className="mx-1 font-mono text-[10px]" variant="outline">
           {label}
         </Badge>
+
+        {/* Edit all fields */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              aria-label="Edit block fields"
+              className="h-7 w-7 text-black/50 hover:text-black/80 dark:text-white/40 dark:hover:text-white/70"
+              onClick={() => setEditorOpen(true)}
+              size="icon"
+              type="button"
+              variant="ghost"
+            >
+              <HugeiconsIcon
+                icon={PencilEdit02Icon}
+                size={13}
+                strokeWidth={2}
+              />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Edit all fields</TooltipContent>
+        </Tooltip>
 
         {/* Separator */}
         <div className="mx-0.5 h-4 w-px bg-black/[0.08] dark:bg-white/[0.08]" />
@@ -176,6 +201,12 @@ export function BlockControls({
           </AlertDialogContent>
         </AlertDialog>
       </div>
+      <BlockEditorDialog
+        blockIndex={blockIndex}
+        blockType={blockType}
+        onOpenChange={setEditorOpen}
+        open={editorOpen}
+      />
     </TooltipProvider>
   );
 }
