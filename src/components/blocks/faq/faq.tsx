@@ -8,12 +8,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { CMSLink } from "@/components/ui/cms-link";
 import { cn } from "@/core/lib/utils";
 import type { FaqBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
+export function Faq({
+  eyebrow,
+  headline,
+  subtext,
+  items,
+  ctaText,
+  cta,
+}: FaqBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
@@ -52,20 +60,18 @@ export function Faq({ eyebrow, headline, subtext, items, cta }: FaqBlock) {
             )}
 
             {/* CTA */}
-            {cta && (
+            {(ctaText || cta?.label) && (
               <motion.p
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 className="mt-8 text-muted-foreground text-sm"
                 initial={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
               >
-                {cta.text ?? ""}{" "}
-                <a
+                {ctaText ?? ""}{" "}
+                <CMSLink
                   className="text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70"
-                  href={cta.href ?? "#"}
-                >
-                  {cta.label ?? ""}
-                </a>
+                  link={cta}
+                />
               </motion.p>
             )}
           </motion.div>
