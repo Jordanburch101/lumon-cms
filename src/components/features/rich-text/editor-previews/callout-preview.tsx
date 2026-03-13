@@ -1,6 +1,5 @@
 "use client";
 
-import { useFormFields } from "@payloadcms/ui";
 import { cn } from "@/core/lib/utils";
 
 const variantStyles = {
@@ -32,14 +31,15 @@ const variantStyles = {
 
 type CalloutVariant = keyof typeof variantStyles;
 
-export function CalloutPreview() {
-  const fields = useFormFields(([f]) => ({
-    variant: f.variant?.value as CalloutVariant | undefined,
-    title: f.title?.value as string | undefined,
-    content: f.content?.value as string | undefined,
-  }));
+interface CalloutPreviewProps {
+  formData: Record<string, unknown>;
+  nodeKey: string;
+}
 
-  const variant = fields.variant ?? "info";
+export function CalloutPreview({ formData }: CalloutPreviewProps) {
+  const variant = (formData.variant as CalloutVariant) ?? "info";
+  const title = formData.title as string | undefined;
+  const content = formData.content as string | undefined;
   const style = variantStyles[variant];
 
   return (
@@ -60,13 +60,13 @@ export function CalloutPreview() {
           {style.label}
         </span>
       </div>
-      {fields.title && (
+      {title && (
         <p className="mb-1 font-medium text-foreground text-sm">
-          {fields.title}
+          {title}
         </p>
       )}
       <p className="text-[13px] text-muted-foreground leading-relaxed">
-        {fields.content || "Callout content..."}
+        {content || "Callout content..."}
       </p>
     </div>
   );
