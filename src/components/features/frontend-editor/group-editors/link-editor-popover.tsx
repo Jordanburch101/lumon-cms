@@ -111,7 +111,7 @@ function PageCombobox({
   const [query, setQuery] = useState("");
   const [pages, setPages] = useState<PageResult[]>([]);
   const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const fetchPages = useCallback(async (q: string) => {
     setLoading(true);
