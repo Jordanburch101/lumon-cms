@@ -6,6 +6,7 @@ import { Hero } from "./hero/hero";
 import { ImageGallery } from "./image-gallery/image-gallery";
 import { LatestArticles } from "./latest-articles/latest-articles";
 import { Pricing } from "./pricing/pricing";
+import { RichTextContent } from "./rich-text-content/rich-text-content";
 import { SplitMedia } from "./split-media/split-media";
 import { Testimonials } from "./testimonials/testimonials";
 import { Trust } from "./trust/trust";
@@ -32,6 +33,8 @@ function renderBlock(block: LayoutBlock) {
       return <Faq {...block} />;
     case "trust":
       return <Trust {...block} />;
+    case "richTextContent":
+      return <RichTextContent {...block} />;
     default:
       return null;
   }

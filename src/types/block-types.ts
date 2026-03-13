@@ -19,3 +19,4 @@ export type CinematicCtaBlock = ExtractBlock<"cinematicCta">;
 export type PricingBlock = ExtractBlock<"pricing">;
 export type FaqBlock = ExtractBlock<"faq">;
 export type TrustBlock = ExtractBlock<"trust">;
+export type RichTextContentBlock = ExtractBlock<"richTextContent">;

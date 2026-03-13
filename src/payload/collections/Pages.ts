@@ -8,6 +8,7 @@ import { HeroBlock } from "../block-schemas/Hero";
 import { ImageGalleryBlock } from "../block-schemas/ImageGallery";
 import { LatestArticlesBlock } from "../block-schemas/LatestArticles";
 import { PricingBlock } from "../block-schemas/Pricing";
+import { RichTextContentBlock } from "../block-schemas/RichTextContent";
 import { SplitMediaBlock } from "../block-schemas/SplitMedia";
 import { TestimonialsBlock } from "../block-schemas/Testimonials";
 import { TrustBlock } from "../block-schemas/Trust";
@@ -64,6 +65,7 @@ export const Pages: CollectionConfig = {
         PricingBlock,
         FaqBlock,
         TrustBlock,
+        RichTextContentBlock,
       ],
     },
     {
