@@ -18,6 +18,7 @@ const { afterChange, afterDelete } = revalidateOnChange();
 
 export const Pages: CollectionConfig = {
   slug: "pages",
+  custom: { linkable: true },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "updatedAt"],
