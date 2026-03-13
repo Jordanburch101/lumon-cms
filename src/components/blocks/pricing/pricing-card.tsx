@@ -1,10 +1,9 @@
 "use client";
 
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
-import Link from "next/link";
 import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button";
+import { CMSLink } from "@/components/ui/cms-link";
 import { cn } from "@/core/lib/utils";
 import type { PricingBlock } from "@/types/block-types";
 
@@ -121,18 +120,14 @@ export function PricingCard({ tier, isAnnual, tierIndex }: PricingCardProps) {
       </ul>
 
       {/* CTA */}
-      <Button
-        asChild
+      <CMSLink
         className={cn(
           "w-full",
           rec &&
             "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
         )}
-        size="lg"
-        variant={rec ? "default" : "outline"}
-      >
-        <Link href={tier.cta.href}>{tier.cta.label}</Link>
-      </Button>
+        link={tier.cta}
+      />
     </motion.div>
   );
 }
