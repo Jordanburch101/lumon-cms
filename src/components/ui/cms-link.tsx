@@ -36,23 +36,35 @@ interface CMSLinkProps {
 const linkVariantClasses: Record<string, string> = {
   plain: '',
   underline: 'underline underline-offset-4',
-  arrow: 'inline-flex items-center gap-2',
+  arrow: 'group inline-flex items-center gap-2',
+}
+
+const SAFE_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:'])
+
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, 'https://placeholder.com')
+    return SAFE_PROTOCOLS.has(parsed.protocol)
+  } catch {
+    return false
+  }
 }
 
 function resolveHref(link: CMSLinkData): string | null {
   if (link.type === 'internal') {
     const ref = link.reference
     if (!ref) return null
+    // Populated references have value as an object with slug
     const slug =
       typeof ref.value === 'object' && ref.value !== null
         ? ref.value.slug
-        : typeof ref === 'object' && 'slug' in ref
-          ? ref.slug
-          : null
+        : null
     if (!slug) return null
     return slug === 'home' ? '/' : `/${slug}`
   }
-  return link.url ?? null
+  const url = link.url ?? null
+  if (url && !isSafeUrl(url)) return null
+  return url
 }
 
 // --- Component ---
