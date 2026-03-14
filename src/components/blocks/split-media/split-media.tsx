@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { CMSLink } from "@/components/ui/cms-link";
+import { useNearViewport } from "@/core/hooks/use-near-viewport";
 import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { SplitMediaBlock } from "@/types/block-types";
 
@@ -24,6 +25,7 @@ type SplitMediaRow = SplitMediaBlock["rows"][number];
 function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rowRef, { once: true, margin: "-100px" });
+  const isNearViewport = useNearViewport(rowRef);
   const mediaSrc = getMediaUrl(row.mediaSrc);
   const blurDataURL = getBlurDataURL(row.mediaSrc);
   const isVideo = VIDEO_RE.test(mediaSrc);
@@ -78,7 +80,8 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
             loop
             muted
             playsInline
-            src={mediaSrc}
+            preload="none"
+            src={isNearViewport ? mediaSrc : undefined}
           />
         ) : (
           <Image

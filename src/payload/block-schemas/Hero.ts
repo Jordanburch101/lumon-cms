@@ -6,6 +6,15 @@ export const HeroBlock: Block = {
   labels: { singular: "Hero", plural: "Hero" },
   fields: [
     { name: "mediaSrc", type: "upload", relationTo: "media", required: true },
+    {
+      name: "posterSrc",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        description:
+          "Still image shown while a video loads. Upload a frame from the video for best results.",
+      },
+    },
     { name: "headline", type: "text", required: true },
     { name: "subtext", type: "text", required: true },
     link({

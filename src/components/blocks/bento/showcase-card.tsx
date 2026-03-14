@@ -1,8 +1,18 @@
+"use client";
+
+import { useRef } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useNearViewport } from "@/core/hooks/use-near-viewport";
 
 export function ShowcaseCard() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isNear = useNearViewport(ref);
+
   return (
-    <div className="relative h-full overflow-hidden rounded-xl border border-border/50 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
+    <div
+      className="relative h-full overflow-hidden rounded-xl border border-border/50 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]"
+      ref={ref}
+    >
       <div className="absolute inset-0 z-10 bg-primary opacity-20 mix-blend-color" />
       <video
         autoPlay
@@ -10,7 +20,8 @@ export function ShowcaseCard() {
         loop
         muted
         playsInline
-        src="/hero-vid.mp4"
+        preload="none"
+        src={isNear ? "/hero-vid.mp4" : undefined}
       />
       <span className="absolute top-4 left-4 z-20 text-[11px] text-white/50 uppercase tracking-wider">
         Showcase

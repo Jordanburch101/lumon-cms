@@ -17,6 +17,7 @@ import {
   useState,
 } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
+import { useNearViewport } from "@/core/hooks/use-near-viewport";
 import { getMediaUrl } from "@/core/lib/utils";
 import type { CinematicCtaBlock } from "@/types/block-types";
 
@@ -108,6 +109,7 @@ export function CinematicCta({
   const [videoVisible, setVideoVisible] = useState(false);
   useMotionValueEvent(clipAmount, "change", (v) => setVideoVisible(v > 80));
 
+  const isNearViewport = useNearViewport(containerRef, "400px");
   const videoUrl = getMediaUrl(videoSrc);
 
   // Text fades in after curtains are mostly open
@@ -130,9 +132,9 @@ export function CinematicCta({
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="none"
           ref={videoRef}
-          src={videoUrl}
+          src={isNearViewport ? videoUrl : undefined}
         />
 
         {/* Gradient overlay on video */}

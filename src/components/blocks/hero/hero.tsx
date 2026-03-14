@@ -11,6 +11,7 @@ function getMediaType(src: string): "video" | "image" {
 
 export function Hero({
   mediaSrc,
+  posterSrc,
   headline,
   subtext,
   primaryCta,
@@ -18,6 +19,7 @@ export function Hero({
 }: HeroBlock) {
   const url = getMediaUrl(mediaSrc);
   const blurDataURL = getBlurDataURL(mediaSrc);
+  const posterUrl = getMediaUrl(posterSrc);
   const mediaType = url ? getMediaType(url) : "image";
 
   return (
@@ -34,6 +36,8 @@ export function Hero({
           loop
           muted
           playsInline
+          poster={posterUrl || blurDataURL || undefined}
+          preload="auto"
           src={url}
         />
       )}
