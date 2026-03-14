@@ -8,13 +8,17 @@ import {
   Search01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/core/lib/utils";
 import { SaveControls } from "../frontend-editor/save-controls";
 import { useEditMode } from "../frontend-editor/use-edit-mode";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
+import {
+  AdminBarGlassCard,
+  AdminBarHoverCard,
+} from "./admin-bar-glass-card";
 
 interface AdminBarActionsProps {
   onOpenPalette: () => void;
@@ -112,22 +116,6 @@ export function AdminBarActions({
     editMode?.actions.exit();
   }, [editMode]);
 
-  // Hover card state for changes popover
-  const [changesOpen, setChangesOpen] = useState(false);
-  const changesLeaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const showChanges = useCallback(() => {
-    if (changesLeaveRef.current) {
-      clearTimeout(changesLeaveRef.current);
-      changesLeaveRef.current = null;
-    }
-    setChangesOpen(true);
-  }, []);
-
-  const scheduleHideChanges = useCallback(() => {
-    changesLeaveRef.current = setTimeout(() => setChangesOpen(false), 100);
-  }, []);
-
   // Edit mode active — show save controls instead of normal actions
   if (editMode?.state.active) {
     const dirtyFields = editMode.state.dirtyFields;
@@ -137,97 +125,71 @@ export function AdminBarActions({
     return (
       <div className="flex items-center gap-2">
         {dirtyCount > 0 ? (
-          <div className="relative">
+          <AdminBarHoverCard
+            content={
+              <AdminBarGlassCard animate>
+                {/* Header */}
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-2 w-2 rounded-full bg-amber-400"
+                    style={{
+                      boxShadow: "0 0 6px rgba(251,191,36,0.4)",
+                    }}
+                  />
+                  <span className="font-medium text-black/90 text-xs dark:text-white">
+                    {dirtyCount} unsaved{" "}
+                    {dirtyCount === 1 ? "change" : "changes"}
+                  </span>
+                </div>
+
+                <div className="h-px bg-black/[0.06] dark:bg-white/[0.06]" />
+
+                {/* Change list */}
+                <div className="max-h-48 space-y-1 overflow-y-auto">
+                  {dirtyEntries.map(([key, entry]) => (
+                    <div
+                      className="flex items-center justify-between gap-4"
+                      key={key}
+                    >
+                      <span className="text-[11px] text-black/50 dark:text-white/40">
+                        {entry.label}
+                      </span>
+                      {key !== "__structure" && (
+                        <button
+                          className="shrink-0 text-black/40 transition-colors hover:text-black/80 dark:text-white/30 dark:hover:text-white/70"
+                          onClick={() =>
+                            editMode.actions.revertField(key)
+                          }
+                          title="Revert this change"
+                          type="button"
+                        >
+                          <svg
+                            fill="none"
+                            height="12"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            width="12"
+                          >
+                            <path d="M18 6L6 18M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </AdminBarGlassCard>
+            }
+            position={position}
+          >
             <button
               className="flex items-center gap-1.5 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
-              onMouseEnter={showChanges}
-              onMouseLeave={scheduleHideChanges}
               type="button"
             >
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
               {dirtyCount} {dirtyCount === 1 ? "change" : "changes"}
             </button>
-
-            <AnimatePresence>
-              {changesOpen && (
-                <motion.div
-                  animate={{ y: 0, opacity: 1 }}
-                  className={cn(
-                    "absolute left-0 z-[10]",
-                    isTop ? "top-full mt-2" : "bottom-full mb-2"
-                  )}
-                  exit={{
-                    y: isTop ? -4 : 4,
-                    opacity: 0,
-                    transition: { duration: 0.1 },
-                  }}
-                  initial={{ y: isTop ? -4 : 4, opacity: 0 }}
-                  onMouseEnter={showChanges}
-                  onMouseLeave={scheduleHideChanges}
-                  transition={{ duration: 0.15 }}
-                >
-                  <div className="relative min-w-[240px] rounded-[12px] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_4px_16px_rgba(0,0,0,0.08),0_8px_32px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)]">
-                    <div className="admin-glass-effect rounded-[inherit]" />
-                    <div className="admin-glass-tint rounded-[inherit]" />
-                    <div className="admin-glass-shine rounded-[inherit]" />
-
-                    <div className="relative z-[3] space-y-2 px-2.5 py-2">
-                      {/* Header */}
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="h-2 w-2 rounded-full bg-amber-400"
-                          style={{
-                            boxShadow: "0 0 6px rgba(251,191,36,0.4)",
-                          }}
-                        />
-                        <span className="font-medium text-black/90 text-xs dark:text-white">
-                          {dirtyCount} unsaved{" "}
-                          {dirtyCount === 1 ? "change" : "changes"}
-                        </span>
-                      </div>
-
-                      <div className="h-px bg-black/[0.06] dark:bg-white/[0.06]" />
-
-                      {/* Change list */}
-                      <div className="max-h-48 space-y-1 overflow-y-auto">
-                        {dirtyEntries.map(([key, entry]) => (
-                          <div
-                            className="flex items-center justify-between gap-4"
-                            key={key}
-                          >
-                            <span className="text-[11px] text-black/50 dark:text-white/40">
-                              {entry.label}
-                            </span>
-                            {key !== "__structure" && (
-                              <button
-                                className="shrink-0 text-black/40 transition-colors hover:text-black/80 dark:text-white/30 dark:hover:text-white/70"
-                                onClick={() =>
-                                  editMode.actions.revertField(key)
-                                }
-                                title="Revert this change"
-                                type="button"
-                              >
-                                <svg
-                                  fill="none"
-                                  height="12"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  viewBox="0 0 24 24"
-                                  width="12"
-                                >
-                                  <path d="M18 6L6 18M6 6l12 12" />
-                                </svg>
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          </AdminBarHoverCard>
         ) : (
           <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
