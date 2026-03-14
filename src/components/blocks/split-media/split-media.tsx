@@ -187,7 +187,12 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
             initial={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.6, ease: EASE, delay: 0.55 }}
           >
-            <CMSLink className="group text-foreground" link={row.cta} />
+            <CMSLink
+              className="group text-foreground"
+              data-field-group={`rows.${index}.cta`}
+              data-field-group-type="link"
+              link={row.cta}
+            />
           </motion.div>
         )}
       </motion.div>

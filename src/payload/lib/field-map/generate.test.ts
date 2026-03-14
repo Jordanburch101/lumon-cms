@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import type { Block } from "payload";
+import { link } from "@/payload/fields/link/link";
 import { introspectBlock, introspectBlocks } from "./generate";
 
 const SimpleBlock: Block = {
@@ -104,6 +105,60 @@ const SelectBlock: Block = {
   ],
 };
 
+const LinkGroupBlock: Block = {
+  slug: "hero",
+  labels: { singular: "Hero", plural: "Hero" },
+  fields: [
+    { name: "headline", type: "text", required: true },
+    {
+      name: "primaryCta",
+      type: "group",
+      custom: { groupType: "link" },
+      fields: [
+        {
+          name: "type",
+          type: "select",
+          options: [
+            { label: "Internal", value: "internal" },
+            { label: "External", value: "external" },
+          ],
+        },
+        { name: "label", type: "text", required: true },
+        { name: "url", type: "text" },
+        {
+          name: "reference",
+          type: "relationship",
+          relationTo: ["pages"],
+        },
+        { name: "newTab", type: "checkbox" },
+        {
+          name: "buttonVariant",
+          type: "select",
+          options: [
+            { label: "Default", value: "default" },
+            { label: "Outline", value: "outline" },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+const PlainGroupBlock: Block = {
+  slug: "plain",
+  labels: { singular: "Plain", plural: "Plain" },
+  fields: [
+    {
+      name: "cta",
+      type: "group",
+      fields: [
+        { name: "label", type: "text" },
+        { name: "href", type: "text" },
+      ],
+    },
+  ],
+};
+
 describe("introspectBlock", () => {
   it("handles simple text, number, and checkbox fields", () => {
     const result = introspectBlock(SimpleBlock);
@@ -183,6 +238,75 @@ describe("introspectBlock", () => {
   it("extracts block metadata", () => {
     const result = introspectBlock(SimpleBlock);
     expect(result.meta).toEqual({ label: "Simple", slug: "simple" });
+  });
+
+  describe("group with custom.groupType", () => {
+    it("emits GroupFieldDescriptor instead of flattening", () => {
+      const result = introspectBlock(LinkGroupBlock);
+      const primaryCta = result.fields.primaryCta;
+      expect(primaryCta).toBeDefined();
+      expect(primaryCta.type).toBe("group");
+      if (primaryCta.type === "group") {
+        expect(primaryCta.groupType).toBe("link");
+        expect(primaryCta.fields.label).toEqual({
+          type: "text",
+          required: true,
+        });
+        expect(primaryCta.fields.url).toEqual({ type: "text" });
+        expect(primaryCta.fields.reference).toEqual({
+          type: "relationship",
+          relationTo: ["pages"],
+        });
+        expect(primaryCta.fields.newTab).toEqual({ type: "checkbox" });
+        expect(primaryCta.fields.type).toEqual({
+          type: "select",
+          options: [
+            { label: "Internal", value: "internal" },
+            { label: "External", value: "external" },
+          ],
+        });
+        expect(primaryCta.fields.buttonVariant).toEqual({
+          type: "select",
+          options: [
+            { label: "Default", value: "default" },
+            { label: "Outline", value: "outline" },
+          ],
+        });
+      }
+      // Flattened keys should NOT exist
+      expect(result.fields["primaryCta.label"]).toBeUndefined();
+      expect(result.fields["primaryCta.url"]).toBeUndefined();
+    });
+
+    it("still flattens groups WITHOUT custom.groupType", () => {
+      const result = introspectBlock(PlainGroupBlock);
+      // Flattened as before
+      expect(result.fields["cta.label"]).toEqual({ type: "text" });
+      expect(result.fields["cta.href"]).toEqual({ type: "text" });
+      // No group entry
+      expect(result.fields.cta).toBeUndefined();
+    });
+  });
+
+  describe("link() field with custom.groupType", () => {
+    it("produces a GroupFieldDescriptor when introspected", () => {
+      const linkField = link({ name: "cta" });
+      const testBlock: Block = {
+        slug: "test-link",
+        labels: { singular: "Test", plural: "Tests" },
+        fields: [linkField],
+      };
+      const result = introspectBlock(testBlock);
+      const cta = result.fields.cta;
+      expect(cta).toBeDefined();
+      expect(cta.type).toBe("group");
+      if (cta.type === "group") {
+        expect(cta.groupType).toBe("link");
+        expect(cta.fields.label).toBeDefined();
+        expect(cta.fields.url).toBeDefined();
+        expect(cta.fields.newTab).toBeDefined();
+      }
+    });
   });
 });
 

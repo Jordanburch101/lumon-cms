@@ -8,10 +8,14 @@ describe("introspect real blocks", () => {
   it("Hero has expected fields", () => {
     const result = introspectBlock(HeroBlock);
     expect(result.fields.headline).toEqual({ type: "text", required: true });
-    expect(result.fields["primaryCta.label"]).toEqual({
-      type: "text",
-      required: true,
-    });
+    // Link groups now emit GroupFieldDescriptor instead of flattening
+    const primaryCta = result.fields.primaryCta;
+    expect(primaryCta).toBeDefined();
+    expect(primaryCta.type).toBe("group");
+    if (primaryCta.type === "group") {
+      expect(primaryCta.groupType).toBe("link");
+      expect(primaryCta.fields.label).toEqual({ type: "text", required: true });
+    }
     expect(result.fields.mediaSrc).toBeDefined();
     expect(result.fields.mediaSrc.type).toBe("upload");
   });

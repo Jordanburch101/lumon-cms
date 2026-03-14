@@ -126,6 +126,8 @@ export function PricingCard({ tier, isAnnual, tierIndex }: PricingCardProps) {
           rec &&
             "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
         )}
+        data-field-group={`tiers.${tierIndex}.cta`}
+        data-field-group-type="link"
         link={tier.cta}
       />
     </motion.div>

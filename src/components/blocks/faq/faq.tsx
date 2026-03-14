@@ -70,6 +70,8 @@ export function Faq({
                 {ctaText ?? ""}{" "}
                 <CMSLink
                   className="text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70"
+                  data-field-group="cta"
+                  data-field-group-type="link"
                   link={cta}
                 />
               </motion.p>

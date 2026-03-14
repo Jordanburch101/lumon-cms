@@ -37,8 +37,18 @@ export interface ArrayFieldDescriptor {
   type: "array";
 }
 
+/** Descriptor for a composite field group (e.g., link) that is edited as a unit. */
+export interface GroupFieldDescriptor {
+  fields: BlockFieldMap;
+  groupType: string;
+  type: "group";
+}
+
 /** A single entry in a block's field map — either a leaf field or a nested array. */
-export type FieldEntry = FieldDescriptor | ArrayFieldDescriptor;
+export type FieldEntry =
+  | FieldDescriptor
+  | ArrayFieldDescriptor
+  | GroupFieldDescriptor;
 
 /** Map of field paths → descriptors for a single block type. */
 export type BlockFieldMap = Record<string, FieldEntry>;

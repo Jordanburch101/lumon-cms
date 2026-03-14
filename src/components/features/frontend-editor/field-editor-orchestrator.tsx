@@ -1,5 +1,7 @@
 "use client";
 
+import "./group-editors";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -17,9 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { FieldDescriptor } from "@/payload/lib/field-map/types";
+import type {
+  BlockFieldMap,
+  FieldDescriptor,
+} from "@/payload/lib/field-map/types";
 import { getFieldValue } from "./edit-mode-data";
 import { UploadEditor } from "./field-editors/upload-editor";
+import { getGroupEditor } from "./group-editor-registry";
 import { useEditMode } from "./use-edit-mode";
 
 interface PopoverEditorState {
@@ -34,14 +40,25 @@ interface UploadEditorState {
   fieldPath: string;
 }
 
+interface GroupEditorState {
+  anchorElement: HTMLElement;
+  blockIndex: number;
+  currentValues: Record<string, unknown>;
+  fieldPath: string;
+  fields: BlockFieldMap;
+  groupType: string;
+}
+
 /**
- * Listens for `edit:open-popover` and `edit:open-upload` custom events
- * dispatched by the edit runtime and renders the appropriate field editor.
+ * Listens for `edit:open-popover`, `edit:open-upload`, and
+ * `edit:open-group-editor` custom events dispatched by the edit runtime
+ * and renders the appropriate field editor.
  */
 export function FieldEditorOrchestrator() {
   const editMode = useEditMode();
   const [popover, setPopover] = useState<PopoverEditorState | null>(null);
   const [upload, setUpload] = useState<UploadEditorState | null>(null);
+  const [groupEditor, setGroupEditor] = useState<GroupEditorState | null>(null);
 
   useEffect(() => {
     const overlay = document.querySelector(".frontend-editor-overlay");
@@ -67,12 +84,26 @@ export function FieldEditorOrchestrator() {
       });
     };
 
+    const handleGroupEditor = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setGroupEditor({
+        anchorElement: detail.anchorEl as HTMLElement,
+        blockIndex: detail.blockIndex,
+        currentValues: detail.currentValues,
+        fieldPath: detail.fieldPath,
+        fields: detail.fields,
+        groupType: detail.groupType,
+      });
+    };
+
     overlay.addEventListener("edit:open-popover", handlePopover);
     overlay.addEventListener("edit:open-upload", handleUpload);
+    overlay.addEventListener("edit:open-group-editor", handleGroupEditor);
 
     return () => {
       overlay.removeEventListener("edit:open-popover", handlePopover);
       overlay.removeEventListener("edit:open-upload", handleUpload);
+      overlay.removeEventListener("edit:open-group-editor", handleGroupEditor);
     };
   }, []);
 
@@ -106,6 +137,13 @@ export function FieldEditorOrchestrator() {
           onClose={() => setUpload(null)}
           onUpdateField={handleUpdateField}
           state={upload}
+        />
+      )}
+
+      {groupEditor && (
+        <GroupEditorRenderer
+          onClose={() => setGroupEditor(null)}
+          state={groupEditor}
         />
       )}
     </>
@@ -276,6 +314,47 @@ function UploadFieldEditor({
       }}
       onSelect={(mediaId) => onUpdateField(blockIndex, fieldPath, mediaId)}
       open
+    />
+  );
+}
+
+function GroupEditorRenderer({
+  state,
+  onClose,
+}: {
+  onClose: () => void;
+  state: GroupEditorState;
+}) {
+  const EditorComponent = getGroupEditor(state.groupType);
+
+  if (!EditorComponent) {
+    return (
+      <Popover
+        onOpenChange={(open) => {
+          if (!open) {
+            onClose();
+          }
+        }}
+        open
+      >
+        <PopoverAnchor virtualRef={{ current: state.anchorElement }} />
+        <PopoverContent className="w-48 p-3">
+          <p className="text-muted-foreground text-xs">
+            Use the block editor to edit this field group.
+          </p>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <EditorComponent
+      anchorEl={state.anchorElement}
+      blockIndex={state.blockIndex}
+      currentValues={state.currentValues}
+      fieldPath={state.fieldPath}
+      fields={state.fields}
+      onClose={onClose}
     />
   );
 }

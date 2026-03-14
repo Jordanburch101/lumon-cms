@@ -29,6 +29,7 @@ interface CMSLinkProps {
   link?: CMSLinkData | null
   className?: string
   children?: ReactNode
+  [key: `data-${string}`]: string | undefined
 }
 
 // --- Helpers ---
@@ -69,7 +70,7 @@ function resolveHref(link: CMSLinkData): string | null {
 
 // --- Component ---
 
-export function CMSLink({ link, className, children }: CMSLinkProps) {
+export function CMSLink({ link, className, children, ...rest }: CMSLinkProps) {
   if (!link) return null
 
   const href = resolveHref(link)
@@ -101,7 +102,7 @@ export function CMSLink({ link, className, children }: CMSLinkProps) {
         size={link.buttonSize ?? 'default'}
         variant={link.buttonVariant ?? 'default'}
       >
-        <LinkEl {...hrefProp} {...linkProps}>
+        <LinkEl {...hrefProp} {...linkProps} {...rest}>
           {content}
         </LinkEl>
       </Button>
@@ -120,6 +121,7 @@ export function CMSLink({ link, className, children }: CMSLinkProps) {
         )}
         {...hrefProp}
         {...linkProps}
+        {...rest}
       >
         {content}
         {link.linkVariant === 'arrow' && (
@@ -134,7 +136,7 @@ export function CMSLink({ link, className, children }: CMSLinkProps) {
 
   // --- No appearance (plain link) ---
   return (
-    <LinkEl className={className} {...hrefProp} {...linkProps}>
+    <LinkEl className={className} {...hrefProp} {...linkProps} {...rest}>
       {content}
     </LinkEl>
   )

@@ -70,10 +70,14 @@ export function Hero({
         <div className="mt-8 flex flex-wrap gap-3">
           <CMSLink
             className="bg-white text-black hover:bg-white/90"
+            data-field-group="primaryCta"
+            data-field-group-type="link"
             link={primaryCta}
           />
           <CMSLink
             className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+            data-field-group="secondaryCta"
+            data-field-group-type="link"
             link={secondaryCta}
           />
         </div>
