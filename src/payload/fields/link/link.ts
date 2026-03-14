@@ -39,55 +39,57 @@ function toSelectOptions(
 function buildAppearanceFields(appearance: AppearanceOptions): Field[] {
   const fields: Field[] = [];
 
-  // Appearance type select — always present when appearance is configured
-  fields.push({
-    name: "appearanceType",
-    type: "select",
-    defaultValue: appearance.type[0],
-    options: toSelectOptions(appearance.type),
-    admin: { width: "50%" },
-  });
+  // Row: Appearance type + variant (button/link variants are mutually exclusive)
+  const typeRowFields: Field[] = [
+    {
+      name: "appearanceType",
+      type: "select",
+      defaultValue: appearance.type[0],
+      options: toSelectOptions(appearance.type),
+      admin: {
+        description: "Choose how the link should be rendered.",
+      },
+    },
+  ];
 
-  // Button-scoped fields
-  if (appearance.button) {
-    if (appearance.button.variants?.length) {
-      fields.push({
-        name: "buttonVariant",
-        type: "select",
-        defaultValue: appearance.button.variants[0],
-        options: toSelectOptions(appearance.button.variants),
-        admin: {
-          width: "50%",
-          condition: (_, siblingData) =>
-            siblingData?.appearanceType === "button",
-        },
-      });
-    }
-    if (appearance.button.sizes?.length) {
-      fields.push({
-        name: "buttonSize",
-        type: "select",
-        defaultValue: appearance.button.sizes[0],
-        options: toSelectOptions(appearance.button.sizes),
-        admin: {
-          width: "50%",
-          condition: (_, siblingData) =>
-            siblingData?.appearanceType === "button",
-        },
-      });
-    }
+  if (appearance.button?.variants?.length) {
+    typeRowFields.push({
+      name: "buttonVariant",
+      type: "select",
+      defaultValue: appearance.button.variants[0],
+      options: toSelectOptions(appearance.button.variants),
+      admin: {
+        condition: (_, siblingData) =>
+          siblingData?.appearanceType === "button",
+      },
+    });
   }
 
-  // Link-scoped fields
   if (appearance.link?.variants?.length) {
-    fields.push({
+    typeRowFields.push({
       name: "linkVariant",
       type: "select",
       defaultValue: appearance.link.variants[0],
       options: toSelectOptions(appearance.link.variants),
       admin: {
-        width: "50%",
         condition: (_, siblingData) => siblingData?.appearanceType === "link",
+      },
+    });
+  }
+
+  fields.push({ type: "row", fields: typeRowFields });
+
+  // Row: Button size (only when button appearance is active)
+  if (appearance.button?.sizes?.length) {
+    fields.push({
+      name: "buttonSize",
+      type: "select",
+      defaultValue: appearance.button.sizes[0],
+      options: toSelectOptions(appearance.button.sizes),
+      admin: {
+        width: "50%",
+        condition: (_, siblingData) =>
+          siblingData?.appearanceType === "button",
       },
     });
   }
@@ -102,60 +104,71 @@ export function link(opts?: LinkFieldOptions): GroupField {
   const label = opts?.label ?? false;
 
   const fields: Field[] = [
+    // Row 1: Type radio + Open in new tab
     {
-      name: "type",
-      type: "select",
-      defaultValue: "external",
-      options: [
-        { label: "Internal", value: "internal" },
-        { label: "External", value: "external" },
+      type: "row",
+      fields: [
+        {
+          name: "type",
+          type: "radio",
+          defaultValue: "external",
+          options: [
+            { label: "Internal", value: "internal" },
+            { label: "External", value: "external" },
+          ],
+          admin: { layout: "horizontal" },
+        },
+        {
+          name: "newTab",
+          type: "checkbox",
+          label: "Open in new tab",
+          defaultValue: false,
+        },
       ],
-      admin: { width: "50%" },
     },
+    // Row 2: Destination + Label (side by side — url/reference are mutually exclusive)
     {
-      name: "label",
-      type: "text",
-      required: opts?.required,
-      admin: { width: "50%" },
-    },
-    {
-      name: "url",
-      type: "text",
-      admin: {
-        condition: (_, siblingData) => siblingData?.type === "external",
-      },
-      validate: (
-        val: string | null | undefined,
-        { siblingData }: { siblingData: Record<string, unknown> }
-      ) => {
-        if (opts?.required && siblingData?.type === "external" && !val) {
-          return "URL is required for external links";
-        }
-        return true;
-      },
-    },
-    {
-      name: "reference",
-      type: "relationship",
-      relationTo: [...linkableCollections],
-      admin: {
-        condition: (_, siblingData) => siblingData?.type === "internal",
-      },
-      validate: (
-        val: unknown,
-        { siblingData }: { siblingData: Record<string, unknown> }
-      ) => {
-        if (opts?.required && siblingData?.type === "internal" && !val) {
-          return "A page reference is required for internal links";
-        }
-        return true;
-      },
-    },
-    {
-      name: "newTab",
-      type: "checkbox",
-      defaultValue: false,
-      admin: { width: "50%" },
+      type: "row",
+      fields: [
+        {
+          name: "url",
+          type: "text",
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === "external",
+          },
+          validate: (
+            val: string | null | undefined,
+            { siblingData }: { siblingData: Record<string, unknown> }
+          ) => {
+            if (opts?.required && siblingData?.type === "external" && !val) {
+              return "URL is required for external links";
+            }
+            return true;
+          },
+        },
+        {
+          name: "reference",
+          type: "relationship",
+          relationTo: [...linkableCollections],
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === "internal",
+          },
+          validate: (
+            val: unknown,
+            { siblingData }: { siblingData: Record<string, unknown> }
+          ) => {
+            if (opts?.required && siblingData?.type === "internal" && !val) {
+              return "A page reference is required for internal links";
+            }
+            return true;
+          },
+        },
+        {
+          name: "label",
+          type: "text",
+          required: opts?.required,
+        },
+      ],
     },
   ];
 
