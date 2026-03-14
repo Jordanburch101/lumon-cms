@@ -1,6 +1,7 @@
 import type { CollectionBeforeValidateHook, CollectionConfig } from "payload";
 import { isAdminOrEditor } from "../access";
 import { generateBlurDataURL } from "../hooks/generateBlurDataURL";
+import { optimizeImage } from "../hooks/optimizeImage";
 import { optimizeVideo } from "../hooks/optimizeVideo";
 import { revalidateOnChange } from "../hooks/revalidateOnChange";
 
@@ -25,34 +26,37 @@ export const Media: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
-    beforeValidate: [validateFileSize],
+    beforeValidate: [validateFileSize, optimizeImage],
     beforeChange: [generateBlurDataURL],
     afterChange: [optimizeVideo, revalidate.afterChange],
     afterDelete: [revalidate.afterDelete],
   },
   upload: {
     mimeTypes: ["image/*", "video/*"],
-    // Note: formatOptions and resizeOptions are omitted because they apply to
-    // ALL uploads via sharp — including videos, which sharp cannot process.
-    // Image optimization is handled by imageSizes (which Payload skips for
-    // non-image mimeTypes). WebP conversion can be added per-imageSize if needed.
+    // Top-level formatOptions/resizeOptions are omitted — they apply to ALL
+    // uploads via sharp, which breaks video processing. Instead, the
+    // optimizeImage hook handles original-file optimization (max 2048px, WebP)
+    // and each imageSize below specifies its own WebP format.
     imageSizes: [
       {
         name: "thumbnail",
         width: 400,
         height: 300,
         position: "centre",
+        formatOptions: { format: "webp", options: { quality: 80 } },
       },
       {
         name: "card",
         width: 768,
         height: 512,
+        formatOptions: { format: "webp", options: { quality: 80 } },
       },
       {
         name: "hero",
         width: 1920,
         height: undefined,
         withoutEnlargement: true,
+        formatOptions: { format: "webp", options: { quality: 80 } },
       },
     ],
     adminThumbnail: "thumbnail",
