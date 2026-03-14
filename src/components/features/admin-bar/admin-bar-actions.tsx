@@ -138,45 +138,62 @@ export function AdminBarActions({
             </PopoverTrigger>
             <PopoverContent
               align="start"
-              className="w-72 p-0"
+              className="w-80 overflow-hidden border-none bg-transparent p-0 shadow-none"
               sideOffset={8}
             >
-              <div className="border-b px-3 py-2">
-                <span className="font-medium text-xs">
-                  {dirtyCount} unsaved{" "}
-                  {dirtyCount === 1 ? "change" : "changes"}
-                </span>
-              </div>
-              <div className="max-h-48 overflow-y-auto py-1">
-                {dirtyEntries.map(([key, entry]) => (
-                  <div
-                    className="flex items-center justify-between px-3 py-1.5"
-                    key={key}
-                  >
-                    <span className="truncate text-[11px] text-muted-foreground">
-                      {entry.label}
+              <div className="relative min-w-[200px] rounded-[12px] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_4px_16px_rgba(0,0,0,0.08),0_8px_32px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_4px_16px_rgba(0,0,0,0.12),0_8px_32px_rgba(0,0,0,0.08)]">
+                <div className="admin-glass-effect rounded-[inherit]" />
+                <div className="admin-glass-tint rounded-[inherit]" />
+                <div className="admin-glass-shine rounded-[inherit]" />
+
+                <div className="relative z-[3] px-2.5 py-2">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="h-2 w-2 rounded-full bg-amber-400"
+                      style={{ boxShadow: "0 0 6px rgba(251,191,36,0.4)" }}
+                    />
+                    <span className="font-medium text-black/90 text-xs dark:text-white">
+                      {dirtyCount} unsaved{" "}
+                      {dirtyCount === 1 ? "change" : "changes"}
                     </span>
-                    {key !== "__structure" && (
-                      <button
-                        className="ml-2 shrink-0 rounded p-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        onClick={() => editMode.actions.revertField(key)}
-                        title="Revert this change"
-                        type="button"
-                      >
-                        <svg
-                          fill="none"
-                          height="12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          width="12"
-                        >
-                          <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
-                      </button>
-                    )}
                   </div>
-                ))}
+
+                  <div className="my-2 h-px bg-black/[0.06] dark:bg-white/[0.06]" />
+
+                  <div className="max-h-48 space-y-0.5 overflow-y-auto">
+                    {dirtyEntries.map(([key, entry]) => (
+                      <div
+                        className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
+                        key={key}
+                      >
+                        <span className="truncate text-[11px] text-black/50 dark:text-white/40">
+                          {entry.label}
+                        </span>
+                        {key !== "__structure" && (
+                          <button
+                            className="shrink-0 rounded p-0.5 text-black/40 transition-colors hover:text-black/80 dark:text-white/30 dark:hover:text-white/70"
+                            onClick={() =>
+                              editMode.actions.revertField(key)
+                            }
+                            title="Revert this change"
+                            type="button"
+                          >
+                            <svg
+                              fill="none"
+                              height="12"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              width="12"
+                            >
+                              <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </PopoverContent>
           </Popover>

@@ -137,14 +137,28 @@ const RE_HUMANIZE_CAMEL = /([a-z])([A-Z])/g;
 const RE_HUMANIZE_FIRST = /^./;
 const RE_DIGITS_ONLY = /^\d+$/;
 
-/** Convert a dot-path like "primaryCta.label" or "testimonials.2.name" to a readable label. */
+/** Humanize a single camelCase segment into title case. */
+function humanizeSegment(segment: string): string {
+  return segment
+    .replace(RE_HUMANIZE_CAMEL, "$1 $2")
+    .replace(RE_HUMANIZE_FIRST, (c) => c.toUpperCase());
+}
+
+/** Convert a dot-path like "primaryCta.label" to a short readable label (last segment only). */
 export function humanizeFieldPath(path: string): string {
   const parts = path.split(".");
   let label = parts.at(-1) ?? path;
   if (RE_DIGITS_ONLY.test(label) && parts.length > 1) {
     label = parts.at(-2) ?? label;
   }
-  return label
-    .replace(RE_HUMANIZE_CAMEL, "$1 $2")
-    .replace(RE_HUMANIZE_FIRST, (c) => c.toUpperCase());
+  return humanizeSegment(label);
+}
+
+/** Convert a dot-path to a full breadcrumb like "Primary Cta > Label", skipping numeric indices. */
+export function humanizeFullPath(path: string): string {
+  return path
+    .split(".")
+    .filter((s) => !RE_DIGITS_ONLY.test(s))
+    .map(humanizeSegment)
+    .join(" \u203A ");
 }

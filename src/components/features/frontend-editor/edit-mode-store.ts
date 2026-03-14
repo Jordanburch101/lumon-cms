@@ -7,7 +7,7 @@ import {
   addArrayItem,
   duplicateBlock,
   getFieldValue,
-  humanizeFieldPath,
+  humanizeFullPath,
   moveArrayItem,
   moveBlock,
   removeArrayItem,
@@ -85,15 +85,29 @@ function invalidateToStructure(): Map<string, DirtyEntry> {
   return next;
 }
 
+/** Get a human-readable block name from a LayoutBlock. */
+function blockLabel(block: LayoutBlock): string {
+  const b = block as unknown as Record<string, unknown>;
+  if (b.blockName && typeof b.blockName === "string") return b.blockName;
+  if (b.blockType && typeof b.blockType === "string") {
+    return (b.blockType as string)
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/^./, (c) => c.toUpperCase());
+  }
+  return "Block";
+}
+
 /** Create a structural dirty entry for array/block mutations. */
 function structuralEntry(
   blockIndex: number,
-  fieldPath: string
+  fieldPath: string,
+  block?: LayoutBlock
 ): DirtyEntry {
+  const prefix = block ? `${blockLabel(block)} \u203A ` : "";
   return {
     originalValue: null,
     currentValue: null,
-    label: humanizeFieldPath(fieldPath),
+    label: fieldPath === "__structure" ? "Layout changes" : `${prefix}${humanizeFullPath(fieldPath)}`,
     blockIndex,
     fieldPath,
   };
@@ -144,7 +158,7 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       dirtyFields.set(key, {
         originalValue: original,
         currentValue: value,
-        label: humanizeFieldPath(path),
+        label: `${blockLabel(blocks[blockIndex])} \u203A ${humanizeFullPath(path)}`,
         blockIndex,
         fieldPath: path,
       });
@@ -228,7 +242,7 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       to
     ) as unknown as LayoutBlock;
     const key = `${blockIndex}.${arrayPath}`;
-    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath));
+    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath, blocks[blockIndex]));
     set({ blocks: updated, dirtyFields: new Map(dirtyFields) });
   },
 
@@ -241,7 +255,7 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       index
     ) as unknown as LayoutBlock;
     const key = `${blockIndex}.${arrayPath}`;
-    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath));
+    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath, blocks[blockIndex]));
     set({ blocks: updated, dirtyFields: new Map(dirtyFields) });
   },
 
@@ -254,7 +268,7 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       item
     ) as unknown as LayoutBlock;
     const key = `${blockIndex}.${arrayPath}`;
-    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath));
+    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath, blocks[blockIndex]));
     set({ blocks: updated, dirtyFields: new Map(dirtyFields) });
   },
 
