@@ -10,6 +10,7 @@ import type {
   GroupFieldDescriptor,
 } from "@/payload/lib/field-map/types";
 import { getFieldValue, humanizeFieldPath } from "./edit-mode-data";
+import { useEditStore } from "./edit-mode-store";
 import { activateTextEditor } from "./field-editors/text-editor";
 import { useEditMode } from "./use-edit-mode";
 
@@ -47,8 +48,6 @@ export function useEditRuntime() {
   const editMode = useEditMode();
   const isActive = editMode?.state.active ?? false;
   const actions = editMode?.actions;
-  const blocksRef = useRef(editMode?.state.blocks);
-  blocksRef.current = editMode?.state.blocks;
   const cleanups = useRef<(() => void)[]>([]);
 
   useEffect(() => {
@@ -176,7 +175,7 @@ export function useEditRuntime() {
         e.preventDefault();
 
         // Read current values from edit mode state using getFieldValue
-        const block = (blocksRef.current ?? [])[blockIndex] as
+        const block = (useEditStore.getState().blocks ?? [])[blockIndex] as
           | Record<string, unknown>
           | undefined;
         const currentValues = block
