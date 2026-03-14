@@ -11,6 +11,11 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/core/lib/utils";
 import { SaveControls } from "../frontend-editor/save-controls";
 import { useEditMode } from "../frontend-editor/use-edit-mode";
@@ -114,14 +119,73 @@ export function AdminBarActions({
 
   // Edit mode active — show save controls instead of normal actions
   if (editMode?.state.active) {
+    const dirtyFields = editMode.state.dirtyFields;
+    const dirtyCount = dirtyFields.size;
+    const dirtyEntries = [...dirtyFields.entries()];
+
     return (
       <div className="flex items-center gap-2">
-        <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
-          {editMode.state.dirtyCount > 0
-            ? `${editMode.state.dirtyCount} ${editMode.state.dirtyCount === 1 ? "change" : "changes"}`
-            : "Editing"}
-        </span>
+        {dirtyCount > 0 ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="flex items-center gap-1.5 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+                type="button"
+              >
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
+                {dirtyCount} {dirtyCount === 1 ? "change" : "changes"}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="w-72 p-0"
+              sideOffset={8}
+            >
+              <div className="border-b px-3 py-2">
+                <span className="font-medium text-xs">
+                  {dirtyCount} unsaved{" "}
+                  {dirtyCount === 1 ? "change" : "changes"}
+                </span>
+              </div>
+              <div className="max-h-48 overflow-y-auto py-1">
+                {dirtyEntries.map(([key, entry]) => (
+                  <div
+                    className="flex items-center justify-between px-3 py-1.5"
+                    key={key}
+                  >
+                    <span className="truncate text-[11px] text-muted-foreground">
+                      {entry.label}
+                    </span>
+                    {key !== "__structure" && (
+                      <button
+                        className="ml-2 shrink-0 rounded p-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        onClick={() => editMode.actions.revertField(key)}
+                        title="Revert this change"
+                        type="button"
+                      >
+                        <svg
+                          fill="none"
+                          height="12"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          width="12"
+                        >
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
+            Editing
+          </span>
+        )}
         <SaveControls />
         <Button
           className="h-7 w-7"
