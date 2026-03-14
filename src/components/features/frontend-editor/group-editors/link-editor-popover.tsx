@@ -203,7 +203,14 @@ function LinkEditorPopover({
   onClose,
 }: GroupEditorProps) {
   const { actions } = useEditModeRequired();
-  const anchorRef = useRef<HTMLElement>(anchorEl);
+
+  // Snapshot the anchor's bounding rect at open time so the popover stays
+  // pinned even if the underlying DOM element re-renders or unmounts
+  // (e.g. when toggling between internal/external link type).
+  const [frozenRect] = useState(() => anchorEl.getBoundingClientRect());
+  const anchorRef = useRef<HTMLElement>({
+    getBoundingClientRect: () => frozenRect,
+  } as HTMLElement);
 
   // Local state initialized from currentValues — avoids stale reads when user edits fields.
   const [linkType, setLinkType] = useState(

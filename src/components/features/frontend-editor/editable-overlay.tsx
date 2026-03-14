@@ -6,7 +6,7 @@ import { BlockControls } from "./block-controls";
 import { AddBlockButton } from "./block-picker";
 import { useEditRuntime } from "./edit-runtime";
 import { FieldEditorOrchestrator } from "./field-editor-orchestrator";
-import { useEditMode } from "./use-edit-mode";
+import { useBeforeUnloadGuard, useEditMode } from "./use-edit-mode";
 
 /**
  * When edit mode is active, renders blocks from client state with
@@ -16,6 +16,7 @@ export function EditableOverlay() {
   const editMode = useEditMode();
 
   useEditRuntime();
+  useBeforeUnloadGuard();
 
   useEffect(() => {
     const main = document.querySelector("main");
