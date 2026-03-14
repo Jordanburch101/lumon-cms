@@ -42,10 +42,19 @@ export const optimizeImage: CollectionBeforeValidateHook = async ({
       .webp({ quality: WEBP_QUALITY })
       .toBuffer();
 
+    const webpName = req.file.name.replace(FILE_EXT_RE, ".webp");
+
     req.file.data = optimized;
     req.file.size = optimized.length;
     req.file.mimetype = "image/webp";
-    req.file.name = req.file.name.replace(FILE_EXT_RE, ".webp");
+    req.file.name = webpName;
+
+    // Also update the document data so Payload records the correct
+    // mimeType and filename in the database.
+    if (data) {
+      data.mimeType = "image/webp";
+      data.filename = webpName;
+    }
   } catch (err) {
     req.payload.logger.error({
       msg: "Failed to optimize image",
