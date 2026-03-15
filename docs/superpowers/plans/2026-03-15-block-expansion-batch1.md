@@ -10,6 +10,14 @@
 
 **Spec:** `docs/superpowers/specs/2026-03-15-block-expansion-batch1-design.md`
 
+**Conventions from existing blocks (must follow):**
+- Sections use `<section className="w-full" ref={sectionRef}>` (6 of 11 blocks)
+- Semantic `aria-label` on content sections (Testimonials, FAQ, ImageGallery pattern)
+- `data-navbar-contrast="light"` on sections with dark backgrounds where navbar overlays
+- `@keyframes` go in `src/app/globals.css`, never in separate CSS files — no block has its own `.css` file
+- `@media (prefers-reduced-motion: reduce)` overrides for any continuous CSS animations
+- Large components split into sub-component files in the same directory (Testimonials, Pricing, Trust, Bento pattern)
+
 ---
 
 ## Chunk 1: Hero Variant Expansion
@@ -985,7 +993,7 @@ export function FeaturesGrid({
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef}>
+    <section aria-label="Features" className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Header */}
         <div className="mb-16 max-w-md">
@@ -1226,19 +1234,178 @@ git commit -m "feat: add Team block schema and register in Pages"
 ### Task 11: Team Component
 
 **Files:**
-- Create: `src/components/blocks/team/team.tsx`
+- Create: `src/components/blocks/team/team.tsx` (main layout + header)
+- Create: `src/components/blocks/team/team-card.tsx` (individual member card — extracted per sub-component convention)
 
-- [ ] **Step 1: Create the component**
+- [ ] **Step 1: Create the team card sub-component**
+
+```tsx
+// src/components/blocks/team/team-card.tsx
+"use client";
+
+import { motion } from "motion/react";
+import Image from "next/image";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import type { TeamBlock } from "@/types/block-types";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+type TeamMember = TeamBlock["members"][number];
+
+interface TeamCardProps {
+  index: number;
+  inView: boolean;
+  isCompact: boolean;
+  member: TeamMember;
+}
+
+export function TeamCard({ member, index, inView, isCompact }: TeamCardProps) {
+  const photoUrl = getMediaUrl(member.photo);
+  const blurDataURL = getBlurDataURL(member.photo);
+  const memberId = `LU-${String(index + 1).padStart(3, "0")}`;
+
+  return (
+    <motion.div
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      className="group overflow-hidden rounded-lg border border-border/50 bg-card transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-border"
+      data-array-item={`members.${index}`}
+      initial={{ opacity: 0, y: 32 }}
+      transition={{
+        duration: 0.7,
+        ease: EASE,
+        delay: 0.1 + index * 0.05,
+      }}
+    >
+      {/* Photo */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-card to-muted">
+        {photoUrl ? (
+          <motion.div
+            animate={inView ? { clipPath: "inset(0 0 0 0)" } : {}}
+            className="h-full w-full"
+            initial={{ clipPath: "inset(100% 0 0 0)" }}
+            transition={{
+              duration: 0.7,
+              ease: EASE,
+              delay: 0.2 + index * 0.05,
+            }}
+          >
+            <Image
+              alt={member.name}
+              blurDataURL={blurDataURL}
+              className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
+              data-field={`members.${index}.photo`}
+              fill
+              placeholder={blurDataURL ? "blur" : "empty"}
+              src={photoUrl}
+            />
+          </motion.div>
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <svg
+              className="h-12 w-12 opacity-[0.12]"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1}
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M20 21a8 8 0 1 0-16 0" />
+            </svg>
+          </div>
+        )}
+
+        {/* ID badge */}
+        <motion.div
+          animate={inView ? { opacity: 1 } : {}}
+          className="absolute top-2.5 left-2.5 rounded bg-black/50 px-2 py-0.5 font-mono text-[9px] text-white/35 uppercase tracking-[0.2em] backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          transition={{
+            duration: 0.4,
+            ease: EASE,
+            delay: 0.4 + index * 0.05,
+          }}
+        >
+          {memberId}
+        </motion.div>
+      </div>
+
+      {/* Info */}
+      <div className={`border-t border-border/50 ${isCompact ? "p-3" : "p-4"}`}>
+        <p
+          className="font-semibold text-[0.9375rem]"
+          data-field={`members.${index}.name`}
+        >
+          {member.name}
+        </p>
+        <p
+          className="mt-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]"
+          data-field={`members.${index}.role`}
+        >
+          {member.role}
+        </p>
+
+        {/* Detailed-only content */}
+        {!isCompact && (
+          <>
+            {member.department && (
+              <motion.span
+                animate={inView ? { opacity: 1 } : {}}
+                className="mt-2.5 inline-block rounded-[3px] border border-primary/15 bg-primary/8 px-2 py-0.5 font-mono text-[9px] text-blue-400 uppercase tracking-[0.15em]"
+                data-field={`members.${index}.department`}
+                initial={{ opacity: 0 }}
+                transition={{
+                  duration: 0.4,
+                  ease: EASE,
+                  delay: 0.5 + index * 0.05,
+                }}
+              >
+                {member.department}
+              </motion.span>
+            )}
+            {member.bio && (
+              <p
+                className="mt-3 text-sm text-muted-foreground leading-relaxed"
+                data-field={`members.${index}.bio`}
+              >
+                {member.bio}
+              </p>
+            )}
+            {member.links && member.links.length > 0 && (
+              <div className="mt-3 flex gap-3">
+                {member.links.map((socialLink, li) => (
+                  <a
+                    className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.15em] transition-colors hover:text-foreground"
+                    data-array-item={`members.${index}.links.${li}`}
+                    href={socialLink.url}
+                    key={socialLink.id}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {socialLink.platform}
+                  </a>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+```
+
+- [ ] **Step 2: Create the main team component**
 
 ```tsx
 // src/components/blocks/team/team.tsx
 "use client";
 
 import { motion, useInView } from "motion/react";
-import Image from "next/image";
 import { useRef } from "react";
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { TeamBlock } from "@/types/block-types";
+import { TeamCard } from "./team-card";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -1254,7 +1421,7 @@ export function Team({
   const isCompact = variant === "compact";
 
   return (
-    <section ref={sectionRef}>
+    <section aria-label="Team members" className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Header */}
         <div className="mx-auto mb-16 max-w-md text-center">
@@ -1293,153 +1460,15 @@ export function Team({
 
         {/* Grid */}
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {members.map((member, i) => {
-            const photoUrl = getMediaUrl(member.photo);
-            const blurDataURL = getBlurDataURL(member.photo);
-            const memberId = `LU-${String(i + 1).padStart(3, "0")}`;
-
-            return (
-              <motion.div
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                className="group overflow-hidden rounded-lg border border-border/50 bg-card transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-border"
-                data-array-item={`members.${i}`}
-                initial={{ opacity: 0, y: 32 }}
-                key={member.id}
-                transition={{
-                  duration: 0.7,
-                  ease: EASE,
-                  delay: 0.1 + i * 0.05,
-                }}
-              >
-                {/* Photo */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-card to-muted">
-                  {photoUrl ? (
-                    <motion.div
-                      animate={
-                        inView
-                          ? { clipPath: "inset(0 0 0 0)" }
-                          : {}
-                      }
-                      className="h-full w-full"
-                      initial={{
-                        clipPath: "inset(100% 0 0 0)",
-                      }}
-                      transition={{
-                        duration: 0.7,
-                        ease: EASE,
-                        delay: 0.2 + i * 0.05,
-                      }}
-                    >
-                      <Image
-                        alt={member.name}
-                        blurDataURL={blurDataURL}
-                        className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
-                        data-field={`members.${i}.photo`}
-                        fill
-                        placeholder={
-                          blurDataURL ? "blur" : "empty"
-                        }
-                        src={photoUrl}
-                      />
-                    </motion.div>
-                  ) : (
-                    /* Placeholder silhouette */
-                    <div className="flex h-full items-center justify-center">
-                      <svg
-                        className="h-12 w-12 opacity-[0.12]"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        viewBox="0 0 24 24"
-                      >
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M20 21a8 8 0 1 0-16 0" />
-                      </svg>
-                    </div>
-                  )}
-
-                  {/* ID badge */}
-                  <motion.div
-                    animate={inView ? { opacity: 1 } : {}}
-                    className="absolute top-2.5 left-2.5 rounded bg-black/50 px-2 py-0.5 font-mono text-[9px] text-white/35 uppercase tracking-[0.2em] backdrop-blur-sm"
-                    initial={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.4,
-                      ease: EASE,
-                      delay: 0.4 + i * 0.05,
-                    }}
-                  >
-                    {memberId}
-                  </motion.div>
-                </div>
-
-                {/* Info */}
-                <div className={`border-t border-border/50 ${isCompact ? "p-3" : "p-4"}`}>
-                  <p
-                    className="font-semibold text-[0.9375rem]"
-                    data-field={`members.${i}.name`}
-                  >
-                    {member.name}
-                  </p>
-                  <p
-                    className="mt-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]"
-                    data-field={`members.${i}.role`}
-                  >
-                    {member.role}
-                  </p>
-
-                  {/* Detailed-only content */}
-                  {!isCompact && (
-                    <>
-                      {member.department && (
-                        <motion.span
-                          animate={
-                            inView ? { opacity: 1 } : {}
-                          }
-                          className="mt-2.5 inline-block rounded-[3px] border border-primary/15 bg-primary/8 px-2 py-0.5 font-mono text-[9px] text-blue-400 uppercase tracking-[0.15em]"
-                          data-field={`members.${i}.department`}
-                          initial={{ opacity: 0 }}
-                          transition={{
-                            duration: 0.4,
-                            ease: EASE,
-                            delay: 0.5 + i * 0.05,
-                          }}
-                        >
-                          {member.department}
-                        </motion.span>
-                      )}
-                      {member.bio && (
-                        <p
-                          className="mt-3 text-sm text-muted-foreground leading-relaxed"
-                          data-field={`members.${i}.bio`}
-                        >
-                          {member.bio}
-                        </p>
-                      )}
-                      {member.links && member.links.length > 0 && (
-                        <div className="mt-3 flex gap-3">
-                          {member.links.map((socialLink, li) => (
-                            <a
-                              className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.15em] transition-colors hover:text-foreground"
-                              data-array-item={`members.${i}.links.${li}`}
-                              href={socialLink.url}
-                              key={socialLink.id}
-                              rel="noopener noreferrer"
-                              target="_blank"
-                            >
-                              {socialLink.platform}
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
+          {members.map((member, i) => (
+            <TeamCard
+              index={i}
+              inView={inView}
+              isCompact={isCompact}
+              key={member.id}
+              member={member}
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -1470,7 +1499,7 @@ Run: `bun dev` — add a Team block with 4 members. Verify:
 
 ```bash
 bun check
-git add src/components/blocks/team/team.tsx src/components/blocks/render-blocks.tsx
+git add src/components/blocks/team/team.tsx src/components/blocks/team/team-card.tsx src/components/blocks/render-blocks.tsx
 git commit -m "feat: add Team block component with clip-reveal and badge animations"
 ```
 
@@ -1584,7 +1613,8 @@ export function CtaBand({
 
   return (
     <section
-      className={`relative overflow-hidden ${
+      aria-label="Call to action"
+      className={`relative w-full overflow-hidden ${
         isPrimary
           ? "bg-primary py-20"
           : "border-border/50 border-t border-b bg-card py-20"
@@ -1833,8 +1863,6 @@ import { CMSLink } from "@/components/ui/cms-link";
 import { getMediaUrl } from "@/core/lib/utils";
 import type { LogoCloudBlock } from "@/types/block-types";
 
-import "./logo-cloud.css";
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function LogoCloud({
@@ -1846,7 +1874,7 @@ export function LogoCloud({
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef}>
+    <section aria-label="Partners" className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Eyebrow */}
         {eyebrow && (
@@ -1979,10 +2007,32 @@ function GridVariant({
 }
 ```
 
-- [ ] **Step 2: Create CSS file for scroll animation**
+- [ ] **Step 2: Add logo scroll keyframes and utilities to globals.css**
+
+No separate CSS file — follows convention of placing `@keyframes` in `globals.css`.
+
+In `src/app/globals.css`, append after the existing `@keyframes` section:
 
 ```css
-/* src/components/blocks/logo-cloud/logo-cloud.css */
+/* Logo Cloud — scroll animation */
+@keyframes logo-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes logo-scroll {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+  }
+}
+
 .logo-cloud-scroll-track {
   overflow: hidden;
   mask-image: linear-gradient(
@@ -2031,15 +2081,6 @@ function GridVariant({
 .logo-cloud-scroll-track:hover .logo-cloud-item:hover {
   opacity: 0.8;
 }
-
-@keyframes logo-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
 ```
 
 - [ ] **Step 3: Register in render-blocks**
@@ -2062,7 +2103,7 @@ Run: `bun dev` — add Logo Cloud block with both variants. Verify:
 
 ```bash
 bun check
-git add src/components/blocks/logo-cloud/ src/components/blocks/render-blocks.tsx
+git add src/components/blocks/logo-cloud/logo-cloud.tsx src/components/blocks/render-blocks.tsx src/app/globals.css
 git commit -m "feat: add Logo Cloud block with scroll and grid variants"
 ```
 
