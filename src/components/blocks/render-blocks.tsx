@@ -7,6 +7,7 @@ import { FeaturesGrid } from "./features-grid/features-grid";
 import { Hero } from "./hero/hero";
 import { ImageGallery } from "./image-gallery/image-gallery";
 import { LatestArticles } from "./latest-articles/latest-articles";
+import { LogoCloud } from "./logo-cloud/logo-cloud";
 import { Pricing } from "./pricing/pricing";
 import { RichTextContent } from "./rich-text-content/rich-text-content";
 import { SplitMedia } from "./split-media/split-media";
@@ -42,6 +43,8 @@ export function renderBlock(block: LayoutBlock) {
       return <Team {...block} />;
     case "trust":
       return <Trust {...block} />;
+    case "logoCloud":
+      return <LogoCloud {...block} />;
     case "richTextContent":
       return <RichTextContent {...block} />;
     default:

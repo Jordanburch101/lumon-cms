@@ -660,3 +660,71 @@
 .editable-field:hover .group-edit-icon {
   display: flex;
 }
+
+/* Logo Cloud — scroll animation */
+@keyframes logo-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes logo-scroll {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+  }
+}
+
+.logo-cloud-scroll-track {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+.logo-cloud-scroll-inner {
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  width: max-content;
+  animation: logo-scroll 30s linear infinite;
+}
+
+.logo-cloud-scroll-track:hover .logo-cloud-scroll-inner {
+  animation-play-state: paused;
+}
+
+.logo-cloud-item {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.625rem;
+  align-items: center;
+  color: var(--color-muted-foreground);
+  white-space: nowrap;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.logo-cloud-scroll-track:hover .logo-cloud-item {
+  opacity: 0.3;
+}
+
+.logo-cloud-scroll-track:hover .logo-cloud-item:hover {
+  opacity: 0.8;
+}
