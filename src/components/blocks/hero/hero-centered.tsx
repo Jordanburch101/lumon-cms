@@ -141,7 +141,7 @@ export function HeroCentered({
       {/* Centered content */}
       <div className="relative z-10 mx-auto max-w-2xl px-4 text-center">
         <h1
-          className="font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-7xl"
+          className="font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-6xl"
           data-field="headline"
         >
           {words.map((w) => (

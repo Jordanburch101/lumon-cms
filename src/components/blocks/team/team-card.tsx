@@ -33,7 +33,7 @@ export function TeamCard({ index, inView, isCompact, member }: TeamCardProps) {
       }}
     >
       {/* Photo */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
         {photoUrl ? (
           <motion.div
             animate={inView ? { clipPath: "inset(0 0 0 0)" } : {}}
@@ -78,7 +78,7 @@ export function TeamCard({ index, inView, isCompact, member }: TeamCardProps) {
       </div>
 
       {/* Info */}
-      <div className="space-y-2 p-4">
+      <div className={`space-y-2 ${isCompact ? "p-3" : "p-4"}`}>
         <p
           className="font-semibold text-[0.9375rem] text-foreground"
           data-field={`members.${String(index)}.name`}
@@ -106,7 +106,7 @@ export function TeamCard({ index, inView, isCompact, member }: TeamCardProps) {
                 }}
               >
                 <span
-                  className="inline-block rounded-full border border-primary/15 bg-primary/8 px-2.5 py-0.5 font-mono text-[9px] text-foreground uppercase tracking-[0.15em]"
+                  className="inline-block rounded-[3px] border border-primary/15 bg-primary/8 px-2.5 py-0.5 font-mono text-[9px] text-foreground uppercase tracking-[0.15em]"
                   data-field={`members.${String(index)}.department`}
                 >
                   {member.department}
