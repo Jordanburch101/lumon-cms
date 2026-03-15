@@ -61,10 +61,17 @@ docs/plans/         — Design documents
 
 ## Commands
 
-- `bun dev` — Start dev server
+- `bun dev` — Start dev server (port 3100, guarded — won't start a second instance)
 - `bun build` — Production build
 - `bun check` — Lint and format check (Ultracite)
 - `bun fix` — Auto-fix lint and format issues
+
+## Dev Server Rules
+
+- **NEVER start a dev server.** Assume one is already running on port 3100 in cmux.
+- If you need the dev server and it's not running, tell the user — do not start it yourself.
+- The `bun dev` script has a guard that prevents duplicate servers, but agents should not rely on it.
+- Dev server URL: `http://localhost:3100`
 
 ## cmux (Terminal Multiplexer)
 

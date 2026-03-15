@@ -12,7 +12,7 @@
         "--streamableHttp",
         "http://localhost:3000/api/mcp",
         "--header",
-        "Authorization: Bearer 2e25ef0a-9b3d-4bdb-ade4-b1c97cf7c4b7"
+        "Authorization: Bearer 70c3b8ef-3429-47be-b36b-5859f8c81ae7"
       ]
     }
   }
