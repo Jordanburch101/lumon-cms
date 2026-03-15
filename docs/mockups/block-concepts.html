@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumon — Block Concepts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #09090b;
+      --bg-card: #111113;
+      --bg-card-hover: #18181b;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --fg-dim: rgba(255,255,255,0.30);
+      --border: #27272a;
+      --border-subtle: rgba(39,39,42,0.50);
+      --border-active: rgba(59,130,246,0.30);
+      --primary: #2563eb;
+      --primary-fg: #fff;
+      --primary-hover: #1d4ed8;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Nunito Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .mono { font-family: 'Geist Mono', monospace; }
+
+    /* ─── Section labels ─── */
+    .concept-label {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--primary);
+      color: var(--primary-fg);
+      padding: 12px 24px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .concept-label span:last-child {
+      opacity: 0.6;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+    }
+
+    .concept-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ─── Shared ─── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 1024px) { .container { padding: 0 24px; } }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--fg-muted);
+    }
+
+    .heading-xl {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .heading-lg {
+      font-size: clamp(1.875rem, 4vw, 2.25rem);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .heading-md {
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .body-text {
+      color: var(--fg-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: var(--primary); color: var(--primary-fg); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--fg-muted); }
+
+    /* ─── Animations ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUpSm {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUpLg {
+      from { opacity: 0; transform: translateY(32px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .anim-up { animation: fadeUp 0.8s var(--ease) both; }
+    .anim-up-sm { animation: fadeUpSm 0.6s var(--ease) both; }
+    .anim-up-lg { animation: fadeUpLg 0.7s var(--ease) both; }
+    .anim-fade { animation: fadeIn 0.8s var(--ease) both; }
+
+    .d1 { animation-delay: 0.1s; }
+    .d2 { animation-delay: 0.15s; }
+    .d3 { animation-delay: 0.2s; }
+    .d4 { animation-delay: 0.25s; }
+    .d5 { animation-delay: 0.3s; }
+    .d6 { animation-delay: 0.35s; }
+    .d7 { animation-delay: 0.4s; }
+    .d8 { animation-delay: 0.45s; }
+
+    /* ═══════════════════════════════════════════
+       1. HERO VARIANTS
+       ═══════════════════════════════════════════ */
+
+    /* ─── Hero: Centered ─── */
+    .hero-centered {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-centered__bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0a0a12 0%, #0d1117 40%, #0a0f1a 100%);
+    }
+    .hero-centered__bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(37,99,235,0.06) 0%, transparent 70%),
+        radial-gradient(circle at 20% 80%, rgba(37,99,235,0.03) 0%, transparent 50%);
+    }
+    .hero-centered__grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border-subtle) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.3;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+    }
+    .hero-centered__content {
+      position: relative;
+      text-align: center;
+      max-width: 720px;
+      padding: 96px 24px;
+    }
+    .hero-centered__content .eyebrow { margin-bottom: 24px; }
+    .hero-centered__content h1 { margin-bottom: 20px; }
+    .hero-centered__content .body-text {
+      max-width: 540px;
+      margin: 0 auto 40px;
+      color: rgba(255,255,255,0.60);
+      font-size: 1.0625rem;
+      line-height: 1.7;
+    }
+    .hero-centered__actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* ─── Hero: Split ─── */
+    .hero-split {
+      padding: 96px 0;
+    }
+    .hero-split__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .hero-split__grid { grid-template-columns: 1fr 1fr; gap: 64px; }
+    }
+    .hero-split__text .eyebrow { margin-bottom: 20px; }
+    .hero-split__text h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 16px;
+    }
+    .hero-split__text .body-text {
+      max-width: 480px;
+      margin-bottom: 32px;
+      color: rgba(255,255,255,0.60);
+    }
+    .hero-split__actions { display: flex; gap: 12px; }
+    .hero-split__media {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+    }
+    .hero-split__media-inner {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-subtle);
+    }
+    .hero-split__media-cell {
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+    }
+    .hero-split__media-cell .stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+    }
+    .hero-split__media-cell .stat-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--fg-muted);
+    }
+    .hero-split__media-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      color: #60a5fa;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    /* ─── Hero: Minimal ─── */
+    .hero-minimal {
+      padding: 128px 0 96px;
+      text-align: center;
+      background: var(--bg);
+      position: relative;
+    }
+    .hero-minimal::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+    .hero-minimal__content {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .hero-minimal__content .eyebrow { margin-bottom: 24px; }
+    .hero-minimal__content h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 16px;
+    }
+    .hero-minimal__content .body-text {
+      max-width: 480px;
+      margin: 0 auto 40px;
+      color: rgba(255,255,255,0.50);
+    }
+    .hero-minimal__actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* ═══════════════════════════════════════════
+       2. FEATURES GRID
+       ═══════════════════════════════════════════ */
+
+    .features {
+      padding: 96px 0 128px;
+    }
+    .features__header {
+      max-width: 480px;
+      margin-bottom: 64px;
+    }
+    .features__header .eyebrow { margin-bottom: 16px; }
+    .features__header h2 { margin-bottom: 12px; }
+    .features__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    @media (min-width: 640px) { .features__grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .features__grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .feature-card {
+      background: var(--bg-card);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: background 0.3s ease;
+    }
+    .feature-card:hover { background: var(--bg-card-hover); }
+    .feature-card__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(37,99,235,0.08);
+      border: 1px solid rgba(37,99,235,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .feature-card__icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: #60a5fa;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .feature-card__label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #60a5fa;
+    }
+    .feature-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .feature-card p {
+      color: var(--fg-muted);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       3. TEAM / PEOPLE
+       ═══════════════════════════════════════════ */
+
+    .team {
+      padding: 96px 0 128px;
+    }
+    .team__header {
+      text-align: center;
+      max-width: 480px;
+      margin: 0 auto 64px;
+    }
+    .team__header .eyebrow { margin-bottom: 16px; }
+    .team__header h2 { margin-bottom: 12px; }
+    .team__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 1024px) { .team__grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .team-card {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      transition: transform 0.3s var(--ease), border-color 0.3s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border);
+    }
+    .team-card__photo {
+      aspect-ratio: 3/4;
+      background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card__photo-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .team-card__photo-placeholder svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.15;
+      stroke: var(--fg);
+      fill: none;
+      stroke-width: 1;
+    }
+    .team-card__id {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.35);
+      background: rgba(0,0,0,0.5);
+      padding: 3px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(8px);
+    }
+    .team-card__info {
+      padding: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .team-card__name {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      margin-bottom: 4px;
+    }
+    .team-card__role {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--fg-muted);
+    }
+    .team-card__dept {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #60a5fa;
+      background: rgba(37,99,235,0.08);
+      border: 1px solid rgba(37,99,235,0.15);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    /* ═══════════════════════════════════════════
+       4. CTA BAND
+       ═══════════════════════════════════════════ */
+
+    .cta-band {
+      padding: 80px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-band--primary {
+      background: var(--primary);
+    }
+    .cta-band--primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 80% 50%, rgba(255,255,255,0.05) 0%, transparent 70%);
+    }
+    .cta-band--primary .cta-band__sub { color: rgba(255,255,255,0.70); }
+
+    .cta-band--card {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .cta-band--card .btn-primary { background: var(--fg); color: var(--bg); }
+    .cta-band--card .btn-primary:hover { opacity: 0.9; }
+
+    .cta-band__inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .cta-band__text { max-width: 520px; }
+    .cta-band__heading {
+      font-size: clamp(1.5rem, 3vw, 1.875rem);
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .cta-band__sub {
+      color: var(--fg-muted);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+    .cta-band__actions { display: flex; gap: 12px; flex-shrink: 0; }
+
+    /* ─── CTA Band: Centered ─── */
+    .cta-band--centered .cta-band__inner {
+      flex-direction: column;
+      text-align: center;
+    }
+    .cta-band--centered .cta-band__text { max-width: 480px; }
+    .cta-band--centered .cta-band__actions { justify-content: center; }
+
+    /* ═══════════════════════════════════════════
+       5. LOGO CLOUD
+       ═══════════════════════════════════════════ */
+
+    .logo-cloud {
+      padding: 96px 0 128px;
+    }
+    .logo-cloud__header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .logo-cloud__header .eyebrow { margin-bottom: 0; }
+
+    /* Variant A: Scrolling row */
+    .logo-cloud__scroll-track {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+    }
+    .logo-cloud__scroll-inner {
+      display: flex;
+      gap: 64px;
+      align-items: center;
+      width: max-content;
+      animation: logoScroll 30s linear infinite;
+    }
+    @keyframes logoScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .logo-cloud__item {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--fg-muted);
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+    }
+    .logo-cloud__scroll-inner:hover .logo-cloud__item { opacity: 0.3; }
+    .logo-cloud__scroll-inner:hover .logo-cloud__item:hover { opacity: 0.8; }
+    .logo-cloud__item svg {
+      width: 28px;
+      height: 28px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .logo-cloud__item span {
+      font-weight: 600;
+      font-size: 1.0625rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* Variant B: Featured grid */
+    .logo-cloud__section-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--fg-muted);
+      margin: 64px 0 24px;
+      text-align: center;
+    }
+    .logo-cloud__featured {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    @media (min-width: 640px) { .logo-cloud__featured { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1024px) { .logo-cloud__featured { grid-template-columns: repeat(5, 1fr); } }
+
+    .logo-cloud__featured-item {
+      background: var(--bg-card);
+      padding: 32px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--fg-muted);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .logo-cloud__featured-item:hover {
+      background: var(--bg-card-hover);
+      color: var(--fg);
+    }
+    .logo-cloud__featured-item svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .logo-cloud__featured-item span {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    /* ─── Utility ─── */
+    .section-gap { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+
+    .page-footer {
+      padding: 64px 0;
+      text-align: center;
+    }
+    .page-footer p {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--fg-dim);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO VARIANT 1: CENTERED
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>Hero — Centered Variant</span>
+  <span>1 of 8</span>
+</div>
+
+<section class="hero-centered">
+  <div class="hero-centered__bg">
+    <div class="hero-centered__grid"></div>
+  </div>
+  <div class="hero-centered__content">
+    <p class="eyebrow anim-up d1">The work is mysterious and important</p>
+    <h1 class="heading-xl anim-up d2">Your contribution to<br>the severed floor<br>has been noted</h1>
+    <p class="body-text anim-up-sm d3">Every refinement session brings you closer to your quarterly target. The Board acknowledges your dedication to the wellness of all departments.</p>
+    <div class="hero-centered__actions anim-up-sm d4">
+      <a href="#" class="btn btn-primary">Begin Session</a>
+      <a href="#" class="btn btn-outline">View Protocol</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO VARIANT 2: SPLIT
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>Hero — Split Variant</span>
+  <span>2 of 8</span>
+</div>
+
+<section class="hero-split">
+  <div class="container">
+    <div class="hero-split__grid">
+      <div class="hero-split__text anim-up">
+        <p class="eyebrow d1">Department Overview</p>
+        <h1 class="heading-xl d2">Macrodata<br>Refinement</h1>
+        <p class="body-text d3">Your outie has been informed of these results. All metrics reflect quarterly performance data as verified by the Board.</p>
+        <div class="hero-split__actions d4">
+          <a href="#" class="btn btn-primary">Access Dashboard</a>
+          <a href="#" class="btn btn-outline">Department Brief</a>
+        </div>
+      </div>
+      <div class="hero-split__media anim-up-lg d3">
+        <div class="hero-split__media-badge">Live Metrics</div>
+        <div class="hero-split__media-inner">
+          <div class="hero-split__media-cell">
+            <span class="stat-num">97.3</span>
+            <span class="stat-label">Wellness Score</span>
+          </div>
+          <div class="hero-split__media-cell">
+            <span class="stat-num">4.2k</span>
+            <span class="stat-label">Files Refined</span>
+          </div>
+          <div class="hero-split__media-cell">
+            <span class="stat-num">12</span>
+            <span class="stat-label">Departments</span>
+          </div>
+          <div class="hero-split__media-cell">
+            <span class="stat-num">99.8</span>
+            <span class="stat-label">Uptime %</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO VARIANT 3: MINIMAL
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>Hero — Minimal Variant</span>
+  <span>3 of 8</span>
+</div>
+
+<section class="hero-minimal">
+  <div class="container">
+    <div class="hero-minimal__content">
+      <p class="eyebrow anim-up d1">Interdepartmental Memorandum</p>
+      <h1 class="heading-xl anim-up d2">The Board<br>thanks you</h1>
+      <p class="body-text anim-up-sm d3">Your continued compliance with severance protocol has been recognized. Please enjoy the perplex you have earned.</p>
+      <div class="hero-minimal__actions anim-up-sm d4">
+        <a href="#" class="btn btn-primary">Acknowledge</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     FEATURES GRID
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>Features Grid — New Block</span>
+  <span>4 of 8</span>
+</div>
+
+<section class="features">
+  <div class="container">
+    <div class="features__header">
+      <p class="eyebrow anim-up d1">Core Capabilities</p>
+      <h2 class="heading-lg anim-up d2">Refined for<br>operational excellence</h2>
+      <p class="body-text anim-up-sm d3" style="margin-top: 12px;">Each module has been designed to the Board's exacting specifications.</p>
+    </div>
+    <div class="features__grid">
+      <div class="feature-card anim-up-lg d1">
+        <div class="feature-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="feature-card__label">Module 01</span>
+        <h3>Data Refinement</h3>
+        <p>Sort numbers into bins based on how they make you feel. The purpose is classified.</p>
+      </div>
+      <div class="feature-card anim-up-lg d2">
+        <div class="feature-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="feature-card__label">Module 02</span>
+        <h3>Wellness Monitoring</h3>
+        <p>Continuous evaluation of employee wellbeing through approved measurement protocols.</p>
+      </div>
+      <div class="feature-card anim-up-lg d3">
+        <div class="feature-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="feature-card__label">Module 03</span>
+        <h3>Perpetuity Wing</h3>
+        <p>A curated collection of artifacts documenting Kier Eagan's enduring vision for humanity.</p>
+      </div>
+      <div class="feature-card anim-up-lg d4">
+        <div class="feature-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <span class="feature-card__label">Module 04</span>
+        <h3>Access Governance</h3>
+        <p>Compartmentalized permissions ensure each innie accesses only authorized sectors.</p>
+      </div>
+      <div class="feature-card anim-up-lg d5">
+        <div class="feature-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <span class="feature-card__label">Module 05</span>
+        <h3>Quarterly Analytics</h3>
+        <p>Granular reporting on departmental output, compliance, and interdepartmental synergy.</p>
+      </div>
+      <div class="feature-card anim-up-lg d6">
+        <div class="feature-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <span class="feature-card__label">Module 06</span>
+        <h3>Protocol Sync</h3>
+        <p>Real-time harmonization of departmental procedures with Board-approved directives.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     TEAM / PEOPLE
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>Team / People — New Block</span>
+  <span>5 of 8</span>
+</div>
+
+<section class="team">
+  <div class="container">
+    <div class="team__header">
+      <p class="eyebrow anim-up d1">Department Personnel</p>
+      <h2 class="heading-lg anim-up d2">Macrodata Refinement</h2>
+      <p class="body-text anim-up-sm d3" style="margin-top: 12px;">Your outie selected you for this role. The Board is grateful.</p>
+    </div>
+    <div class="team__grid">
+      <div class="team-card anim-up-lg d1">
+        <div class="team-card__photo">
+          <div class="team-card__photo-placeholder">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          </div>
+          <div class="team-card__id">LU-001</div>
+        </div>
+        <div class="team-card__info">
+          <div class="team-card__name">Mark Scout</div>
+          <div class="team-card__role">Department Chief</div>
+          <div class="team-card__dept">MDR</div>
+        </div>
+      </div>
+      <div class="team-card anim-up-lg d2">
+        <div class="team-card__photo">
+          <div class="team-card__photo-placeholder">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          </div>
+          <div class="team-card__id">LU-002</div>
+        </div>
+        <div class="team-card__info">
+          <div class="team-card__name">Helly Riggs</div>
+          <div class="team-card__role">Refiner</div>
+          <div class="team-card__dept">MDR</div>
+        </div>
+      </div>
+      <div class="team-card anim-up-lg d3">
+        <div class="team-card__photo">
+          <div class="team-card__photo-placeholder">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          </div>
+          <div class="team-card__id">LU-003</div>
+        </div>
+        <div class="team-card__info">
+          <div class="team-card__name">Irving Bailiff</div>
+          <div class="team-card__role">Refiner</div>
+          <div class="team-card__dept">MDR</div>
+        </div>
+      </div>
+      <div class="team-card anim-up-lg d4">
+        <div class="team-card__photo">
+          <div class="team-card__photo-placeholder">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          </div>
+          <div class="team-card__id">LU-004</div>
+        </div>
+        <div class="team-card__info">
+          <div class="team-card__name">Dylan George</div>
+          <div class="team-card__role">Refiner</div>
+          <div class="team-card__dept">MDR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     CTA BAND — PRIMARY (SIDE-BY-SIDE)
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>CTA Band — Primary Variant</span>
+  <span>6 of 8</span>
+</div>
+
+<section class="cta-band cta-band--primary">
+  <div class="container">
+    <div class="cta-band__inner">
+      <div class="cta-band__text">
+        <h2 class="cta-band__heading">Your department requires your attention</h2>
+        <p class="cta-band__sub">The Board has scheduled a mandatory wellness session. Please report to your assigned floor.</p>
+      </div>
+      <div class="cta-band__actions">
+        <a href="#" class="btn" style="background: white; color: var(--primary); font-weight: 600;">Begin Session</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     CTA BAND — CARD / CENTERED
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>CTA Band — Centered / Card Variant</span>
+  <span>7 of 8</span>
+</div>
+
+<section class="cta-band cta-band--card cta-band--centered">
+  <div class="container">
+    <div class="cta-band__inner">
+      <div class="cta-band__text">
+        <p class="eyebrow" style="margin-bottom: 16px;">Interdepartmental Notice</p>
+        <h2 class="cta-band__heading">Ready to refine your workflow?</h2>
+        <p class="cta-band__sub">Deploy a severed floor in minutes. No outie involvement required.</p>
+      </div>
+      <div class="cta-band__actions">
+        <a href="#" class="btn btn-primary">Get Started</a>
+        <a href="#" class="btn btn-outline">Read Documentation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LOGO CLOUD
+     ════════════════════════════════════════════════════════════ -->
+<div class="concept-label">
+  <span>Logo Cloud — New Block</span>
+  <span>8 of 8</span>
+</div>
+
+<section class="logo-cloud">
+  <div class="container">
+    <div class="logo-cloud__header">
+      <p class="eyebrow">Trusted by departments worldwide</p>
+    </div>
+
+    <!-- Scrolling row variant -->
+    <div class="logo-cloud__scroll-track">
+      <div class="logo-cloud__scroll-inner">
+        <!-- First set -->
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>Lumon Industries</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <span>Eagan Corp</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+          <span>Myrtle Systems</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Optics & Design</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span>Wellness Dept</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          <span>Compliance Group</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+          <span>Biotech Div</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span>Perpetuity Wing</span>
+        </div>
+        <!-- Duplicate for seamless loop -->
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>Lumon Industries</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <span>Eagan Corp</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+          <span>Myrtle Systems</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Optics & Design</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span>Wellness Dept</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          <span>Compliance Group</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+          <span>Biotech Div</span>
+        </div>
+        <div class="logo-cloud__item">
+          <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span>Perpetuity Wing</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured grid variant -->
+    <p class="logo-cloud__section-label anim-up d1">Featured Partners</p>
+    <div class="logo-cloud__featured anim-up-lg d2">
+      <div class="logo-cloud__featured-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Lumon</span>
+      </div>
+      <div class="logo-cloud__featured-item">
+        <svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <span>Eagan</span>
+      </div>
+      <div class="logo-cloud__featured-item">
+        <svg viewBox="0 0 24 24"><path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+        <span>Myrtle</span>
+      </div>
+      <div class="logo-cloud__featured-item">
+        <svg viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Optics</span>
+      </div>
+      <div class="logo-cloud__featured-item">
+        <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        <span>Perpetuity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<footer class="page-footer">
+  <p>Lumon Industries &mdash; Block Concepts &mdash; All metrics reflect design intent as of current date</p>
+</footer>
+
+</body>
+</html>
