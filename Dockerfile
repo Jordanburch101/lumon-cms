@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY package.json bun.lock ./
 
-RUN --mount=type=cache,target=/root/.bun/install/cache \
+RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile
 
 # =============================================================================
@@ -46,7 +46,7 @@ RUN bun run generate:types && \
     bun run generate:importmap && \
     bun run generate:field-map
 
-RUN --mount=type=cache,target=/app/.next/cache \
+RUN --mount=type=cache,id=nextjs-cache,target=/app/.next/cache \
     bun --bun run build
 
 # =============================================================================
