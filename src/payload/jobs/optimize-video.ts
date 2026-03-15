@@ -58,21 +58,25 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
           | undefined
       );
 
-      // Build ffmpeg arguments
+      // Build ffmpeg arguments — CRF-based encoding for quality-to-size efficiency
       const ffmpegArgs: string[] = [
         "-y", // overwrite output
         "-i",
         inputPath,
+        "-t",
+        "60", // cap duration at 60s — prevents runaway uploads
         "-c:v",
         "libx264",
         "-preset",
         "medium",
-        "-b:v",
-        "5M",
+        "-crf",
+        "28", // quality-based encoding — visually transparent for web video
         "-maxrate",
-        "6M",
+        "2M", // hard bitrate ceiling
         "-bufsize",
-        "12M",
+        "4M",
+        "-pix_fmt",
+        "yuv420p", // max browser compatibility
         "-vf",
         "scale=min(1920\\,iw):min(1080\\,ih):force_original_aspect_ratio=decrease,scale=trunc(iw/2)*2:trunc(ih/2)*2",
         "-movflags",
@@ -83,7 +87,7 @@ export const optimizeVideoTask: TaskConfig<"optimizeVideo"> = {
       if (media.stripAudio) {
         ffmpegArgs.push("-an");
       } else {
-        ffmpegArgs.push("-c:a", "aac", "-b:a", "128k");
+        ffmpegArgs.push("-c:a", "aac", "-b:a", "96k");
       }
 
       ffmpegArgs.push(outputPath);
