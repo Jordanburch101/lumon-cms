@@ -23,7 +23,7 @@ export function HeroMinimal({
       ref={sectionRef}
     >
       {/* Dark background */}
-      <div className="absolute inset-0 bg-background" />
+      <div className="absolute inset-0 bg-black" />
 
       {/* Radial gradient spotlight */}
       <motion.div
@@ -55,7 +55,7 @@ export function HeroMinimal({
 
         <motion.p
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mx-auto mt-6 max-w-xl text-base text-white/50 lg:text-lg"
+          className="mx-auto mt-6 max-w-xl text-base text-white/70 lg:text-lg"
           data-field="subtext"
           initial={{ opacity: 0, y: 16 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}

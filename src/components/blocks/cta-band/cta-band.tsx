@@ -16,7 +16,7 @@ export function CtaBand({
   secondaryCta,
 }: CtaBandBlock) {
   const sectionRef = useRef<HTMLElement>(null);
-  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   if (variant === "card") {
     return (
@@ -170,7 +170,7 @@ function CardVariant({
           {eyebrow && (
             <motion.p
               animate={inView ? { letterSpacing: "0.3em", opacity: 1 } : {}}
-              className="font-mono text-[11px] text-muted-foreground uppercase"
+              className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]"
               data-field="eyebrow"
               initial={{ letterSpacing: "0.5em", opacity: 0 }}
               transition={{ duration: 0.8, ease: EASE }}

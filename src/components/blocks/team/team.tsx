@@ -18,6 +18,10 @@ export function Team({
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
   const isCompact = variant === "compact";
 
+  if (!members || members.length === 0) {
+    return null;
+  }
+
   return (
     <section aria-label="Team members" className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">

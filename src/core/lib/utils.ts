@@ -27,3 +27,9 @@ export function getBlurDataURL(
   }
   return media.blurDataURL || undefined;
 }
+
+/** Test whether a URL points to a video file. */
+export const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
+export function isVideoUrl(src: string): boolean {
+  return VIDEO_EXTENSION_RE.test(src);
+}

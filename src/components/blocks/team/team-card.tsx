@@ -23,7 +23,7 @@ export function TeamCard({ index, inView, isCompact, member }: TeamCardProps) {
   return (
     <motion.div
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      className="group relative overflow-hidden rounded-lg border border-border/50 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-border"
+      className="group relative overflow-hidden rounded-lg border border-border/50 bg-card transition-colors duration-300 hover:border-border"
       data-array-item={`members.${String(index)}`}
       initial={{ opacity: 0, y: 24 }}
       transition={{
@@ -31,6 +31,7 @@ export function TeamCard({ index, inView, isCompact, member }: TeamCardProps) {
         ease: EASE,
         delay: 0.1 + index * 0.08,
       }}
+      whileHover={{ y: -4 }}
     >
       {/* Photo */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">

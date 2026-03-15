@@ -88,7 +88,7 @@ export function FeaturesGrid({
                   {/* Label */}
                   {item.label && (
                     <p
-                      className="mb-2 font-mono text-[10px] text-blue-400 uppercase tracking-[0.2em]"
+                      className="mb-2 font-mono text-[10px] text-primary uppercase tracking-[0.2em]"
                       data-field={`items.${String(i)}.label`}
                     >
                       {item.label}
@@ -116,7 +116,7 @@ export function FeaturesGrid({
                     <div className="mt-4">
                       <CMSLink
                         className="font-medium text-foreground text-sm underline underline-offset-4 transition-colors hover:text-foreground/70"
-                        data-field-group="link"
+                        data-field-group={`items.${String(i)}.link`}
                         data-field-group-type="link"
                         link={item.link}
                       />

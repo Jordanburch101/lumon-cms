@@ -1,15 +1,13 @@
 import Image from "next/image";
 import { CMSLink } from "@/components/ui/cms-link";
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
 import type { HeroBlock } from "@/types/block-types";
 import { HeroCentered } from "./hero-centered";
 import { HeroMinimal } from "./hero-minimal";
 import { HeroSplit } from "./hero-split";
 
-const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
-
 function getMediaType(src: string): "video" | "image" {
-  return VIDEO_EXTENSION_RE.test(src) ? "video" : "image";
+  return isVideoUrl(src) ? "video" : "image";
 }
 
 function HeroDefault({

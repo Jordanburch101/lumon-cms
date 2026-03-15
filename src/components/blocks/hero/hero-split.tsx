@@ -10,10 +10,9 @@ import {
 import Image from "next/image";
 import { type PointerEvent, useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
 import type { HeroBlock } from "@/types/block-types";
 
-const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 function TiltPanel({ children }: { children: React.ReactNode }) {
@@ -72,7 +71,7 @@ export function HeroSplit({
   const url = getMediaUrl(mediaSrc);
   const blurDataURL = getBlurDataURL(mediaSrc);
   const posterUrl = getMediaUrl(posterSrc);
-  const isVideo = url ? VIDEO_RE.test(url) : false;
+  const isVideo = url ? isVideoUrl(url) : false;
   const hasStats = stats && stats.length > 0;
 
   return (
@@ -82,7 +81,7 @@ export function HeroSplit({
         <div className="flex flex-col">
           <motion.h1
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            className="font-semibold text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl"
+            className="font-semibold text-4xl leading-tight sm:text-5xl lg:text-6xl"
             data-field="headline"
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.7, ease: EASE }}

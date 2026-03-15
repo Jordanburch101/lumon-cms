@@ -10,10 +10,9 @@ import {
 import Image from "next/image";
 import { type PointerEvent, useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
 import type { HeroBlock } from "@/types/block-types";
 
-const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 function MagneticCta({
@@ -52,13 +51,12 @@ function MagneticCta({
 
   return (
     <motion.div
-      className={className}
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
       ref={ref}
       style={{ x, y }}
     >
-      <CMSLink {...rest} />
+      <CMSLink className={className} {...rest} />
     </motion.div>
   );
 }
@@ -77,7 +75,7 @@ export function HeroCentered({
   const url = getMediaUrl(mediaSrc);
   const blurDataURL = getBlurDataURL(mediaSrc);
   const posterUrl = getMediaUrl(posterSrc);
-  const isVideo = url ? VIDEO_RE.test(url) : false;
+  const isVideo = url ? isVideoUrl(url) : false;
 
   const words = (headline?.split(" ") ?? []).map((word, i) => ({
     word,
@@ -163,7 +161,7 @@ export function HeroCentered({
 
         <motion.p
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="mx-auto mt-6 max-w-xl text-base text-white/60 lg:text-lg"
+          className="mx-auto mt-6 max-w-xl text-base text-white/70 lg:text-lg"
           data-field="subtext"
           initial={{ opacity: 0, y: 16 }}
           transition={{

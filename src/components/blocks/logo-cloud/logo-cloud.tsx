@@ -4,7 +4,7 @@ import { motion, useInView } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
-import { getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { LogoCloudBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -26,6 +26,9 @@ function ScrollVariant({
           const isOriginal = i < logos.length;
           const logoUrl = getMediaUrl(item.logo);
 
+          const logoIndex = i % logos.length;
+          const blurData = getBlurDataURL(item.logo);
+
           const content = (
             <span
               className="logo-cloud-item"
@@ -36,11 +39,13 @@ function ScrollVariant({
               {logoUrl && (
                 <Image
                   alt={item.name}
+                  blurDataURL={blurData}
                   className="h-6 w-auto brightness-0 dark:invert"
                   data-field={
                     isOriginal ? `logos.${String(i)}.logo` : undefined
                   }
                   height={24}
+                  placeholder={blurData ? "blur" : "empty"}
                   src={logoUrl}
                   width={120}
                 />
@@ -54,6 +59,8 @@ function ScrollVariant({
             return (
               <CMSLink
                 className="logo-cloud-item no-underline"
+                data-field-group={`logos.${String(logoIndex)}.link`}
+                data-field-group-type="link"
                 key={`${item.id}-${String(i)}`}
                 link={item.link}
               >
@@ -82,6 +89,7 @@ function GridVariant({
     <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/50 bg-border/50 sm:grid-cols-3 lg:grid-cols-5">
       {logos.map((item, i) => {
         const logoUrl = getMediaUrl(item.logo);
+        const blurData = getBlurDataURL(item.logo);
 
         const cell = (
           <motion.div
@@ -99,9 +107,11 @@ function GridVariant({
             {logoUrl && (
               <Image
                 alt={item.name}
+                blurDataURL={blurData}
                 className="mb-3 h-8 w-auto opacity-60 brightness-0 dark:invert"
                 data-field={`logos.${String(i)}.logo`}
                 height={32}
+                placeholder={blurData ? "blur" : "empty"}
                 src={logoUrl}
                 width={120}
               />
@@ -117,7 +127,13 @@ function GridVariant({
 
         if (item.link?.label) {
           return (
-            <CMSLink className="no-underline" key={item.id} link={item.link}>
+            <CMSLink
+              className="no-underline"
+              data-field-group={`logos.${String(i)}.link`}
+              data-field-group-type="link"
+              key={item.id}
+              link={item.link}
+            >
               {cell}
             </CMSLink>
           );
