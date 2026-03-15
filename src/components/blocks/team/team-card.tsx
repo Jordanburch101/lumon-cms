@@ -6,7 +6,7 @@ import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { TeamBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-type TeamMember = TeamBlock["members"][number];
+type TeamMember = NonNullable<TeamBlock["members"]>[number];
 
 interface TeamCardProps {
   index: number;

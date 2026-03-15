@@ -16,11 +16,9 @@ import type { HeroCenteredBlock } from "@/types/block-types";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 function MagneticCta({
-  children,
   className,
   ...rest
 }: {
-  children: React.ReactNode;
   className?: string;
   "data-field-group"?: string;
   "data-field-group-type"?: string;
