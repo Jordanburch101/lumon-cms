@@ -4,7 +4,7 @@ import { motion, useInView } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { LogoCloudBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -40,7 +40,7 @@ function ScrollVariant({
                 <Image
                   alt={item.name}
                   blurDataURL={blurData}
-                  className="h-6 w-auto brightness-0 dark:invert"
+                  className="h-6 w-auto opacity-70 brightness-0 dark:opacity-90 dark:invert"
                   data-field={
                     isOriginal ? `logos.${String(i)}.logo` : undefined
                   }
@@ -86,15 +86,19 @@ function GridVariant({
   inView: boolean;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/50 bg-border/50 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border/50 sm:grid-cols-3 lg:grid-cols-5">
       {logos.map((item, i) => {
         const logoUrl = getMediaUrl(item.logo);
         const blurData = getBlurDataURL(item.logo);
 
+        const isLastOdd = i === logos.length - 1 && logos.length % 2 !== 0;
         const cell = (
           <motion.div
             animate={inView ? { opacity: 1, scale: 1 } : {}}
-            className="flex flex-col items-center justify-center bg-card px-6 py-8 text-muted-foreground transition-[background,color] duration-300 hover:bg-card/80 hover:text-foreground"
+            className={cn(
+              "flex flex-col items-center justify-center bg-card px-6 py-8 text-muted-foreground transition-[background,color] duration-300 hover:bg-card/80 hover:text-foreground",
+              isLastOdd && "col-span-2 sm:col-span-1"
+            )}
             data-array-item={`logos.${String(i)}`}
             initial={{ opacity: 0, scale: 0.95 }}
             key={item.id}
@@ -108,7 +112,7 @@ function GridVariant({
               <Image
                 alt={item.name}
                 blurDataURL={blurData}
-                className="mb-3 h-8 w-auto opacity-60 brightness-0 dark:invert"
+                className="mb-3 h-8 w-auto opacity-70 brightness-0 dark:opacity-90 dark:invert"
                 data-field={`logos.${String(i)}.logo`}
                 height={32}
                 placeholder={blurData ? "blur" : "empty"}
@@ -117,7 +121,7 @@ function GridVariant({
               />
             )}
             <span
-              className="font-medium text-xs"
+              className="font-medium text-foreground text-xs"
               data-field={`logos.${String(i)}.name`}
             >
               {item.name}

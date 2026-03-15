@@ -121,11 +121,11 @@ export function HeroStats({
         {/* Right: Stats or Media */}
         <TiltPanel>
           {hasStats ? (
-            <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 lg:p-8">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 lg:p-8">
               {/* Live Metrics badge */}
               <motion.div
                 animate={{ opacity: [1, 0.6, 1] }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-muted/50 px-3 py-1"
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1"
                 transition={{
                   duration: 4,
                   repeat: Number.POSITIVE_INFINITY,

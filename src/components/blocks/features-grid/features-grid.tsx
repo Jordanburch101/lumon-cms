@@ -20,7 +20,11 @@ export function FeaturesGrid({
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section aria-label="Features" className="w-full" ref={sectionRef}>
+    <section
+      aria-label="Features"
+      className="w-full scroll-mt-16"
+      ref={sectionRef}
+    >
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Header */}
         <motion.div
@@ -62,7 +66,7 @@ export function FeaturesGrid({
               return (
                 <motion.div
                   animate={inView ? { opacity: 1, y: 0 } : {}}
-                  className="bg-card p-8 transition-colors duration-300 hover:bg-card/80"
+                  className="bg-card p-8 transition-[background,border-color] duration-300 hover:bg-accent/50"
                   data-array-item={`items.${String(i)}`}
                   initial={{ opacity: 0, y: 16 }}
                   key={item.id}

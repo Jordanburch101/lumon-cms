@@ -59,7 +59,7 @@ function PrimaryVariant({
   return (
     <section
       aria-label="Call to action"
-      className="relative w-full overflow-hidden bg-primary"
+      className="relative w-full overflow-hidden bg-primary text-primary-foreground"
       ref={sectionRef}
     >
       {/* Background shimmer — single pass diagonal sweep */}
@@ -86,20 +86,23 @@ function PrimaryVariant({
           >
             {eyebrow && (
               <p
-                className="mb-3 font-mono text-[11px] text-white/60 uppercase tracking-[0.3em]"
+                className="mb-3 font-mono text-[11px] text-primary-foreground/60 uppercase tracking-[0.3em]"
                 data-field="eyebrow"
               >
                 {eyebrow}
               </p>
             )}
             <h2
-              className="font-semibold text-2xl text-white leading-tight sm:text-3xl"
+              className="font-semibold text-2xl text-primary-foreground leading-tight sm:text-3xl"
               data-field="heading"
             >
               {heading}
             </h2>
             {subtext && (
-              <p className="mt-3 text-white/70" data-field="subtext">
+              <p
+                className="mt-3 text-primary-foreground/70"
+                data-field="subtext"
+              >
                 {subtext}
               </p>
             )}
@@ -115,7 +118,7 @@ function PrimaryVariant({
             {primaryCta?.label && (
               <motion.div whileTap={{ scale: 0.97 }}>
                 <CMSLink
-                  className="bg-white font-semibold text-primary hover:bg-white/90"
+                  className="bg-primary-foreground font-semibold text-primary hover:bg-primary-foreground/90"
                   data-field-group="primaryCta"
                   data-field-group-type="link"
                   link={primaryCta}
@@ -125,7 +128,7 @@ function PrimaryVariant({
             {secondaryCta?.label && (
               <motion.div whileTap={{ scale: 0.97 }}>
                 <CMSLink
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
                   data-field-group="secondaryCta"
                   data-field-group-type="link"
                   link={secondaryCta}
