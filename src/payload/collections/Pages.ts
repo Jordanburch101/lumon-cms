@@ -12,6 +12,7 @@ const validateSlug: TextFieldValidation = (value) => {
 
 import { BentoBlock } from "../block-schemas/Bento";
 import { CinematicCtaBlock } from "../block-schemas/CinematicCta";
+import { CtaBandBlock } from "../block-schemas/CtaBand";
 import { FaqBlock } from "../block-schemas/Faq";
 import { FeaturesGridBlock } from "../block-schemas/FeaturesGrid";
 import { HeroBlock } from "../block-schemas/Hero";
@@ -75,6 +76,7 @@ export const Pages: CollectionConfig = {
         ImageGalleryBlock,
         LatestArticlesBlock,
         CinematicCtaBlock,
+        CtaBandBlock,
         PricingBlock,
         FaqBlock,
         FeaturesGridBlock,

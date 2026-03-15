@@ -16,6 +16,7 @@ export type TestimonialsBlock = ExtractBlock<"testimonials">;
 export type ImageGalleryBlock = ExtractBlock<"imageGallery">;
 export type LatestArticlesBlock = ExtractBlock<"latestArticles">;
 export type CinematicCtaBlock = ExtractBlock<"cinematicCta">;
+export type CtaBandBlock = ExtractBlock<"ctaBand">;
 export type PricingBlock = ExtractBlock<"pricing">;
 export type FaqBlock = ExtractBlock<"faq">;
 export type FeaturesGridBlock = ExtractBlock<"featuresGrid">;
