@@ -9,6 +9,7 @@ import { LatestArticles } from "./latest-articles/latest-articles";
 import { Pricing } from "./pricing/pricing";
 import { RichTextContent } from "./rich-text-content/rich-text-content";
 import { SplitMedia } from "./split-media/split-media";
+import { Team } from "./team/team";
 import { Testimonials } from "./testimonials/testimonials";
 import { Trust } from "./trust/trust";
 
@@ -34,6 +35,8 @@ export function renderBlock(block: LayoutBlock) {
       return <Faq {...block} />;
     case "featuresGrid":
       return <FeaturesGrid {...block} />;
+    case "team":
+      return <Team {...block} />;
     case "trust":
       return <Trust {...block} />;
     case "richTextContent":
