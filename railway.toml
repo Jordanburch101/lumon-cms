@@ -1,10 +1,9 @@
 [build]
-builder = "RAILPACK"
-buildCommand = "bun run generate:types && bun run generate:importmap && bun run generate:field-map && bun run build"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "bun --bun run start"
 healthcheckPath = "/"
-healthcheckTimeout = 300
+healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
