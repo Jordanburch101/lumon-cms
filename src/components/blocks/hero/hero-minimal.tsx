@@ -18,10 +18,9 @@ export function HeroMinimal({
 
   return (
     <section
-      className="relative flex w-full items-center justify-center overflow-hidden"
+      className="relative flex w-full items-center justify-center overflow-hidden py-32 lg:py-44"
       data-navbar-contrast="light"
       ref={sectionRef}
-      style={{ minHeight: "calc(100svh - 56px)" }}
     >
       {/* Dark background */}
       <div className="absolute inset-0 bg-black" />
