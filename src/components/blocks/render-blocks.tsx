@@ -1,6 +1,7 @@
 import type { LayoutBlock } from "@/types/block-types";
 import { BentoShowcase } from "./bento/bento";
 import { CinematicCta } from "./cinematic-cta/cinematic-cta";
+import { CtaBand } from "./cta-band/cta-band";
 import { Faq } from "./faq/faq";
 import { FeaturesGrid } from "./features-grid/features-grid";
 import { Hero } from "./hero/hero";
@@ -29,6 +30,8 @@ export function renderBlock(block: LayoutBlock) {
       return <LatestArticles {...block} />;
     case "cinematicCta":
       return <CinematicCta {...block} />;
+    case "ctaBand":
+      return <CtaBand {...block} />;
     case "pricing":
       return <Pricing {...block} />;
     case "faq":
