@@ -41,7 +41,9 @@ export default function FrontendLayout({
             />
           )}
           <Navbar />
-          <main>{children}</main>
+          <Suspense>
+            <main>{children}</main>
+          </Suspense>
           <EditableOverlay />
           <Suspense>
             <AdminBar />

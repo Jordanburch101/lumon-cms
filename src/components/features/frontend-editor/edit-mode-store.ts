@@ -3,6 +3,10 @@
 import { create } from "zustand";
 import type { LayoutBlock } from "@/types/block-types";
 import { deepEqual } from "./deep-equal";
+
+const CAMEL_CASE_RE = /([a-z])([A-Z])/g;
+const FIRST_CHAR_RE = /^./;
+
 import {
   addArrayItem,
   duplicateBlock,
@@ -19,48 +23,48 @@ import {
 type AnyValue = any;
 
 export interface DirtyEntry {
-  originalValue: unknown;
-  currentValue: unknown;
-  label: string;
   blockIndex: number;
+  currentValue: unknown;
   fieldPath: string;
+  label: string;
+  originalValue: unknown;
 }
 
 interface EditModeStore {
   // --- State ---
   active: boolean;
+  addArrayItemAction: (
+    blockIndex: number,
+    arrayPath: string,
+    item: Record<string, AnyValue>
+  ) => void;
+  addBlockAction: (index: number, block: LayoutBlock) => void;
   blocks: LayoutBlock[];
   dirtyFields: Map<string, DirtyEntry>;
-  pageId: number | null;
-  saving: boolean;
+  duplicateBlockAction: (index: number) => void;
 
   // --- Actions ---
   enter: (pageId: number, blocks: LayoutBlock[]) => void;
   exit: () => void;
-  updateField: (blockIndex: number, path: string, value: AnyValue) => void;
-  revertField: (dirtyKey: string) => void;
-  moveBlockAction: (from: number, to: number) => void;
-  removeBlockAction: (index: number) => void;
-  duplicateBlockAction: (index: number) => void;
-  addBlockAction: (index: number, block: LayoutBlock) => void;
   moveArrayItemAction: (
     blockIndex: number,
     arrayPath: string,
     from: number,
     to: number
   ) => void;
+  moveBlockAction: (from: number, to: number) => void;
+  pageId: number | null;
   removeArrayItemAction: (
     blockIndex: number,
     arrayPath: string,
     index: number
   ) => void;
-  addArrayItemAction: (
-    blockIndex: number,
-    arrayPath: string,
-    item: Record<string, AnyValue>
-  ) => void;
-  setSaving: (saving: boolean) => void;
+  removeBlockAction: (index: number) => void;
   resetDirty: (blocks: LayoutBlock[]) => void;
+  revertField: (dirtyKey: string) => void;
+  saving: boolean;
+  setSaving: (saving: boolean) => void;
+  updateField: (blockIndex: number, path: string, value: AnyValue) => void;
 }
 
 /** Safely clone a value for snapshotting. Falls back to JSON round-trip. */
@@ -88,11 +92,13 @@ function invalidateToStructure(): Map<string, DirtyEntry> {
 /** Get a human-readable block name from a LayoutBlock. */
 function blockLabel(block: LayoutBlock): string {
   const b = block as unknown as Record<string, unknown>;
-  if (b.blockName && typeof b.blockName === "string") return b.blockName;
+  if (b.blockName && typeof b.blockName === "string") {
+    return b.blockName;
+  }
   if (b.blockType && typeof b.blockType === "string") {
     return (b.blockType as string)
-      .replace(/([a-z])([A-Z])/g, "$1 $2")
-      .replace(/^./, (c) => c.toUpperCase());
+      .replace(CAMEL_CASE_RE, "$1 $2")
+      .replace(FIRST_CHAR_RE, (c) => c.toUpperCase());
   }
   return "Block";
 }
@@ -107,7 +113,10 @@ function structuralEntry(
   return {
     originalValue: null,
     currentValue: null,
-    label: fieldPath === "__structure" ? "Layout changes" : `${prefix}${humanizeFullPath(fieldPath)}`,
+    label:
+      fieldPath === "__structure"
+        ? "Layout changes"
+        : `${prefix}${humanizeFullPath(fieldPath)}`,
     blockIndex,
     fieldPath,
   };
@@ -148,7 +157,10 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
     const key = `${blockIndex}.${path}`;
 
     // Snapshot original on first edit to this field
-    if (!dirtyFields.has(key)) {
+    const existing = dirtyFields.get(key);
+    if (existing) {
+      existing.currentValue = value;
+    } else {
       const original = safeClone(
         getFieldValue(
           blocks[blockIndex] as unknown as Record<string, unknown>,
@@ -162,13 +174,11 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
         blockIndex,
         fieldPath: path,
       });
-    } else {
-      dirtyFields.get(key)!.currentValue = value;
     }
 
     // Auto-clean: if edited back to original, remove from dirty map
-    const entry = dirtyFields.get(key)!;
-    if (deepEqual(entry.currentValue, entry.originalValue)) {
+    const entry = dirtyFields.get(key);
+    if (entry && deepEqual(entry.currentValue, entry.originalValue)) {
       dirtyFields.delete(key);
     }
 
@@ -185,7 +195,9 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
   revertField: (dirtyKey) => {
     const { blocks, dirtyFields } = get();
     const entry = dirtyFields.get(dirtyKey);
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
 
     const updated = [...blocks];
     updated[entry.blockIndex] = setFieldValue(
@@ -242,7 +254,10 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       to
     ) as unknown as LayoutBlock;
     const key = `${blockIndex}.${arrayPath}`;
-    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath, blocks[blockIndex]));
+    dirtyFields.set(
+      key,
+      structuralEntry(blockIndex, arrayPath, blocks[blockIndex])
+    );
     set({ blocks: updated, dirtyFields: new Map(dirtyFields) });
   },
 
@@ -255,7 +270,10 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       index
     ) as unknown as LayoutBlock;
     const key = `${blockIndex}.${arrayPath}`;
-    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath, blocks[blockIndex]));
+    dirtyFields.set(
+      key,
+      structuralEntry(blockIndex, arrayPath, blocks[blockIndex])
+    );
     set({ blocks: updated, dirtyFields: new Map(dirtyFields) });
   },
 
@@ -268,7 +286,10 @@ export const useEditStore = create<EditModeStore>((set, get) => ({
       item
     ) as unknown as LayoutBlock;
     const key = `${blockIndex}.${arrayPath}`;
-    dirtyFields.set(key, structuralEntry(blockIndex, arrayPath, blocks[blockIndex]));
+    dirtyFields.set(
+      key,
+      structuralEntry(blockIndex, arrayPath, blocks[blockIndex])
+    );
     set({ blocks: updated, dirtyFields: new Map(dirtyFields) });
   },
 

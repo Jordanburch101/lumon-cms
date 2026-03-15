@@ -38,11 +38,18 @@ export function revalidateOnChange(options: RevalidateOptions = {}): {
       msg: `Revalidating doc:${collectionSlug}:${doc.id}`,
     });
 
-    revalidateTag(`doc:${collectionSlug}:${doc.id}`, "default");
-    revalidateTag(`collection:${collectionSlug}`, "default");
+    try {
+      revalidateTag(`doc:${collectionSlug}:${doc.id}`, "default");
+      revalidateTag(`collection:${collectionSlug}`, "default");
 
-    for (const tag of options.tags ?? []) {
-      revalidateTag(tag, "default");
+      for (const tag of options.tags ?? []) {
+        revalidateTag(tag, "default");
+      }
+    } catch (err) {
+      payload.logger.error({
+        msg: `Cache revalidation failed for doc:${collectionSlug}:${doc.id}`,
+        err,
+      });
     }
 
     return doc;
@@ -63,11 +70,18 @@ export function revalidateOnChange(options: RevalidateOptions = {}): {
       msg: `Revalidating (delete) doc:${collectionSlug}:${doc.id}`,
     });
 
-    revalidateTag(`doc:${collectionSlug}:${doc.id}`, "default");
-    revalidateTag(`collection:${collectionSlug}`, "default");
+    try {
+      revalidateTag(`doc:${collectionSlug}:${doc.id}`, "default");
+      revalidateTag(`collection:${collectionSlug}`, "default");
 
-    for (const tag of options.tags ?? []) {
-      revalidateTag(tag, "default");
+      for (const tag of options.tags ?? []) {
+        revalidateTag(tag, "default");
+      }
+    } catch (err) {
+      payload.logger.error({
+        msg: `Cache revalidation failed for doc:${collectionSlug}:${doc.id}`,
+        err,
+      });
     }
 
     return doc;

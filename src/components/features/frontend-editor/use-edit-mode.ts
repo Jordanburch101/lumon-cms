@@ -96,7 +96,9 @@ export function useBeforeUnloadGuard() {
   const dirtySize = useEditStore((s) => s.dirtyFields.size);
 
   useEffect(() => {
-    if (!active || dirtySize === 0) return;
+    if (!active || dirtySize === 0) {
+      return;
+    }
     const handler = (e: BeforeUnloadEvent) => e.preventDefault();
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);

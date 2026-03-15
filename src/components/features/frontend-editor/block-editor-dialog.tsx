@@ -586,7 +586,7 @@ function UploadFieldInput({
       credentials: "include",
       signal: controller.signal,
     })
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => {
         setThumbUrl(data?.url ?? null);
         setFilename(data?.filename ?? null);

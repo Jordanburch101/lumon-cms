@@ -15,10 +15,7 @@ import { cn } from "@/core/lib/utils";
 import { SaveControls } from "../frontend-editor/save-controls";
 import { useEditMode } from "../frontend-editor/use-edit-mode";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
-import {
-  AdminBarGlassCard,
-  AdminBarHoverCard,
-} from "./admin-bar-glass-card";
+import { AdminBarGlassCard, AdminBarHoverCard } from "./admin-bar-glass-card";
 
 interface AdminBarActionsProps {
   onOpenPalette: () => void;
@@ -157,13 +154,12 @@ export function AdminBarActions({
                       {key !== "__structure" && (
                         <button
                           className="shrink-0 text-black/40 transition-colors hover:text-black/80 dark:text-white/30 dark:hover:text-white/70"
-                          onClick={() =>
-                            editMode.actions.revertField(key)
-                          }
+                          onClick={() => editMode.actions.revertField(key)}
                           title="Revert this change"
                           type="button"
                         >
                           <svg
+                            aria-hidden="true"
                             fill="none"
                             height="12"
                             stroke="currentColor"

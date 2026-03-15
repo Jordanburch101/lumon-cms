@@ -1,5 +1,14 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, TextFieldValidation } from "payload";
 import { isAdminOrEditor } from "../access";
+
+const RESERVED_SLUGS = new Set(["admin", "api", "preview", "next", "media"]);
+
+const validateSlug: TextFieldValidation = (value) => {
+  if (typeof value === "string" && RESERVED_SLUGS.has(value)) {
+    return `"${value}" is a reserved slug and would conflict with internal routes`;
+  }
+  return true;
+};
 
 import { BentoBlock } from "../block-schemas/Bento";
 import { CinematicCtaBlock } from "../block-schemas/CinematicCta";
@@ -48,6 +57,7 @@ export const Pages: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      validate: validateSlug,
       admin: {
         position: "sidebar",
       },

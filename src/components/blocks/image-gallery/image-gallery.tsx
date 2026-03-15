@@ -29,6 +29,7 @@ export function ImageGallery({ items }: ImageGalleryBlock) {
 
   return (
     <section
+      aria-label="Image gallery"
       className="bg-black"
       data-navbar-contrast="light"
       ref={containerRef}

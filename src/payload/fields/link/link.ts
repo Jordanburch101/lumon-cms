@@ -59,8 +59,7 @@ function buildAppearanceFields(appearance: AppearanceOptions): Field[] {
       defaultValue: appearance.button.variants[0],
       options: toSelectOptions(appearance.button.variants),
       admin: {
-        condition: (_, siblingData) =>
-          siblingData?.appearanceType === "button",
+        condition: (_, siblingData) => siblingData?.appearanceType === "button",
       },
     });
   }
@@ -88,8 +87,7 @@ function buildAppearanceFields(appearance: AppearanceOptions): Field[] {
       options: toSelectOptions(appearance.button.sizes),
       admin: {
         width: "50%",
-        condition: (_, siblingData) =>
-          siblingData?.appearanceType === "button",
+        condition: (_, siblingData) => siblingData?.appearanceType === "button",
       },
     });
   }

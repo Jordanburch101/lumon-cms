@@ -313,6 +313,7 @@ function resolveEntry(
   return null;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive field map traversal with array/group nesting
 function lookupDescriptor(
   fields: BlockFieldMap,
   normalizedPath: string

@@ -139,7 +139,7 @@ export function UploadEditor({
     }
     setLoading(true);
     fetch("/api/media?limit=20&sort=-createdAt", { credentials: "include" })
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => {
         const docs: MediaItem[] = data?.docs ?? [];
         setMedia(docs);

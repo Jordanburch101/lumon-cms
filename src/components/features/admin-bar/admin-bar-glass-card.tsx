@@ -99,9 +99,13 @@ export function AdminBarHoverCard({
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      return;
+    }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") hide();
+      if (e.key === "Escape") {
+        hide();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -109,12 +113,16 @@ export function AdminBarHoverCard({
 
   useEffect(() => {
     return () => {
-      if (leaveRef.current) clearTimeout(leaveRef.current);
+      if (leaveRef.current) {
+        clearTimeout(leaveRef.current);
+      }
     };
   }, []);
 
   return (
     <div className="relative">
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: tooltip trigger wraps interactive children */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: tooltip trigger wraps interactive children */}
       <div onMouseEnter={show} onMouseLeave={scheduleHide}>
         {children}
       </div>

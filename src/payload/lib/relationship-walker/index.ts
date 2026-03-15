@@ -22,6 +22,13 @@ function resolveCollection(obj: AnyObject): string | undefined {
   return undefined;
 }
 
+/**
+ * Hard ceiling to stay safely under Next.js's 128-tag limit.
+ * The page itself uses 2 tags (collection:pages + doc:pages:id),
+ * so relationships get at most 120.
+ */
+const MAX_RELATIONSHIP_TAGS = 120;
+
 /** Walk one node, tagging any resolved relation, then recurse into children. */
 function walkNode(
   value: unknown,
@@ -29,6 +36,10 @@ function walkNode(
   counts: { tags: number }
 ): void {
   if (value === null || value === undefined) {
+    return;
+  }
+
+  if (counts.tags >= MAX_RELATIONSHIP_TAGS) {
     return;
   }
 
@@ -71,9 +82,9 @@ export function tagResolvedRelationships(doc: unknown): void {
   const counts = { tags: 0 };
   walkNode(doc, new WeakSet<object>(), counts);
 
-  if (counts.tags > 100) {
+  if (counts.tags >= MAX_RELATIONSHIP_TAGS) {
     console.warn(
-      `[revalidation] High tag count (${counts.tags}) — approaching 128 limit`
+      `[revalidation] Tag limit reached (${counts.tags}/${MAX_RELATIONSHIP_TAGS}) — some nested relationships may not invalidate`
     );
   }
 }

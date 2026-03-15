@@ -63,7 +63,7 @@ export function Testimonials({
   );
 
   return (
-    <section className="w-full" ref={sectionRef}>
+    <section aria-label="Testimonials" className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Section header */}
         <motion.div

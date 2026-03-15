@@ -120,20 +120,20 @@ describe("tagResolvedRelationships", () => {
     expect(taggedValues).toEqual(["doc:deep:7"]);
   });
 
-  it("warns when tag count exceeds 100", () => {
+  it("warns and caps tags at the relationship limit", () => {
     const warnSpy = spyOn(console, "warn").mockImplementation(() => {
       // intentional no-op stub
     });
 
     const relations: Record<string, unknown> = {};
-    for (let i = 0; i < 101; i++) {
+    for (let i = 0; i < 130; i++) {
       relations[`rel${i}`] = { id: i, relationTo: "items" };
     }
     tagResolvedRelationships(relations);
 
-    expect(taggedValues).toHaveLength(101);
+    expect(taggedValues.length).toBeLessThanOrEqual(120);
     expect(warnSpy).toHaveBeenCalledTimes(1);
-    expect(warnSpy.mock.calls[0][0]).toContain("High tag count");
+    expect(warnSpy.mock.calls[0][0]).toContain("Tag limit reached");
 
     warnSpy.mockRestore();
   });

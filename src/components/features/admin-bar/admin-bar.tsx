@@ -311,6 +311,7 @@ export function AdminBar() {
 
   // Toggle draft mode (ref-based guard keeps callback reference stable)
   const togglingRef = useRef(false);
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: draft toggle requires branching for preview routes
   const handleToggleDraft = useCallback(async () => {
     if (togglingRef.current) {
       return;
@@ -325,9 +326,10 @@ export function AdminBar() {
       if (res.ok) {
         const data = await res.json();
         // Strip /preview prefix if already on a preview route
+        const rawBase = pathname === "/" ? "/home" : pathname;
         const basePath = pathname.startsWith("/preview/")
           ? pathname.slice("/preview".length)
-          : pathname === "/" ? "/home" : pathname;
+          : rawBase;
         if (data.enabled) {
           window.location.href = `/preview${basePath}`;
         } else {

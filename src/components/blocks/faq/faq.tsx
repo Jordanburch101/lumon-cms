@@ -26,7 +26,7 @@ export function Faq({
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef}>
+    <section aria-label="Frequently asked questions" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.8fr] lg:gap-16">
           {/* Section header — pinned left on desktop */}
