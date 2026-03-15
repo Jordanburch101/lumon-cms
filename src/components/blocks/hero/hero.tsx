@@ -22,11 +22,23 @@ export function Hero({
   const posterUrl = getMediaUrl(posterSrc);
   const mediaType = url ? getMediaType(url) : "image";
 
+  const preloadHref = mediaType === "video" ? posterUrl || blurDataURL : url;
+
   return (
     <section
       className="relative min-h-[calc(100svh-56px)] w-full"
       data-navbar-contrast="light"
     >
+      {/* Preload the LCP image — React 19 hoists this to <head> */}
+      {preloadHref && (
+        <link
+          as="image"
+          fetchPriority="high"
+          href={preloadHref}
+          rel="preload"
+        />
+      )}
+
       {/* Background media */}
       {url && mediaType === "video" && (
         <video
