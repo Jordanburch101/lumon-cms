@@ -2,6 +2,7 @@ import type { LayoutBlock } from "@/types/block-types";
 import { BentoShowcase } from "./bento/bento";
 import { CinematicCta } from "./cinematic-cta/cinematic-cta";
 import { Faq } from "./faq/faq";
+import { FeaturesGrid } from "./features-grid/features-grid";
 import { Hero } from "./hero/hero";
 import { ImageGallery } from "./image-gallery/image-gallery";
 import { LatestArticles } from "./latest-articles/latest-articles";
@@ -31,6 +32,8 @@ export function renderBlock(block: LayoutBlock) {
       return <Pricing {...block} />;
     case "faq":
       return <Faq {...block} />;
+    case "featuresGrid":
+      return <FeaturesGrid {...block} />;
     case "trust":
       return <Trust {...block} />;
     case "richTextContent":
