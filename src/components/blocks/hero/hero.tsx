@@ -2,6 +2,9 @@ import Image from "next/image";
 import { CMSLink } from "@/components/ui/cms-link";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { HeroBlock } from "@/types/block-types";
+import { HeroCentered } from "./hero-centered";
+import { HeroMinimal } from "./hero-minimal";
+import { HeroSplit } from "./hero-split";
 
 const VIDEO_EXTENSION_RE = /\.(mp4|webm|ogg)$/i;
 
@@ -9,7 +12,7 @@ function getMediaType(src: string): "video" | "image" {
   return VIDEO_EXTENSION_RE.test(src) ? "video" : "image";
 }
 
-export function Hero({
+function HeroDefault({
   mediaSrc,
   posterSrc,
   headline,
@@ -100,4 +103,19 @@ export function Hero({
       </div>
     </section>
   );
+}
+
+export function Hero(props: HeroBlock) {
+  const variant = props.variant ?? "default";
+
+  switch (variant) {
+    case "centered":
+      return <HeroCentered {...props} />;
+    case "split":
+      return <HeroSplit {...props} />;
+    case "minimal":
+      return <HeroMinimal {...props} />;
+    default:
+      return <HeroDefault {...props} />;
+  }
 }
