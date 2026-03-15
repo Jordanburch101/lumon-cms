@@ -18,6 +18,7 @@ import { FeaturesGridBlock } from "../block-schemas/FeaturesGrid";
 import { HeroBlock } from "../block-schemas/Hero";
 import { ImageGalleryBlock } from "../block-schemas/ImageGallery";
 import { LatestArticlesBlock } from "../block-schemas/LatestArticles";
+import { LogoCloudBlock } from "../block-schemas/LogoCloud";
 import { PricingBlock } from "../block-schemas/Pricing";
 import { RichTextContentBlock } from "../block-schemas/RichTextContent";
 import { SplitMediaBlock } from "../block-schemas/SplitMedia";
@@ -82,6 +83,7 @@ export const Pages: CollectionConfig = {
         FeaturesGridBlock,
         TeamBlock,
         TrustBlock,
+        LogoCloudBlock,
         RichTextContentBlock,
       ],
     },

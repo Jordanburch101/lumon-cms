@@ -22,4 +22,5 @@ export type FaqBlock = ExtractBlock<"faq">;
 export type FeaturesGridBlock = ExtractBlock<"featuresGrid">;
 export type TeamBlock = ExtractBlock<"team">;
 export type TrustBlock = ExtractBlock<"trust">;
+export type LogoCloudBlock = ExtractBlock<"logoCloud">;
 export type RichTextContentBlock = ExtractBlock<"richTextContent">;
