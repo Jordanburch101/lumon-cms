@@ -125,10 +125,10 @@ export function HeroSplit({
             <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 lg:p-8">
               {/* Live Metrics badge */}
               <motion.div
-                animate={{ opacity: [0.5, 1, 0.5] }}
+                animate={{ opacity: [1, 0.6, 1] }}
                 className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-muted/50 px-3 py-1"
                 transition={{
-                  duration: 3,
+                  duration: 4,
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "easeInOut",
                 }}

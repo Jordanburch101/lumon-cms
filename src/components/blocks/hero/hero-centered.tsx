@@ -121,9 +121,11 @@ export function HeroCentered({
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
-      {/* Grid overlay with pulse */}
-      <div
-        className="pointer-events-none absolute inset-0 animate-pulse opacity-[0.03]"
+      {/* Grid overlay — one-shot fade after text reveals */}
+      <motion.div
+        animate={inView ? { opacity: [0.4, 0.2] } : {}}
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        initial={{ opacity: 0 }}
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)",
@@ -133,10 +135,11 @@ export function HeroCentered({
           WebkitMaskImage:
             "radial-gradient(ellipse at center, black 30%, transparent 70%)",
         }}
+        transition={{ duration: 2, ease: EASE }}
       />
 
       {/* Centered content */}
-      <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
+      <div className="relative z-10 mx-auto max-w-2xl px-4 text-center">
         <h1
           className="font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-7xl"
           data-field="headline"
@@ -145,7 +148,7 @@ export function HeroCentered({
             <motion.span
               animate={inView ? { opacity: 1, y: 0 } : {}}
               className="mr-[0.25em] inline-block"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               key={w.key}
               transition={{
                 duration: 0.6,

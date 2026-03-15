@@ -23,7 +23,7 @@ export function HeroMinimal({
       ref={sectionRef}
     >
       {/* Dark background */}
-      <div className="absolute inset-0 bg-black" />
+      <div className="absolute inset-0 bg-background" />
 
       {/* Radial gradient spotlight */}
       <motion.div
@@ -42,7 +42,7 @@ export function HeroMinimal({
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-3xl px-4 text-center">
+      <div className="relative z-10 mx-auto max-w-xl px-4 text-center">
         <motion.h1
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="font-semibold text-4xl text-white leading-tight sm:text-5xl lg:text-6xl"
@@ -87,8 +87,12 @@ export function HeroMinimal({
       {/* Bottom decorative divider — draws from center outward */}
       <motion.div
         animate={inView ? { scaleX: 1 } : {}}
-        className="absolute inset-x-0 bottom-0 mx-auto h-px max-w-2xl origin-center bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        className="absolute inset-x-0 bottom-0 mx-auto h-px w-[200px] origin-center"
         initial={{ scaleX: 0 }}
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, var(--border), transparent)",
+        }}
         transition={{ duration: 1, ease: EASE, delay: 0.4 }}
       />
     </section>
