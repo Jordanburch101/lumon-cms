@@ -29,9 +29,11 @@ export const HeroBlock: Block = {
         { siblingData }: { siblingData: Record<string, unknown> }
       ) => {
         const variant = (siblingData?.variant as string) ?? "default";
-        if (variant !== "minimal" && !val) {
-          return "Media is required for this variant";
-        }
+        if (variant === "minimal") return true;
+        // Split variant can use stats instead of media
+        const stats = siblingData?.stats as unknown[] | undefined;
+        if (variant === "split" && stats && stats.length > 0) return true;
+        if (!val) return "Media is required for this variant";
         return true;
       },
     },
