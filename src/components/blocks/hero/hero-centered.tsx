@@ -11,7 +11,7 @@ import Image from "next/image";
 import { type PointerEvent, useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
 import { getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
-import type { HeroBlock } from "@/types/block-types";
+import type { HeroCenteredBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -24,7 +24,7 @@ function MagneticCta({
   className?: string;
   "data-field-group"?: string;
   "data-field-group-type"?: string;
-  link?: HeroBlock["primaryCta"];
+  link?: HeroCenteredBlock["primaryCta"];
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -68,7 +68,7 @@ export function HeroCentered({
   subtext,
   primaryCta,
   secondaryCta,
-}: HeroBlock) {
+}: HeroCenteredBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 

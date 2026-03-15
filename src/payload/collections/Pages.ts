@@ -16,6 +16,9 @@ import { CtaBandBlock } from "../block-schemas/CtaBand";
 import { FaqBlock } from "../block-schemas/Faq";
 import { FeaturesGridBlock } from "../block-schemas/FeaturesGrid";
 import { HeroBlock } from "../block-schemas/Hero";
+import { HeroCenteredBlock } from "../block-schemas/HeroCentered";
+import { HeroMinimalBlock } from "../block-schemas/HeroMinimal";
+import { HeroStatsBlock } from "../block-schemas/HeroStats";
 import { ImageGalleryBlock } from "../block-schemas/ImageGallery";
 import { LatestArticlesBlock } from "../block-schemas/LatestArticles";
 import { LogoCloudBlock } from "../block-schemas/LogoCloud";
@@ -71,6 +74,9 @@ export const Pages: CollectionConfig = {
       type: "blocks",
       blocks: [
         HeroBlock,
+        HeroCenteredBlock,
+        HeroStatsBlock,
+        HeroMinimalBlock,
         BentoBlock,
         SplitMediaBlock,
         TestimonialsBlock,

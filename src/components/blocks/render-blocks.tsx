@@ -5,6 +5,9 @@ import { CtaBand } from "./cta-band/cta-band";
 import { Faq } from "./faq/faq";
 import { FeaturesGrid } from "./features-grid/features-grid";
 import { Hero } from "./hero/hero";
+import { HeroCentered } from "./hero/hero-centered";
+import { HeroMinimal } from "./hero/hero-minimal";
+import { HeroStats } from "./hero/hero-stats";
 import { ImageGallery } from "./image-gallery/image-gallery";
 import { LatestArticles } from "./latest-articles/latest-articles";
 import { LogoCloud } from "./logo-cloud/logo-cloud";
@@ -19,6 +22,12 @@ export function renderBlock(block: LayoutBlock) {
   switch (block.blockType) {
     case "hero":
       return <Hero {...block} />;
+    case "heroCentered":
+      return <HeroCentered {...block} />;
+    case "heroStats":
+      return <HeroStats {...block} />;
+    case "heroMinimal":
+      return <HeroMinimal {...block} />;
     case "bento":
       return <BentoShowcase {...block} />;
     case "splitMedia":

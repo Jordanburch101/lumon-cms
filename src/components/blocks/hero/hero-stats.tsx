@@ -11,7 +11,7 @@ import Image from "next/image";
 import { type PointerEvent, useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
 import { getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
-import type { HeroBlock } from "@/types/block-types";
+import type { HeroStatsBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -56,7 +56,7 @@ function TiltPanel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function HeroSplit({
+export function HeroStats({
   mediaSrc,
   posterSrc,
   headline,
@@ -64,7 +64,7 @@ export function HeroSplit({
   stats,
   primaryCta,
   secondaryCta,
-}: HeroBlock) {
+}: HeroStatsBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 

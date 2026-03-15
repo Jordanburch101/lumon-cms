@@ -3,7 +3,7 @@
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
-import type { HeroBlock } from "@/types/block-types";
+import type { HeroMinimalBlock } from "@/types/block-types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -12,7 +12,7 @@ export function HeroMinimal({
   subtext,
   primaryCta,
   secondaryCta,
-}: HeroBlock) {
+}: HeroMinimalBlock) {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 

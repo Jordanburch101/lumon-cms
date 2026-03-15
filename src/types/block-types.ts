@@ -10,6 +10,9 @@ export type ExtractBlock<T extends LayoutBlock["blockType"]> = Extract<
 >;
 
 export type HeroBlock = ExtractBlock<"hero">;
+export type HeroCenteredBlock = ExtractBlock<"heroCentered">;
+export type HeroStatsBlock = ExtractBlock<"heroStats">;
+export type HeroMinimalBlock = ExtractBlock<"heroMinimal">;
 export type BentoBlock = ExtractBlock<"bento">;
 export type SplitMediaBlock = ExtractBlock<"splitMedia">;
 export type TestimonialsBlock = ExtractBlock<"testimonials">;
