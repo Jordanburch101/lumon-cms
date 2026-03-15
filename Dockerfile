@@ -8,8 +8,7 @@ WORKDIR /app
 
 COPY package.json bun.lock ./
 
-RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 # =============================================================================
 # Stage 2: Build the application
@@ -46,8 +45,7 @@ RUN bun run generate:types && \
     bun run generate:importmap && \
     bun run generate:field-map
 
-RUN --mount=type=cache,id=nextjs-cache,target=/app/.next/cache \
-    bun --bun run build
+RUN bun --bun run build
 
 # =============================================================================
 # Stage 3: Production runner
