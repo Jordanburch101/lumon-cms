@@ -66,8 +66,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Non-root user
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs && \
+    useradd --system --uid 1001 --gid nodejs nextjs
 
 # Writable .next for ISR/PPR cache
 RUN mkdir -p .next && chown nextjs:nodejs .next
