@@ -323,7 +323,17 @@ export function AdminBar() {
         credentials: "include",
       });
       if (res.ok) {
-        window.location.reload();
+        const data = await res.json();
+        // Strip /preview prefix if already on a preview route
+        const basePath = pathname.startsWith("/preview/")
+          ? pathname.slice("/preview".length)
+          : pathname === "/" ? "/home" : pathname;
+        if (data.enabled) {
+          window.location.href = `/preview${basePath}`;
+        } else {
+          const publicPath = basePath === "/home" ? "/" : basePath;
+          window.location.href = publicPath;
+        }
       } else if (res.status === 401) {
         setUser(null);
       }
@@ -333,7 +343,7 @@ export function AdminBar() {
       togglingRef.current = false;
       setToggling(false);
     }
-  }, []);
+  }, [pathname]);
 
   // Collapse — capture dimensions for centering wrapper
   const handleCollapse = useCallback(() => {
