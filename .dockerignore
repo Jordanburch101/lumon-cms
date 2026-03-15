@@ -3,7 +3,7 @@
 node_modules
 .agents
 docs
-scripts
+scripts/upload-to-prod.ts
 .env
 .env.*
 !.env.example
