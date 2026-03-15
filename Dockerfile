@@ -20,9 +20,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build-time env vars (Railway injects these as build args)
-ARG DATABASE_URI
-ARG DATABASE_AUTH_TOKEN
+# Build-time env vars
+# DATABASE_URI is intentionally omitted — falls back to file:./payload.db
+# for codegen/build. Railway injects the real libsql URL at runtime.
 ARG PAYLOAD_SECRET
 ARG S3_BUCKET
 ARG S3_REGION
@@ -31,9 +31,7 @@ ARG S3_SECRET_ACCESS_KEY
 ARG S3_ENDPOINT
 ARG NEXT_PUBLIC_SERVER_URL
 
-ENV DATABASE_URI=${DATABASE_URI} \
-    DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} \
-    PAYLOAD_SECRET=${PAYLOAD_SECRET} \
+ENV PAYLOAD_SECRET=${PAYLOAD_SECRET} \
     S3_BUCKET=${S3_BUCKET} \
     S3_REGION=${S3_REGION} \
     S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID} \
