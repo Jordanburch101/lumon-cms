@@ -3,6 +3,7 @@ import { link } from "../fields/link/link";
 
 export const HeroCenteredBlock: Block = {
   slug: "heroCentered",
+  dbName: "heroCtrd",
   labels: { singular: "Hero Centered", plural: "Hero Centered" },
   fields: [
     { name: "mediaSrc", type: "upload", relationTo: "media", required: true },

@@ -3,6 +3,7 @@ import { link } from "../fields/link/link";
 
 export const HeroStatsBlock: Block = {
   slug: "heroStats",
+  dbName: "heroStat",
   labels: { singular: "Hero Stats", plural: "Hero Stats" },
   fields: [
     { name: "headline", type: "text", required: true },
