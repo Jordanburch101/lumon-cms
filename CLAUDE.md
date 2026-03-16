@@ -65,6 +65,8 @@ docs/plans/         — Design documents
 - `bun build` — Production build
 - `bun check` — Lint and format check (Ultracite)
 - `bun fix` — Auto-fix lint and format issues
+- `bun storybook` — Start Storybook dev server (port 6006)
+- `bun storybook:build` — Build static Storybook to `storybook-static/`
 
 ## Dev Server Rules
 
@@ -174,6 +176,39 @@ The `@payloadcms/plugin-mcp` is configured and connected via `.mcp.json`. It use
 - **URL**: `http://localhost:3000/admin`
 - **Email**: `jordanburch.dev@gmail.com`
 - **Password**: `meta1234`
+
+## Storybook
+
+Component catalogue for all block components with interactive controls, dark mode toggle, and responsive viewports.
+
+- **Live URL**: https://jordanburch101.github.io/lumon-cms/
+- **Dev**: `bun storybook` (port 6006)
+- **CI**: Auto-deploys to GitHub Pages on push to main (when block/storybook files change)
+
+### How it works
+
+A pre-build script (`.storybook/generate.ts`) reads the fixtures registry and generates story files automatically. No manual `.stories.tsx` files.
+
+### Adding a new block to Storybook
+
+1. Create the component in `src/components/blocks/<name>/` (existing step)
+2. Register it in `render-blocks.tsx` (existing step)
+3. Add fixture data to `src/components/blocks/__fixtures__/block-fixtures.ts`
+4. If the block has select/variant fields, add control definitions to `blockArgTypes` in the same file
+5. Stories appear automatically on next `bun storybook`
+
+### Key files
+
+- `.storybook/main.ts` — Framework config (Storybook 10, `@storybook/nextjs`)
+- `.storybook/preview.tsx` — Theme decorator, viewports, globals.css
+- `.storybook/generate.ts` — Story generator script
+- `src/components/blocks/__fixtures__/block-fixtures.ts` — Fixtures + argTypes registry
+
+### Addons
+
+- `@storybook/addon-themes` — Light/dark toggle in toolbar
+- `@storybook/addon-a11y` — Accessibility audit panel
+- `@github-ui/storybook-addon-performance-panel` — Performance metrics panel
 
 ## Figma
 
