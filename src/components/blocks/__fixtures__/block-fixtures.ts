@@ -1,12 +1,32 @@
 /**
  * Block fixtures — sample props for every block type.
  *
+ * Types flow directly from Payload's generated types (payload-types.ts → block-types.ts).
+ * This means TypeScript will catch missing required fields, typos, and invalid values.
+ *
  * Used by .storybook/generate.ts to auto-generate stories.
  * When adding a new block:
  *   1. Register it in render-blocks.tsx (you already do this)
- *   2. Add a fixture entry here with sample props
+ *   2. Add a fixture entry here with sample props — TypeScript guides you
  *   3. Stories appear automatically on next `bun storybook`
  */
+
+import type { ExtractBlock, LayoutBlock } from "@/types/block-types";
+
+/**
+ * Mapped type: one fixture per blockType, typed against Payload's generated schema.
+ * Uses DeepPartial so nested arrays/objects don't require every optional field,
+ * but top-level required fields (headline, blockType, etc.) are still enforced.
+ */
+type DeepPartial<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial<T[P]> }
+  : T;
+
+type BlockFixtures = {
+  [K in LayoutBlock["blockType"]]: DeepPartial<ExtractBlock<K>> & {
+    blockType: K;
+  };
+};
 
 // Mock media helper — creates a fake Media object that works with getMediaUrl()
 // Uses picsum.photos with seeded URLs for consistent images across builds
@@ -89,9 +109,7 @@ export const blockArgTypes: Record<string, Record<string, unknown>> = {
   // from the fixture values — no need to list them here
 };
 
-// Typed as Record for now — the generator reads keys dynamically.
-// Fixture keys MUST match blockType slugs in render-blocks.tsx.
-export const blockFixtures: Record<string, Record<string, unknown>> = {
+export const blockFixtures: BlockFixtures = {
   // ─── Hero Blocks ───────────────────────────────
   hero: {
     blockType: "hero",
