@@ -464,7 +464,6 @@ export const blockFixtures: BlockFixtures = {
       type: "external" as const,
       url: "#",
       label: "Contact your floor supervisor",
-      appearanceType: "link" as const,
     },
     items: [
       {
