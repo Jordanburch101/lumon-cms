@@ -6,7 +6,6 @@ const config: StorybookConfig = {
 
   // Addons — each adds a panel/feature to the Storybook UI
   addons: [
-    "@storybook/addon-essentials", // Controls, viewport, docs, actions
     "@storybook/addon-themes", // Light/dark theme toggle
     "@storybook/addon-a11y", // Accessibility audit panel
     "@github-ui/storybook-addon-performance-panel", // Perf metrics panel
