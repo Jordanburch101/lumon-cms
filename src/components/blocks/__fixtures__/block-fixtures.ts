@@ -113,11 +113,11 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   heroMinimal: {
     blockType: "heroMinimal",
-    headline: "The Board thanks you",
+    headline: "Build without limits.",
     subtext:
-      "Your continued compliance with severance protocol has been recognized. Please enjoy the perplex you have earned.",
-    primaryCta: mockCta("Acknowledge"),
-    secondaryCta: mockCta("View Protocol", "outline"),
+      "A Next.js + Payload CMS template designed for teams who ship. Everything you need, nothing you don't.",
+    primaryCta: mockCta("Get Started"),
+    secondaryCta: mockCta("View on GitHub", "outline"),
   },
 
   heroStats: {
@@ -172,8 +172,9 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   bento: {
     blockType: "bento",
-    headline: "Everything you need",
-    subtext: "A complete platform for severed floor operations.",
+    headline: "Everything you need, ready to ship",
+    subtext:
+      "A complete design system with production-grade components. Charts, forms, theming, and more — all wired up and ready to go.",
     image: {
       src: mockMedia("Bento Image", 600, 400),
       alt: "Dashboard preview",
@@ -196,27 +197,44 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
     rows: [
       {
         id: "r1",
-        headline: "Designed for compliance",
-        body: "Every interaction has been approved by the Board. Deviation is not possible.",
+        headline: "Refining the work you were designed to do",
+        body: "At Lumon, every detail of the severed floor is calibrated for focus. Our proprietary macrodata refinement process ensures your innies deliver results your outies can be proud of.",
         mediaSrc: mockMedia("split-office", 800, 600),
         mediaAlt: "Office corridor",
-        mediaLabel: "Severed Floor",
+        mediaLabel: "Process",
         mediaOverlay: {
-          title: "Lumon Industries HQ",
-          description: "Sub-level severed floor, east wing corridor B.",
-          badge: "Restricted",
+          title: "Macrodata Refinement",
+          badge: "Core",
+          description:
+            "Precise data categorization through intuitive pattern recognition.",
         },
       },
       {
         id: "r2",
-        headline: "Built for precision",
-        body: "Each department operates independently, connected only through Board-approved channels.",
+        headline: "The Perpetuity Wing awaits",
+        body: "Nine floors. Nine founders. A legacy preserved in wax and wonder. Every Lumon employee deserves to walk the halls that started it all.",
         mediaSrc: mockMedia("split-workspace", 800, 600),
         mediaAlt: "Workspace interior",
-        mediaLabel: "MDR Department",
+        mediaLabel: "Heritage",
         mediaOverlay: {
-          title: "Macrodata Refinement",
-          description: "Primary workstation cluster, capacity: 4 refiners.",
+          title: "Perpetuity Wing",
+          badge: "Landmark",
+          description:
+            "A tribute to the visionaries who built Lumon from the ground up.",
+        },
+      },
+      {
+        id: "r3",
+        headline: "Your outie loves the benefits",
+        body: "Competitive compensation. Wellness sessions with Ms. Casey. Waffle parties for top performers. Lumon takes care of its people — all of them.",
+        mediaSrc: mockMedia("split-benefits", 800, 600),
+        mediaAlt: "Employee benefits",
+        mediaLabel: "Culture",
+        mediaOverlay: {
+          title: "Employee Wellness",
+          badge: "Benefits",
+          description:
+            "Programs designed to nurture every aspect of the Lumon experience.",
         },
       },
     ],
@@ -224,35 +242,44 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   testimonials: {
     blockType: "testimonials",
-    headline: "Voices from the severed floor",
-    subtext: "What our innies are saying about the refinement process.",
+    headline: "Praise from the severed floor",
+    subtext:
+      "Every department. Every disposition. One unified appreciation for the work.",
     testimonials: [
       {
         id: "t1",
-        name: "Mark Scout",
-        role: "Department Chief",
-        department: "MDR",
+        name: "Harmony Cobel",
+        role: "Director, Severed Floor",
         quote:
-          "The work is mysterious and important. I find great satisfaction in not knowing what it means.",
+          "The severance procedure represents the single greatest advancement in workplace productivity since the assembly line. Our employees arrive each morning unburdened by personal entanglement, fully present, fully devoted. I have never seen a more content workforce — and I see everything.",
         featured: true,
         featuredQuote:
-          "Every day I wake up on that table and I choose to be here. Or at least, my outie chose for me.",
+          "The severance procedure represents the single greatest advancement in workplace productivity since the assembly line. Our employees arrive each morning unburdened by personal entanglement, fully present, fully devoted. I have never seen a more content workforce — and I see everything.",
       },
       {
         id: "t2",
-        name: "Helly Riggs",
-        role: "Refiner",
+        name: "Mark S.",
         department: "MDR",
-        quote:
-          "I have questions about the process that I am not permitted to ask.",
+        quote: "I enjoy every moment of my work day. I have no reason not to.",
       },
       {
         id: "t3",
-        name: "Irving Bailiff",
-        role: "Refiner",
+        name: "Helly R.",
+        department: "MDR",
+        quote: "I am grateful for the opportunity to serve Kier's vision.",
+      },
+      {
+        id: "t4",
+        name: "Irving B.",
+        department: "MDR",
+        quote: "The handbook says to find meaning in the work itself. I have.",
+      },
+      {
+        id: "t5",
+        name: "Dylan G.",
         department: "MDR",
         quote:
-          "The handbook is clear. Compliance is not optional, it is the foundation of our purpose.",
+          "The incentives are real and the waffle parties are worth every bin.",
       },
     ],
   },
@@ -262,10 +289,10 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
     items: [
       {
         id: "ig1",
-        label: "Perpetuity Wing",
-        caption: "A tribute to Kier Eagan's enduring vision.",
+        label: "The Severed Floor",
+        caption: "The elevator arrives. The work begins.",
         image: mockMedia("Gallery 1", 800, 600),
-        imageAlt: "Perpetuity Wing",
+        imageAlt: "The Severed Floor",
       },
       {
         id: "ig2",
@@ -286,17 +313,17 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   latestArticles: {
     blockType: "latestArticles",
-    headline: "From the severed floor",
-    subtext: "The latest dispatches from Lumon Industries.",
+    headline: "Latest from the blog",
+    subtext:
+      "Insights, updates, and dispatches from the severed floor and beyond.",
     articles: [
       {
         id: "a1",
-        title: "Q4 Refinement Metrics Exceed Projections",
-        excerpt:
-          "The Board is pleased to announce that departmental output has surpassed quarterly targets.",
-        category: "Reports",
+        title:
+          "Understanding the Severance Protocol: A New Era of Work-Life Balance",
+        category: "Research",
         image: mockMedia("Article 1", 600, 400),
-        imageAlt: "Quarterly report",
+        imageAlt: "Severance protocol research",
         href: "#",
         publishedAt: "2026-03-01",
         readTime: "4 min",
@@ -307,14 +334,14 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
       },
       {
         id: "a2",
-        title: "New Wellness Protocol Approved",
+        title: "Inside the Waffle Party: Lumon's Most Coveted Incentive",
         excerpt:
-          "Enhanced measurement protocols ensure continued employee satisfaction.",
-        category: "Announcements",
+          "What makes the waffle party the ultimate reward? We explore the history, the ritual, and why top refiners will do anything to earn one.",
+        category: "Culture",
         image: mockMedia("Article 2", 600, 400),
-        imageAlt: "Wellness protocol",
+        imageAlt: "Waffle party",
         href: "#",
-        publishedAt: "2026-02-15",
+        publishedAt: "2026-02-22",
         readTime: "3 min",
         author: {
           name: "Seth Milchick",
@@ -350,64 +377,108 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
   // ─── Social Proof ──────────────────────────────
   pricing: {
     blockType: "pricing",
-    headline: "Severance packages",
-    subtext: "Choose the procedure that's right for your outie.",
+    headline: "Choose your Severance Package",
+    subtext:
+      "Each tier has been carefully calibrated by the Board to maximize your contribution to the work.",
+    footnote: "The work is mysterious and important.",
+    footnoteAttribution: "Kier Eagan",
     tiers: [
       {
         id: "p1",
-        name: "Standard",
-        description: "For individual contributors",
-        monthlyPrice: 49,
-        annualPrice: 39,
+        name: "Innie",
+        description: "Begin your journey on the severed floor.",
+        monthlyPrice: 0,
+        annualPrice: 0,
         features: [
-          { id: "pf1", text: "Basic data refinement" },
-          { id: "pf2", text: "Quarterly wellness checks" },
-          { id: "pf3", text: "Break room access" },
+          { id: "pf1", text: "Macrodata access (read-only)" },
+          { id: "pf2", text: "Standard break allowance" },
+          { id: "pf3", text: "Handbook chapters 1–3" },
+          { id: "pf4", text: "Shared perpetuity wing access" },
+          { id: "pf5", text: "Basic wellness check" },
         ],
-        cta: mockCta("Get Started"),
+        cta: mockCta("Begin Orientation"),
       },
       {
         id: "p2",
-        name: "Department",
-        description: "For team leads and department chiefs",
-        monthlyPrice: 99,
-        annualPrice: 79,
+        name: "Refined",
+        description: "Full access to the work and its rewards.",
+        monthlyPrice: 49,
+        annualPrice: 39,
         recommended: true,
         badge: "Most Popular",
         features: [
-          { id: "pf4", text: "Advanced data refinement" },
-          { id: "pf5", text: "Weekly wellness checks" },
-          { id: "pf6", text: "Perpetuity Wing access" },
-          { id: "pf7", text: "Waffle party eligibility" },
+          { id: "pf6", text: "Everything in Innie" },
+          { id: "pf7", text: "Full refinement capabilities" },
+          { id: "pf8", text: "Priority waffle party queue" },
+          { id: "pf9", text: "Music-dance experience (monthly)" },
+          { id: "pf10", text: "Dedicated supervisor" },
+          { id: "pf11", text: "Egg bar access" },
         ],
-        cta: mockCta("Get Started"),
+        cta: mockCta("Begin Refinement"),
+      },
+      {
+        id: "p3",
+        name: "Perpetuity",
+        description: "For those who give everything to Kier's vision.",
+        monthlyPrice: 199,
+        annualPrice: 159,
+        features: [
+          { id: "pf12", text: "Everything in Refined" },
+          { id: "pf13", text: "Unlimited department transfers" },
+          { id: "pf14", text: "Private wellness sessions" },
+          { id: "pf15", text: "Board-level analytics" },
+          { id: "pf16", text: "Revolving (unlimited) incentives" },
+          { id: "pf17", text: "Custom orientation protocol" },
+        ],
+        cta: mockCta("Contact the Board"),
       },
     ],
   },
 
   faq: {
     blockType: "faq",
-    eyebrow: "Questions",
-    headline: "Frequently asked questions",
-    subtext: "Everything your innie needs to know.",
+    eyebrow: "Your outie has been informed of these answers",
+    headline: "Frequently Asked Questions",
+    subtext:
+      "The Board has pre-approved the following responses. Additional inquiries may be directed to your floor supervisor.",
+    ctaText: "Still have questions?",
+    cta: mockCta("Contact your floor supervisor"),
     items: [
       {
         id: "fq1",
-        question: "What is the severance procedure?",
+        question: "What happens during the severance procedure?",
         answer:
-          "The severance procedure creates a partition in the mind, separating work memories from personal memories. Your outie will not remember anything from the severed floor.",
+          "The procedure involves a minor surgical implant that creates a partition in the mind. Your work memories and personal memories are kept entirely separate. The process is quick, outpatient, and Board-approved.",
       },
       {
         id: "fq2",
-        question: "Can the procedure be reversed?",
+        question: "Can I contact my innie?",
         answer:
-          "The severance procedure is permanent and irreversible. This has been approved by the Board.",
+          "Direct communication between your innie and outie is not permitted under Lumon protocol. However, your outie will receive quarterly performance summaries via interdepartmental mail.",
       },
       {
         id: "fq3",
-        question: "What are the perks?",
+        question: "What is Macrodata Refinement?",
         answer:
-          "Eligible innies may receive waffle parties, music dance experiences, finger traps, and other Board-approved incentives.",
+          "Macrodata Refinement (MDR) is the process of sorting numbers into bins based on how they make you feel. The purpose of the work is classified, but the Board assures you it is important.",
+      },
+      {
+        id: "fq4",
+        question: "How are incentives determined?",
+        answer:
+          "Incentives are awarded based on departmental output and individual compliance scores. Top performers may earn waffle parties, music-dance experiences, finger traps, or coveted egg bar visits.",
+      },
+      {
+        id: "fq5",
+        question: "What is a waffle party?",
+        answer:
+          "The waffle party is Lumon's premier incentive experience. Details are confidential, but participants describe it as 'transformative.' Eligibility requires sustained excellence in refinement quotas.",
+      },
+      {
+        id: "fq6",
+        question: "Can the severance procedure be reversed?",
+        answer:
+          "The severance procedure is permanent and irreversible. This has been approved by the Board. Please direct any concerns to your floor supervisor.",
       },
     ],
   },
@@ -462,16 +533,44 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   trust: {
     blockType: "trust",
-    eyebrow: "Trusted worldwide",
+    eyebrow: "Your outie has been informed of these results",
     stats: [
-      { id: "ts1", label: "Departments", value: 12, format: "none" },
-      { id: "ts2", label: "Innies Severed", value: 4200, format: "k" },
+      { id: "ts1", label: "Refined Files", value: 847_000, format: "k" },
       {
-        id: "ts3",
-        label: "Compliance Rate",
-        value: 99.8,
+        id: "ts2",
+        label: "Severance Uptime",
+        value: 99.7,
         decimals: 1,
         suffix: "%",
+      },
+      { id: "ts3", label: "Wellness Score", value: 9.8, decimals: 1 },
+      { id: "ts4", label: "Departments", value: 16, suffix: "+" },
+    ],
+    logos: [
+      {
+        id: "tl1",
+        logo: mockMedia("Acme", 200, 80),
+        name: "Acme",
+      },
+      {
+        id: "tl2",
+        logo: mockMedia("Globex", 200, 80),
+        name: "Globex",
+      },
+      {
+        id: "tl3",
+        logo: mockMedia("Initech", 200, 80),
+        name: "Initech",
+      },
+      {
+        id: "tl4",
+        logo: mockMedia("Hooli", 200, 80),
+        name: "Hooli",
+      },
+      {
+        id: "tl5",
+        logo: mockMedia("Umbrella", 200, 80),
+        name: "Umbrella",
       },
     ],
   },
