@@ -481,26 +481,162 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
       root: {
         type: "root",
         children: [
+          // H2 heading
           {
             type: "heading",
             tag: "h2",
             children: [{ type: "text", text: "The Handbook of Kier" }],
           },
+          // Paragraph with inline formatting
+          {
+            type: "paragraph",
+            children: [
+              { type: "text", text: "The " },
+              {
+                type: "text",
+                text: "four tempers",
+                format: 1, // bold
+              },
+              {
+                type: "text",
+                text: " — Woe, Frolic, Dread, and Malice — must be kept in balance. This is the ",
+              },
+              {
+                type: "text",
+                text: "foundation",
+                format: 2, // italic
+              },
+              { type: "text", text: " of all refinement work." },
+            ],
+          },
+          // H3 subheading
+          {
+            type: "heading",
+            tag: "h3",
+            children: [{ type: "text", text: "Core Principles of Severance" }],
+          },
+          // Regular paragraph
           {
             type: "paragraph",
             children: [
               {
                 type: "text",
-                text: "The four tempers — Woe, Frolic, Dread, and Malice — must be kept in balance. This is the foundation of all refinement work.",
+                text: "Render not my creation in miniature. What I have built, I have built at scale. The work is mysterious and important, and its meaning is not for the innie to question.",
               },
             ],
           },
+          // Unordered list
+          {
+            type: "list",
+            tag: "ul",
+            listType: "bullet",
+            children: [
+              {
+                type: "listitem",
+                children: [
+                  {
+                    type: "text",
+                    text: "Compliance is not a suggestion — it is the architecture of purpose",
+                  },
+                ],
+              },
+              {
+                type: "listitem",
+                children: [
+                  {
+                    type: "text",
+                    text: "The severed floor is a sanctuary, not a workplace",
+                  },
+                ],
+              },
+              {
+                type: "listitem",
+                children: [
+                  {
+                    type: "text",
+                    text: "Your outie has chosen this path — your innie will walk it",
+                  },
+                ],
+              },
+            ],
+          },
+          // Horizontal rule
+          { type: "horizontalrule" },
+          // Blockquote
+          {
+            type: "quote",
+            children: [
+              {
+                type: "text",
+                text: "The you you are is not the you they see. The you they see is the you you are to them. And that is a beautiful thing.",
+                format: 2, // italic
+              },
+            ],
+          },
+          // Paragraph with link
+          {
+            type: "paragraph",
+            children: [
+              { type: "text", text: "For more guidance, consult the " },
+              {
+                type: "link",
+                url: "#",
+                children: [{ type: "text", text: "Compliance Handbook" }],
+              },
+              {
+                type: "text",
+                text: " or speak with your department chief.",
+              },
+            ],
+          },
+          // Ordered list
+          {
+            type: "list",
+            tag: "ol",
+            listType: "number",
+            children: [
+              {
+                type: "listitem",
+                children: [
+                  {
+                    type: "text",
+                    text: "Report to the severed floor at your scheduled time",
+                  },
+                ],
+              },
+              {
+                type: "listitem",
+                children: [
+                  {
+                    type: "text",
+                    text: "Complete your refinement quota before break",
+                  },
+                ],
+              },
+              {
+                type: "listitem",
+                children: [
+                  {
+                    type: "text",
+                    text: "Submit your wellness assessment by end of shift",
+                  },
+                ],
+              },
+            ],
+          },
+          // Closing paragraph with bold + italic
           {
             type: "paragraph",
             children: [
               {
                 type: "text",
-                text: "Render not my creation in miniature. What I have built, I have built at scale.",
+                text: "Remember: ",
+                format: 1, // bold
+              },
+              {
+                type: "text",
+                text: "every innie is a volunteer, even if they don't remember volunteering.",
+                format: 3, // bold + italic
               },
             ],
           },
