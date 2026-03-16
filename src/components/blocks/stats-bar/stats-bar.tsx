@@ -23,16 +23,17 @@ function AnimatedValue({
   inView: boolean;
   delay: number;
 }) {
+  // Start with the real value so the correct text shows if inView never fires
   const [displayed, setDisplayed] = useState(value);
   const hasAnimated = useRef(false);
-
-  // Parse numeric portion for counter animation
-  const numericMatch = value.match(NUMERIC_RE);
 
   useEffect(() => {
     if (!inView || hasAnimated.current) {
       return;
     }
+
+    // Parse numeric portion for counter animation
+    const numericMatch = value.match(NUMERIC_RE);
     if (!numericMatch) {
       hasAnimated.current = true;
       return;
@@ -82,7 +83,7 @@ function AnimatedValue({
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, delay, value, numericMatch]);
+  }, [inView, delay, value]);
 
   return <span>{displayed}</span>;
 }
