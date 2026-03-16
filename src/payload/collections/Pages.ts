@@ -12,6 +12,7 @@ const validateSlug: TextFieldValidation = (value) => {
 
 import { BentoBlock } from "../block-schemas/Bento";
 import { CinematicCtaBlock } from "../block-schemas/CinematicCta";
+import { ComparisonTableBlock } from "../block-schemas/ComparisonTable";
 import { CtaBandBlock } from "../block-schemas/CtaBand";
 import { FaqBlock } from "../block-schemas/Faq";
 import { FeaturesGridBlock } from "../block-schemas/FeaturesGrid";
@@ -20,13 +21,18 @@ import { HeroCenteredBlock } from "../block-schemas/HeroCentered";
 import { HeroMinimalBlock } from "../block-schemas/HeroMinimal";
 import { HeroStatsBlock } from "../block-schemas/HeroStats";
 import { ImageGalleryBlock } from "../block-schemas/ImageGallery";
+import { JobListingsBlock } from "../block-schemas/JobListings";
 import { LatestArticlesBlock } from "../block-schemas/LatestArticles";
 import { LogoCloudBlock } from "../block-schemas/LogoCloud";
+import { PartnerGridBlock } from "../block-schemas/PartnerGrid";
 import { PricingBlock } from "../block-schemas/Pricing";
 import { RichTextContentBlock } from "../block-schemas/RichTextContent";
 import { SplitMediaBlock } from "../block-schemas/SplitMedia";
+import { StatsBarBlock } from "../block-schemas/StatsBar";
+import { TabbedContentBlock } from "../block-schemas/TabbedContent";
 import { TeamBlock } from "../block-schemas/Team";
 import { TestimonialsBlock } from "../block-schemas/Testimonials";
+import { TimelineBlock } from "../block-schemas/Timeline";
 import { TrustBlock } from "../block-schemas/Trust";
 import { revalidateOnChange } from "../hooks/revalidateOnChange";
 
@@ -91,6 +97,12 @@ export const Pages: CollectionConfig = {
         TrustBlock,
         LogoCloudBlock,
         RichTextContentBlock,
+        StatsBarBlock,
+        PartnerGridBlock,
+        TimelineBlock,
+        TabbedContentBlock,
+        ComparisonTableBlock,
+        JobListingsBlock,
       ],
     },
     {
