@@ -157,7 +157,7 @@ function MilestoneContent({
   side,
 }: {
   blurDataURL: string | undefined;
-  iconData: ReturnType<(typeof FEATURE_ICONS)[string]> | null;
+  iconData: (typeof FEATURE_ICONS)[string] | null;
   imageSrc: string;
   index: number;
   inView: boolean;
