@@ -97,6 +97,7 @@ import { blockArgTypes, blockFixtures } from "./block-fixtures";
 
 const meta = {
   title: "Blocks/${category}",
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   // Pass fixture props as args so Storybook Controls panel works —
   // you can edit headings, subtext, variants, etc. just like in Payload admin
