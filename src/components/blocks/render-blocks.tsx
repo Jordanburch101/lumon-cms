@@ -20,6 +20,9 @@ import { StatsBar } from "./stats-bar/stats-bar";
 import { Team } from "./team/team";
 import { Testimonials } from "./testimonials/testimonials";
 import { Trust } from "./trust/trust";
+import { ComparisonTable } from "./comparison-table/comparison-table";
+import { TabbedContent } from "./tabbed-content/tabbed-content";
+import { Timeline } from "./timeline/timeline";
 
 export function renderBlock(block: LayoutBlock) {
   switch (block.blockType) {
@@ -65,6 +68,12 @@ export function renderBlock(block: LayoutBlock) {
       return <PartnerGrid {...block} />;
     case "jobListings":
       return <JobListings {...block} />;
+    case "timeline":
+      return <Timeline {...block} />;
+    case "tabbedContent":
+      return <TabbedContent {...block} />;
+    case "comparisonTable":
+      return <ComparisonTable {...block} />;
     default:
       return null;
   }
