@@ -460,7 +460,12 @@ export const blockFixtures: BlockFixtures = {
     subtext:
       "The Board has pre-approved the following responses. Additional inquiries may be directed to your floor supervisor.",
     ctaText: "Still have questions?",
-    cta: mockCta("Contact your floor supervisor"),
+    cta: {
+      type: "external" as const,
+      url: "#",
+      label: "Contact your floor supervisor",
+      appearanceType: "link" as const,
+    },
     items: [
       {
         id: "fq1",
