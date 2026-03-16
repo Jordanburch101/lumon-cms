@@ -1,5 +1,5 @@
-import type { Parameters } from "@storybook/react";
 import { withThemeByClassName } from "@storybook/addon-themes";
+import type { Parameters } from "@storybook/react";
 
 // Import the project's global styles — this loads all Tailwind v4 tokens,
 // oklch colors, fonts, and utility classes into Storybook

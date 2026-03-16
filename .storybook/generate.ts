@@ -115,29 +115,13 @@ type Story = StoryObj<typeof meta>;
       ? `\n  argTypes: blockArgTypes.${blockType} as any,`
       : "";
 
-    // Default variant
+    // One story per block — use toolbar to toggle dark mode and viewport
     code += `export const ${exportName}: Story = {
   name: "${displayName}",
   args: { ...blockFixtures.${blockType} },${argTypesLine}
 };\n\n`;
 
-    // Dark variant
-    code += `export const ${exportName}Dark: Story = {
-  name: "${displayName} (Dark)",
-  args: { ...blockFixtures.${blockType} },${argTypesLine}
-  globals: { theme: "dark" },
-};\n\n`;
-
-    // Mobile variant
-    code += `export const ${exportName}Mobile: Story = {
-  name: "${displayName} (Mobile)",
-  args: { ...blockFixtures.${blockType} },${argTypesLine}
-  parameters: {
-    viewport: { defaultViewport: "mobile" },
-  },
-};\n\n`;
-
-    totalStories += 3;
+    totalStories += 1;
   }
 
   writeFileSync(filepath, code, "utf-8");
