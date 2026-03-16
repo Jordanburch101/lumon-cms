@@ -63,4 +63,4 @@ docs
 
 # Storybook
 storybook-static/
-src/components/blocks/__fixtures__/blocks.stories.tsx
+src/components/blocks/__fixtures__/*.stories.tsx

@@ -9,14 +9,30 @@
  */
 
 // Mock media helper — creates a fake Media object that works with getMediaUrl()
-const mockMedia = (alt: string, w = 800, h = 600) => ({
+// Uses picsum.photos with seeded URLs for consistent images across builds
+const mockMedia = (seed: string, w = 800, h = 600) => ({
   id: 1,
-  alt,
-  url: `https://placehold.co/${w}x${h}/1a1a2e/ffffff?text=${encodeURIComponent(alt)}`,
-  filename: `${alt.toLowerCase().replace(/\s+/g, "-")}.webp`,
+  alt: seed,
+  url: `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`,
+  filename: `${seed.toLowerCase().replace(/\s+/g, "-")}.webp`,
   width: w,
   height: h,
   mimeType: "image/webp",
+});
+
+// Mock portrait helper — uses randomuser.me for realistic team/author photos
+const mockPortrait = (
+  name: string,
+  gender: "men" | "women",
+  index: number
+) => ({
+  id: index + 100,
+  alt: name,
+  url: `https://randomuser.me/api/portraits/${gender}/${index}.jpg`,
+  filename: `${name.toLowerCase().replace(/\s+/g, "-")}.jpg`,
+  width: 400,
+  height: 400,
+  mimeType: "image/jpeg",
 });
 
 // Mock CTA helper
@@ -226,7 +242,7 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
         readTime: "4 min",
         author: {
           name: "Harmony Cobel",
-          avatar: mockMedia("HC", 100, 100),
+          avatar: mockPortrait("Harmony Cobel", "women", 65),
         },
       },
       {
@@ -242,7 +258,7 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
         readTime: "3 min",
         author: {
           name: "Seth Milchick",
-          avatar: mockMedia("SM", 100, 100),
+          avatar: mockPortrait("Seth Milchick", "men", 52),
         },
       },
     ],
@@ -347,28 +363,28 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
         name: "Mark Scout",
         role: "Department Chief",
         department: "MDR",
-        photo: mockMedia("Mark Scout", 400, 533),
+        photo: mockPortrait("Mark Scout", "men", 32),
       },
       {
         id: "m2",
         name: "Helly Riggs",
         role: "Refiner",
         department: "MDR",
-        photo: mockMedia("Helly Riggs", 400, 533),
+        photo: mockPortrait("Helly Riggs", "women", 44),
       },
       {
         id: "m3",
         name: "Irving Bailiff",
         role: "Refiner",
         department: "MDR",
-        photo: mockMedia("Irving Bailiff", 400, 533),
+        photo: mockPortrait("Irving Bailiff", "men", 67),
       },
       {
         id: "m4",
         name: "Dylan George",
         role: "Refiner",
         department: "MDR",
-        photo: mockMedia("Dylan George", 400, 533),
+        photo: mockPortrait("Dylan George", "men", 15),
       },
     ],
   },
