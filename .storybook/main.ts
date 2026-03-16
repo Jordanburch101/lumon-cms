@@ -17,6 +17,12 @@ const config: StorybookConfig = {
     options: {},
   },
 
+  // Auto-generate a Docs page for each category — shows all stories
+  // on a single scrollable page with an args table for each block
+  docs: {
+    autodocs: true,
+  },
+
   // TypeScript — use Storybook's built-in handling
   typescript: {
     reactDocgen: "react-docgen-typescript",
