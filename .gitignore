@@ -60,3 +60,7 @@ src/payload-types.ts
 # Generated
 src/generated/
 docs
+
+# Storybook
+storybook-static/
+src/components/blocks/__fixtures__/blocks.stories.tsx

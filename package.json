@@ -13,7 +13,9 @@
     "generate:importmap": "bun scripts/gen-importmap.ts",
     "generate:field-map": "bun scripts/generate-field-map.ts",
     "test": "bun test",
-    "test:watch": "bun test --watch"
+    "test:watch": "bun test --watch",
+    "storybook": "bun .storybook/generate.ts && storybook dev -p 6006",
+    "storybook:build": "bun .storybook/generate.ts && storybook build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1006.0",
