@@ -27,6 +27,7 @@ Step-by-step recipes for adding blocks and collections to this codebase. Follow 
 | Block type extraction | `src/types/block-types.ts` |
 | Block components | `src/components/blocks/{kebab-name}/` |
 | Block renderer | `src/components/blocks/render-blocks.tsx` |
+| Storybook fixtures | `src/components/blocks/__fixtures__/block-fixtures.ts` |
 | Rich text converters | `src/components/features/rich-text/converters/{kebab-name}.tsx` |
 | Rich text converter index | `src/components/features/rich-text/converters/index.tsx` |
 | Frontend pages | `src/app/(frontend)/` |
@@ -180,7 +181,39 @@ File: `src/components/blocks/render-blocks.tsx`
 
 > If the block belongs to a collection other than Pages that has its own renderer, add the case there instead.
 
-**7. Verify**
+**7. Add Storybook fixture**
+
+File: `src/components/blocks/__fixtures__/block-fixtures.ts`
+
+Add an entry to `blockFixtures` with sample props for the new block. Use the existing `mockMedia()` and `mockCta()` helpers for media and CTA fields.
+
+```typescript
+{camelName}: {
+  blockType: "{camelName}",
+  // Add all required props with sample values
+  headline: "Sample headline",
+  // For media fields:
+  mediaSrc: mockMedia("{Human Name}", 800, 600),
+  // For CTA fields:
+  primaryCta: mockCta("Get Started"),
+},
+```
+
+If the block has select/variant fields, also add control definitions to `blockArgTypes`:
+
+```typescript
+{camelName}: {
+  variant: {
+    control: "select",
+    options: ["option1", "option2"],
+    description: "Description of the field",
+  },
+},
+```
+
+The story will appear automatically on next `bun storybook`. No manual story file needed.
+
+**8. Verify**
 
 ```bash
 bun check

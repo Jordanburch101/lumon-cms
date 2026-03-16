@@ -179,36 +179,12 @@ The `@payloadcms/plugin-mcp` is configured and connected via `.mcp.json`. It use
 
 ## Storybook
 
-Component catalogue for all block components with interactive controls, dark mode toggle, and responsive viewports.
+Auto-discovering component catalogue for all block components. Live at https://jordanburch101.github.io/lumon-cms/
 
-- **Live URL**: https://jordanburch101.github.io/lumon-cms/
-- **Dev**: `bun storybook` (port 6006)
-- **CI**: Auto-deploys to GitHub Pages on push to main (when block/storybook files change)
-
-### How it works
-
-A pre-build script (`.storybook/generate.ts`) reads the fixtures registry and generates story files automatically. No manual `.stories.tsx` files.
-
-### Adding a new block to Storybook
-
-1. Create the component in `src/components/blocks/<name>/` (existing step)
-2. Register it in `render-blocks.tsx` (existing step)
-3. Add fixture data to `src/components/blocks/__fixtures__/block-fixtures.ts`
-4. If the block has select/variant fields, add control definitions to `blockArgTypes` in the same file
-5. Stories appear automatically on next `bun storybook`
-
-### Key files
-
-- `.storybook/main.ts` — Framework config (Storybook 10, `@storybook/nextjs`)
-- `.storybook/preview.tsx` — Theme decorator, viewports, globals.css
-- `.storybook/generate.ts` — Story generator script
-- `src/components/blocks/__fixtures__/block-fixtures.ts` — Fixtures + argTypes registry
-
-### Addons
-
-- `@storybook/addon-themes` — Light/dark toggle in toolbar
-- `@storybook/addon-a11y` — Accessibility audit panel
-- `@github-ui/storybook-addon-performance-panel` — Performance metrics panel
+- Stories are auto-generated from fixtures — no manual `.stories.tsx` files
+- Adding a block to Storybook is covered in the `payload-ops` skill (Recipe 1, Step 7)
+- Config lives in `.storybook/`, fixtures in `src/components/blocks/__fixtures__/`
+- CI auto-deploys to GitHub Pages on push to main
 
 ## Figma
 
