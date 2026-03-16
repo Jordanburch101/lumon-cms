@@ -105,6 +105,14 @@ export const blockArgTypes: Record<string, Record<string, unknown>> = {
       description: "Content width constraint",
     },
   },
+  statsBar: {
+    variant: {
+      control: "select",
+      options: ["default", "card", "minimal"],
+      description:
+        "Visual style — default (dividers), card (individual cards), minimal (no borders)",
+    },
+  },
   // Text fields, arrays, and nested objects get auto-detected controls
   // from the fixture values — no need to list them here
 };
@@ -984,4 +992,170 @@ export const blockFixtures: BlockFixtures = {
       },
     },
   },
+
+  // ─── New Blocks (Batch 1) ──────────────────────────
+
+  // ─── New Blocks (Batch 1) ──────────────────────────
+
+  // ─── New Blocks (Batch 1) ──────────────────────────
+
+  statsBar: {
+    blockType: "statsBar",
+    eyebrow: "By the numbers",
+    variant: "default",
+    stats: [
+      {
+        id: "sb1",
+        value: "847k+",
+        label: "Files Refined",
+        description: "Across all departments since founding",
+      },
+      {
+        id: "sb2",
+        value: "99.7%",
+        label: "Severance Uptime",
+        description: "Board-certified operational continuity",
+      },
+      {
+        id: "sb3",
+        value: "9.8",
+        label: "Wellness Score",
+        description: "Average innie satisfaction rating",
+      },
+      {
+        id: "sb4",
+        value: "16+",
+        label: "Departments",
+        description: "Active severed floor divisions",
+      },
+    ],
+  },
+
+  partnerGrid: {
+    blockType: "partnerGrid",
+    eyebrow: "Integration Partners",
+    heading: "Built with the best in class",
+    description:
+      "Our technology partners share Lumon's commitment to precision and operational excellence.",
+    partners: [
+      {
+        id: "pg1",
+        logo: mockMedia("Vercel", 200, 80),
+        name: "Vercel",
+        description:
+          "Edge-first deployment with instant rollbacks and global CDN.",
+      },
+      {
+        id: "pg2",
+        logo: mockMedia("Stripe", 200, 80),
+        name: "Stripe",
+        description:
+          "Payment processing calibrated to the Board's specifications.",
+      },
+      {
+        id: "pg3",
+        logo: mockMedia("Resend", 200, 80),
+        name: "Resend",
+        description:
+          "Transactional email built for developers with real-time analytics.",
+      },
+      {
+        id: "pg4",
+        logo: mockMedia("Neon", 200, 80),
+        name: "Neon",
+        description:
+          "Serverless Postgres with branching. Scale to zero, query from the edge.",
+      },
+      {
+        id: "pg5",
+        logo: mockMedia("Cloudflare", 200, 80),
+        name: "Cloudflare",
+        description: "Global network security. Every request optimized.",
+      },
+      {
+        id: "pg6",
+        logo: mockMedia("Linear", 200, 80),
+        name: "Linear",
+        description: "Project management refined to its essence.",
+      },
+    ],
+  },
+
+  jobListings: {
+    blockType: "jobListings",
+    eyebrow: "Open Positions",
+    heading: "Join Lumon Industries",
+    description:
+      "Your outie has expressed interest in a career with Lumon. The Board is pleased.",
+    jobs: [
+      {
+        id: "jl1",
+        title: "Macrodata Refiner",
+        department: "MDR",
+        location: "Kier, PE",
+        type: "full-time",
+        salary: "$72k - $95k",
+        description: "Sort numbers into bins based on how they make you feel.",
+        link: mockCta("Apply Now"),
+      },
+      {
+        id: "jl2",
+        title: "Wellness Counselor",
+        department: "Wellness",
+        location: "Kier, PE",
+        type: "full-time",
+        salary: "$68k - $88k",
+        description:
+          "Guide severed employees through Board-approved techniques.",
+        link: mockCta("Apply Now"),
+      },
+      {
+        id: "jl3",
+        title: "Optics & Design Lead",
+        department: "O&D",
+        location: "Kier, PE",
+        type: "full-time",
+        salary: "$85k - $110k",
+        description:
+          "Lead creative direction for interdepartmental communications.",
+        link: mockCta("Apply Now"),
+      },
+      {
+        id: "jl4",
+        title: "Break Room Attendant",
+        department: "Facilities",
+        location: "Kier, PE",
+        type: "part-time",
+        salary: "$42k - $55k",
+        description: "Oversee recalibration sessions. Patience is essential.",
+        link: mockCta("Apply Now"),
+      },
+      {
+        id: "jl5",
+        title: "Severance Technician",
+        department: "Medical",
+        location: "Kier, PE",
+        type: "contract",
+        salary: "$95k - $130k",
+        description:
+          "Perform the severance procedure. Board certification required.",
+        link: mockCta("Apply Now"),
+      },
+    ],
+  },
+
+  // Placeholder fixtures for blocks not yet built (Batch 2)
+
+  tabbedContent: {
+    blockType: "tabbedContent",
+    heading: "Placeholder",
+    tabs: [],
+  },
+  comparisonTable: {
+    blockType: "comparisonTable",
+    heading: "Placeholder",
+    features: [],
+    plans: [],
+  },
+  timeline: { blockType: "timeline", heading: "Placeholder", items: [] },
 };

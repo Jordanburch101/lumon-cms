@@ -49,6 +49,12 @@ const CATEGORIES: Record<string, string> = {
   ctaBand: "CTAs",
   pricing: "Commerce",
   faq: "Commerce",
+  statsBar: "Social Proof",
+  partnerGrid: "Social Proof",
+  jobListings: "Commerce",
+  timeline: "Content",
+  tabbedContent: "Content",
+  comparisonTable: "Commerce",
 };
 
 // Convert blockType to readable display name

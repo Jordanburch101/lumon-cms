@@ -9,11 +9,14 @@ import { HeroCentered } from "./hero/hero-centered";
 import { HeroMinimal } from "./hero/hero-minimal";
 import { HeroStats } from "./hero/hero-stats";
 import { ImageGallery } from "./image-gallery/image-gallery";
+import { JobListings } from "./job-listings/job-listings";
 import { LatestArticles } from "./latest-articles/latest-articles";
 import { LogoCloud } from "./logo-cloud/logo-cloud";
+import { PartnerGrid } from "./partner-grid/partner-grid";
 import { Pricing } from "./pricing/pricing";
 import { RichTextContent } from "./rich-text-content/rich-text-content";
 import { SplitMedia } from "./split-media/split-media";
+import { StatsBar } from "./stats-bar/stats-bar";
 import { Team } from "./team/team";
 import { Testimonials } from "./testimonials/testimonials";
 import { Trust } from "./trust/trust";
@@ -56,6 +59,12 @@ export function renderBlock(block: LayoutBlock) {
       return <LogoCloud {...block} />;
     case "richTextContent":
       return <RichTextContent {...block} />;
+    case "statsBar":
+      return <StatsBar {...block} />;
+    case "partnerGrid":
+      return <PartnerGrid {...block} />;
+    case "jobListings":
+      return <JobListings {...block} />;
     default:
       return null;
   }
