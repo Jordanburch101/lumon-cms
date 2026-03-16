@@ -10,8 +10,9 @@
 
 // Mock media helper — creates a fake Media object that works with getMediaUrl()
 // Uses picsum.photos with seeded URLs for consistent images across builds
+let mediaIdCounter = 1;
 const mockMedia = (seed: string, w = 800, h = 600) => ({
-  id: 1,
+  id: mediaIdCounter++,
   alt: seed,
   url: `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`,
   filename: `${seed.toLowerCase().replace(/\s+/g, "-")}.webp`,
@@ -323,6 +324,8 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   cinematicCta: {
     blockType: "cinematicCta",
+    // Note: this is an image URL, not a real video — the <video> element won't play
+    // but the layout and overlay render correctly for visual testing
     videoSrc: mockMedia("CTA Video", 1920, 1080),
     label: "Interdepartmental Notice",
     headline: "Your outie is grateful",
@@ -493,7 +496,7 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
 
   richTextContent: {
     blockType: "richTextContent",
-    maxWidth: "prose",
+    maxWidth: "default",
     content: {
       root: {
         type: "root",
