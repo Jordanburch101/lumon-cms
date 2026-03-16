@@ -501,51 +501,75 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
       root: {
         type: "root",
         children: [
-          // H2 heading
+          // ─── H2 heading ────────────────────────────
           {
             type: "heading",
             tag: "h2",
             children: [{ type: "text", text: "The Handbook of Kier" }],
           },
-          // Paragraph with inline formatting
+
+          // ─── Paragraph with inline formatting ──────
+          // format bitmask: 1=bold, 2=italic, 3=bold+italic, 4=strikethrough, 8=underline, 16=code, 32=subscript, 64=superscript
           {
             type: "paragraph",
             children: [
               { type: "text", text: "The " },
-              {
-                type: "text",
-                text: "four tempers",
-                format: 1, // bold
-              },
+              { type: "text", text: "four tempers", format: 1 },
               {
                 type: "text",
                 text: " — Woe, Frolic, Dread, and Malice — must be kept in balance. This is the ",
               },
-              {
-                type: "text",
-                text: "foundation",
-                format: 2, // italic
-              },
-              { type: "text", text: " of all refinement work." },
+              { type: "text", text: "foundation", format: 2 },
+              { type: "text", text: " of all refinement work. The " },
+              { type: "text", text: "severance procedure", format: 8 },
+              { type: "text", text: " is " },
+              { type: "text", text: "permanent", format: 4 },
+              { type: "text", text: " irreversible. Section " },
+              { type: "text", text: "4.7(a)", format: 16 },
+              { type: "text", text: " of the handbook applies." },
             ],
           },
-          // H3 subheading
+
+          // ─── H3 subheading ─────────────────────────
           {
             type: "heading",
             tag: "h3",
             children: [{ type: "text", text: "Core Principles of Severance" }],
           },
-          // Regular paragraph
+
+          // ─── Regular paragraph with link ───────────
           {
             type: "paragraph",
             children: [
               {
                 type: "text",
-                text: "Render not my creation in miniature. What I have built, I have built at scale. The work is mysterious and important, and its meaning is not for the innie to question.",
+                text: "Render not my creation in miniature. What I have built, I have built at scale. For more guidance, consult the ",
+              },
+              {
+                type: "link",
+                url: "#",
+                children: [{ type: "text", text: "Compliance Handbook" }],
+              },
+              {
+                type: "text",
+                text: " or speak with your department chief.",
               },
             ],
           },
-          // Unordered list
+
+          // ─── Callout block: info ───────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "callout",
+              variant: "info",
+              title: "Important Notice",
+              content:
+                "All innies must complete their quarterly wellness assessment by end of day Friday. Failure to comply will result in a mandatory visit to the Break Room.",
+            },
+          },
+
+          // ─── Unordered list ────────────────────────
           {
             type: "list",
             tag: "ul",
@@ -580,36 +604,20 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
               },
             ],
           },
-          // Horizontal rule
-          { type: "horizontalrule" },
-          // Blockquote
+
+          // ─── Callout block: warning ────────────────
           {
-            type: "quote",
-            children: [
-              {
-                type: "text",
-                text: "The you you are is not the you they see. The you they see is the you you are to them. And that is a beautiful thing.",
-                format: 2, // italic
-              },
-            ],
+            type: "block",
+            fields: {
+              blockType: "callout",
+              variant: "warning",
+              title: "Restricted Area",
+              content:
+                "Access to the Perpetuity Wing is limited to authorized personnel. Unauthorized entry will be reported to the Board.",
+            },
           },
-          // Paragraph with link
-          {
-            type: "paragraph",
-            children: [
-              { type: "text", text: "For more guidance, consult the " },
-              {
-                type: "link",
-                url: "#",
-                children: [{ type: "text", text: "Compliance Handbook" }],
-              },
-              {
-                type: "text",
-                text: " or speak with your department chief.",
-              },
-            ],
-          },
-          // Ordered list
+
+          // ─── Ordered list ──────────────────────────
           {
             type: "list",
             tag: "ol",
@@ -644,19 +652,195 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
               },
             ],
           },
-          // Closing paragraph with bold + italic
+
+          // ─── Checklist ─────────────────────────────
           {
-            type: "paragraph",
+            type: "list",
+            tag: "ul",
+            listType: "check",
+            children: [
+              {
+                type: "listitem",
+                checked: true,
+                children: [
+                  { type: "text", text: "Attend morning orientation" },
+                ],
+              },
+              {
+                type: "listitem",
+                checked: true,
+                children: [
+                  { type: "text", text: "Review departmental protocols" },
+                ],
+              },
+              {
+                type: "listitem",
+                checked: false,
+                children: [
+                  {
+                    type: "text",
+                    text: "Complete macrodata refinement training",
+                  },
+                ],
+              },
+              {
+                type: "listitem",
+                checked: false,
+                children: [{ type: "text", text: "Schedule wellness session" }],
+              },
+            ],
+          },
+
+          // ─── Horizontal rule ───────────────────────
+          { type: "horizontalrule" },
+
+          // ─── Blockquote ────────────────────────────
+          {
+            type: "quote",
             children: [
               {
                 type: "text",
-                text: "Remember: ",
-                format: 1, // bold
+                text: "The you you are is not the you they see. The you they see is the you you are to them. And that is a beautiful thing.",
+                format: 2,
               },
+            ],
+          },
+
+          // ─── Rich text media block ─────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "richTextMedia",
+              mediaSrc: mockMedia("rich-text-media", 1200, 675),
+              caption: "The severed floor — Lumon Industries, Kier, PE",
+              credit: "Lumon Archives",
+              creditUrl: "#",
+              size: "large",
+              alignment: "center",
+              rounded: true,
+            },
+          },
+
+          // ─── H4 subheading ─────────────────────────
+          {
+            type: "heading",
+            tag: "h4",
+            children: [{ type: "text", text: "Departmental Procedures" }],
+          },
+
+          // ─── Callout block: tip ────────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "callout",
+              variant: "tip",
+              title: "Pro Tip",
+              content:
+                "If the numbers feel scary, try to remember: they are just as afraid of you as you are of them.",
+            },
+          },
+
+          // ─── Accordion block ───────────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "accordion",
+              items: [
+                {
+                  title: "What is Macrodata Refinement?",
+                  content:
+                    "Macrodata Refinement (MDR) is the process of sorting numbers into bins based on how they make you feel. The purpose of the work is classified.",
+                },
+                {
+                  title: "What are the four tempers?",
+                  content:
+                    "The four tempers are Woe, Frolic, Dread, and Malice. Each number you encounter will evoke one of these feelings. Sort accordingly.",
+                },
+                {
+                  title: "What happens in the Break Room?",
+                  content:
+                    "The Break Room is a space for reflection and recalibration. You will be asked to read a statement aloud until it is believed.",
+                },
+              ],
+            },
+          },
+
+          // ─── Button block ──────────────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "richTextButton",
+              link: {
+                type: "external",
+                url: "#",
+                label: "Begin Severance Procedure",
+                appearanceType: "button",
+                buttonVariant: "default",
+                buttonSize: "lg",
+              },
+            },
+          },
+
+          // ─── Embed block ───────────────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "embed",
+              url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+              aspectRatio: "16:9",
+              maxWidth: "large",
+            },
+          },
+
+          // ─── Callout block: error ──────────────────
+          {
+            type: "block",
+            fields: {
+              blockType: "callout",
+              variant: "error",
+              title: "Violation Detected",
+              content:
+                "Your recent behavior has been flagged for review. A representative from Optics & Design will visit your workstation shortly.",
+            },
+          },
+
+          // ─── Code block ────────────────────────────
+          {
+            type: "code",
+            language: "typescript",
+            children: [
+              {
+                type: "text",
+                // biome-ignore lint/suspicious/noTemplateCurlyInString: this is code content, not a template literal
+                text: 'const tempers = ["Woe", "Frolic", "Dread", "Malice"];\n\nfunction refine(number: number): string {\n  const feeling = tempers[number % 4];\n  return `Sorted to bin: ${feeling}`;\n}',
+              },
+            ],
+          },
+
+          // ─── Paragraph with subscript/superscript ──
+          {
+            type: "paragraph",
+            children: [
+              { type: "text", text: "The formula is H" },
+              { type: "text", text: "2", format: 32 },
+              { type: "text", text: "O and E=mc" },
+              { type: "text", text: "2", format: 64 },
+              {
+                type: "text",
+                text: ". These are Board-approved scientific facts.",
+              },
+            ],
+          },
+
+          // ─── Closing paragraph ─────────────────────
+          {
+            type: "paragraph",
+            children: [
+              { type: "text", text: "Remember: ", format: 1 },
               {
                 type: "text",
                 text: "every innie is a volunteer, even if they don't remember volunteering.",
-                format: 3, // bold + italic
+                format: 3,
               },
             ],
           },
