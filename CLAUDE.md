@@ -181,7 +181,7 @@ The `@payloadcms/plugin-mcp` is configured and connected via `.mcp.json`. It use
 
 Auto-discovering component catalogue for all block components. Live at https://jordanburch101.github.io/lumon-cms/
 
-- Stories are auto-generated from fixtures — no manual `.stories.tsx` files
+- Stories are auto-generated from fixtures — no manual `.stories.tsx` files, typed against Payload's generated types
 - Adding a block to Storybook is covered in the `payload-ops` skill (Recipe 1, Step 7)
 - Config lives in `.storybook/`, fixtures in `src/components/blocks/__fixtures__/`
 - CI auto-deploys to GitHub Pages on push to main

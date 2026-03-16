@@ -185,7 +185,7 @@ File: `src/components/blocks/render-blocks.tsx`
 
 File: `src/components/blocks/__fixtures__/block-fixtures.ts`
 
-Add an entry to `blockFixtures` with sample props for the new block. Use the existing `mockMedia()` and `mockCta()` helpers for media and CTA fields.
+Add an entry to `blockFixtures` with sample props for the new block. The fixtures are typed against Payload's generated types (`BlockFixtures` mapped type) — TypeScript will error if you miss required fields or use wrong field names. Use the existing `mockMedia()`, `mockPortrait()`, and `mockCta()` helpers for media and CTA fields. For inline links (like FAQ's CTA), use `appearanceType: "link"` instead of `mockCta()`.
 
 ```typescript
 {camelName}: {
