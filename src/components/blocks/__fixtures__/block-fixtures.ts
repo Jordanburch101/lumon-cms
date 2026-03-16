@@ -48,6 +48,46 @@ const mockCta = (
   buttonSize: "lg" as const,
 });
 
+/**
+ * ArgTypes — Storybook control definitions matching Payload field types.
+ *
+ * Maps blockType → field → control config. Only fields that need explicit
+ * controls are listed here. Simple strings/numbers get auto-detected.
+ * See: https://storybook.js.org/docs/api/arg-types
+ */
+export const blockArgTypes: Record<string, Record<string, unknown>> = {
+  ctaBand: {
+    variant: {
+      control: "select",
+      options: ["primary", "card"],
+      description: "Visual style — primary (solid bg) or card (bordered)",
+    },
+  },
+  logoCloud: {
+    variant: {
+      control: "select",
+      options: ["scroll", "grid"],
+      description: "Layout — scrolling row or featured grid",
+    },
+  },
+  team: {
+    variant: {
+      control: "select",
+      options: ["detailed", "compact"],
+      description: "Card style — detailed (with bio/links) or compact",
+    },
+  },
+  richTextContent: {
+    maxWidth: {
+      control: "select",
+      options: ["narrow", "default", "wide"],
+      description: "Content width constraint",
+    },
+  },
+  // Text fields, arrays, and nested objects get auto-detected controls
+  // from the fixture values — no need to list them here
+};
+
 export const blockFixtures: Record<string, Record<string, unknown>> = {
   // ─── Hero Blocks ───────────────────────────────
   hero: {
