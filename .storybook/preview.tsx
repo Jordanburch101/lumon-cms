@@ -1,19 +1,23 @@
-import type { Decorator, Parameters } from "@storybook/react";
+import type { Parameters } from "@storybook/react";
+import { withThemeByClassName } from "@storybook/addon-themes";
 
 // Import the project's global styles — this loads all Tailwind v4 tokens,
 // oklch colors, fonts, and utility classes into Storybook
 import "../src/app/globals.css";
 
 // ---------- Theme decorator ----------
-// Applies "light" or "dark" class to <html> just like next-themes does.
-// The toolbar button in Storybook controls which value is used.
-const withTheme: Decorator = (Story, context) => {
-  const theme = context.globals?.theme || "light";
-  document.documentElement.className = theme;
-  return <Story />;
-};
-
-export const decorators: Decorator[] = [withTheme];
+// Uses addon-themes to apply "light" or "dark" class to <html>,
+// matching how next-themes works in the real app.
+// This fires reliably on initial render (unlike manual decorators).
+export const decorators = [
+  withThemeByClassName({
+    defaultTheme: "light",
+    themes: {
+      light: "light",
+      dark: "dark",
+    },
+  }),
+];
 
 // ---------- Global parameters ----------
 export const parameters: Parameters = {
@@ -44,22 +48,4 @@ export const parameters: Parameters = {
   },
   // Default layout — fullscreen so blocks render at full width
   layout: "fullscreen",
-};
-
-// ---------- Globals ----------
-// These power the theme toggle toolbar button
-export const globalTypes = {
-  theme: {
-    name: "Theme",
-    description: "Light or dark mode",
-    defaultValue: "light",
-    toolbar: {
-      icon: "circlehollow",
-      items: [
-        { value: "light", icon: "sun", title: "Light" },
-        { value: "dark", icon: "moon", title: "Dark" },
-      ],
-      showName: true,
-    },
-  },
 };
