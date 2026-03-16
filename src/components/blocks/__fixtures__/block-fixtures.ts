@@ -89,6 +89,8 @@ export const blockArgTypes: Record<string, Record<string, unknown>> = {
   // from the fixture values — no need to list them here
 };
 
+// Typed as Record for now — the generator reads keys dynamically.
+// Fixture keys MUST match blockType slugs in render-blocks.tsx.
 export const blockFixtures: Record<string, Record<string, unknown>> = {
   // ─── Hero Blocks ───────────────────────────────
   hero: {
@@ -423,21 +425,30 @@ export const blockFixtures: Record<string, Record<string, unknown>> = {
         name: "Mark Scout",
         role: "Department Chief",
         department: "MDR",
+        bio: "Leads the Macrodata Refinement team with quiet resolve. His outie chose this path, and his innie walks it dutifully.",
         photo: mockPortrait("Mark Scout", "men", 32),
+        links: [
+          { id: "ml1", platform: "linkedin", url: "#" },
+          { id: "ml2", platform: "github", url: "#" },
+        ],
       },
       {
         id: "m2",
         name: "Helly Riggs",
         role: "Refiner",
         department: "MDR",
+        bio: "The newest member of the MDR team. Adjusting to the severance procedure with characteristic determination.",
         photo: mockPortrait("Helly Riggs", "women", 44),
+        links: [{ id: "ml3", platform: "twitter", url: "#" }],
       },
       {
         id: "m3",
         name: "Irving Bailiff",
         role: "Refiner",
         department: "MDR",
+        bio: "A devoted adherent to the teachings of Kier Eagan. Believes deeply in the handbook and its principles.",
         photo: mockPortrait("Irving Bailiff", "men", 67),
+        links: [{ id: "ml4", platform: "website", url: "#" }],
       },
       {
         id: "m4",
