@@ -156,6 +156,8 @@ When you encounter a task outside your current skillset — or the user asks "ho
 
 The `@payloadcms/plugin-mcp` is configured and connected via `.mcp.json`. It uses HTTP transport at `http://localhost:3000/api/mcp` with Bearer token auth.
 
+**IMPORTANT: Always use MCP tools for CMS data operations** (creating, updating, reading, deleting pages/media/content). Do not use the REST API via fetch/curl unless the MCP tool can't handle the operation (e.g., media file uploads). The MCP tools are the primary interface for CMS content work.
+
 **Available MCP tools** (require dev server running):
 - `mcp__payload__findPages` / `createPages` / `updatePages` / `deletePages`
 - `mcp__payload__findMedia` / `createMedia` / `updateMedia` / `deleteMedia`
