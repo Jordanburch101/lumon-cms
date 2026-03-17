@@ -1150,11 +1150,52 @@ export const blockFixtures: BlockFixtures = {
     blockType: "tabbedContent",
     eyebrow: "Platform",
     heading: "One platform, every capability",
-    description: "Each module has been calibrated by the Board for maximum operational efficiency.",
+    description:
+      "Each module has been calibrated by the Board for maximum operational efficiency.",
     tabs: [
-      { id: "tc1", label: "Refinement", icon: "layers", heading: "Macrodata Refinement Engine", description: "Our proprietary refinement process sorts numbers into bins based on how they make you feel. The work is mysterious and important.", image: mockMedia("tab-refinement", 800, 600), features: [{ id: "tf1", text: "Real-time number sorting" }, { id: "tf2", text: "Four-temper classification" }, { id: "tf3", text: "Automated bin assignment" }, { id: "tf4", text: "Wellness-score integration" }] },
-      { id: "tc2", label: "Analytics", icon: "chart", heading: "Board-Level Analytics", description: "Granular reporting on departmental output, compliance metrics, and interdepartmental synergy.", image: mockMedia("tab-analytics", 800, 600), features: [{ id: "tf5", text: "Department dashboards" }, { id: "tf6", text: "Compliance scoring" }, { id: "tf7", text: "Quarterly trend analysis" }] },
-      { id: "tc3", label: "Wellness", icon: "shieldCheck", heading: "Employee Wellness System", description: "Continuous monitoring of innie wellbeing through Board-approved measurement protocols.", image: mockMedia("tab-wellness", 800, 600), features: [{ id: "tf8", text: "Mood-based assessments" }, { id: "tf9", text: "Break Room scheduling" }, { id: "tf10", text: "Incentive tracking" }] },
+      {
+        id: "tc1",
+        label: "Refinement",
+        icon: "layers",
+        heading: "Macrodata Refinement Engine",
+        description:
+          "Our proprietary refinement process sorts numbers into bins based on how they make you feel. The work is mysterious and important.",
+        image: mockMedia("tab-refinement", 800, 600),
+        features: [
+          { id: "tf1", text: "Real-time number sorting" },
+          { id: "tf2", text: "Four-temper classification" },
+          { id: "tf3", text: "Automated bin assignment" },
+          { id: "tf4", text: "Wellness-score integration" },
+        ],
+      },
+      {
+        id: "tc2",
+        label: "Analytics",
+        icon: "chart",
+        heading: "Board-Level Analytics",
+        description:
+          "Granular reporting on departmental output, compliance metrics, and interdepartmental synergy.",
+        image: mockMedia("tab-analytics", 800, 600),
+        features: [
+          { id: "tf5", text: "Department dashboards" },
+          { id: "tf6", text: "Compliance scoring" },
+          { id: "tf7", text: "Quarterly trend analysis" },
+        ],
+      },
+      {
+        id: "tc3",
+        label: "Wellness",
+        icon: "shieldCheck",
+        heading: "Employee Wellness System",
+        description:
+          "Continuous monitoring of innie wellbeing through Board-approved measurement protocols.",
+        image: mockMedia("tab-wellness", 800, 600),
+        features: [
+          { id: "tf8", text: "Mood-based assessments" },
+          { id: "tf9", text: "Break Room scheduling" },
+          { id: "tf10", text: "Incentive tracking" },
+        ],
+      },
     ],
   },
   comparisonTable: {
@@ -1173,9 +1214,58 @@ export const blockFixtures: BlockFixtures = {
       { id: "cf8", name: "Board-level analytics", category: "Access" },
     ],
     plans: [
-      { id: "cp1", name: "Innie", price: "Free", description: "Begin your journey", cta: mockCta("Start Free"), values: [{ featureIndex: 0, value: "partial" }, { featureIndex: 1, value: "excluded" }, { featureIndex: 2, value: "text", textValue: "Standard" }, { featureIndex: 3, value: "excluded" }, { featureIndex: 4, value: "text", textValue: "Basic" }, { featureIndex: 5, value: "excluded" }, { featureIndex: 6, value: "partial" }, { featureIndex: 7, value: "excluded" }] },
-      { id: "cp2", name: "Refined", price: "$49/mo", description: "Full access to the work", recommended: true, cta: mockCta("Begin Refinement"), values: [{ featureIndex: 0, value: "included" }, { featureIndex: 1, value: "included" }, { featureIndex: 2, value: "text", textValue: "Extended" }, { featureIndex: 3, value: "included" }, { featureIndex: 4, value: "text", textValue: "Weekly" }, { featureIndex: 5, value: "included" }, { featureIndex: 6, value: "included" }, { featureIndex: 7, value: "excluded" }] },
-      { id: "cp3", name: "Perpetuity", price: "$199/mo", description: "Everything to Kier's vision", cta: mockCta("Contact the Board"), values: [{ featureIndex: 0, value: "included" }, { featureIndex: 1, value: "included" }, { featureIndex: 2, value: "text", textValue: "Unlimited" }, { featureIndex: 3, value: "included" }, { featureIndex: 4, value: "text", textValue: "Private" }, { featureIndex: 5, value: "included" }, { featureIndex: 6, value: "included" }, { featureIndex: 7, value: "included" }] },
+      {
+        id: "cp1",
+        name: "Innie",
+        price: "Free",
+        description: "Begin your journey",
+        cta: mockCta("Start Free"),
+        values: [
+          { featureIndex: 0, value: "partial" },
+          { featureIndex: 1, value: "excluded" },
+          { featureIndex: 2, value: "text", textValue: "Standard" },
+          { featureIndex: 3, value: "excluded" },
+          { featureIndex: 4, value: "text", textValue: "Basic" },
+          { featureIndex: 5, value: "excluded" },
+          { featureIndex: 6, value: "partial" },
+          { featureIndex: 7, value: "excluded" },
+        ],
+      },
+      {
+        id: "cp2",
+        name: "Refined",
+        price: "$49/mo",
+        description: "Full access to the work",
+        recommended: true,
+        cta: mockCta("Begin Refinement"),
+        values: [
+          { featureIndex: 0, value: "included" },
+          { featureIndex: 1, value: "included" },
+          { featureIndex: 2, value: "text", textValue: "Extended" },
+          { featureIndex: 3, value: "included" },
+          { featureIndex: 4, value: "text", textValue: "Weekly" },
+          { featureIndex: 5, value: "included" },
+          { featureIndex: 6, value: "included" },
+          { featureIndex: 7, value: "excluded" },
+        ],
+      },
+      {
+        id: "cp3",
+        name: "Perpetuity",
+        price: "$199/mo",
+        description: "Everything to Kier's vision",
+        cta: mockCta("Contact the Board"),
+        values: [
+          { featureIndex: 0, value: "included" },
+          { featureIndex: 1, value: "included" },
+          { featureIndex: 2, value: "text", textValue: "Unlimited" },
+          { featureIndex: 3, value: "included" },
+          { featureIndex: 4, value: "text", textValue: "Private" },
+          { featureIndex: 5, value: "included" },
+          { featureIndex: 6, value: "included" },
+          { featureIndex: 7, value: "included" },
+        ],
+      },
     ],
   },
   timeline: {
@@ -1184,12 +1274,60 @@ export const blockFixtures: BlockFixtures = {
     heading: "The History of Lumon Industries",
     description: "From a single vision to a severed empire.",
     items: [
-      { id: "tl1", date: "1865", icon: "layers", heading: "Kier Eagan founds Lumon", description: "What began as a modest topical salve company in the town of Kier, PE would grow into one of the world's most enigmatic corporations." },
-      { id: "tl2", date: "1941", icon: "shieldCheck", heading: "The Eagan dynasty continues", description: "Successive generations of Eagans maintain the founding vision, expanding Lumon's reach across industries and continents." },
-      { id: "tl3", date: "2003", icon: "lightning", heading: "Severance technology conceived", description: "Lumon researchers achieve a breakthrough in neural partitioning, laying the groundwork for the severance procedure." },
-      { id: "tl4", date: "2018", icon: "lock", heading: "First severed floor opens", description: "The inaugural severed floor begins operations with a small team of pioneers. The Macrodata Refinement department is born." },
-      { id: "tl5", date: "2024", icon: "chart", heading: "Global expansion", description: "Lumon opens severed floors in 16 departments worldwide. The Board approves the most ambitious growth plan in company history." },
-      { id: "tl6", date: "2026", icon: "globe", heading: "The future is severed", description: "With near-perfect wellness scores and record refinement output, Lumon proves that the future of work is mysterious, important, and here." },
+      {
+        id: "tl1",
+        date: "1865",
+        heading: "Kier Eagan Founds Lumon",
+        description:
+          "What began as a modest topical salve company in the town of Kier, PE would grow into one of the world's most enigmatic corporations.",
+        category: "Origins",
+      },
+      {
+        id: "tl2",
+        date: "2003",
+        heading: "Severance Technology Conceived",
+        description:
+          "Lumon researchers achieve a breakthrough in neural partitioning, laying the groundwork for the severance procedure.",
+        stat: "847",
+        statLabel: "volunteers in first trial",
+        category: "Product",
+      },
+      {
+        id: "tl3",
+        date: "2018",
+        heading: "First Severed Floor Opens",
+        description:
+          "The inaugural severed floor begins operations with a small team of pioneers. The Macrodata Refinement department is born.",
+      },
+      {
+        id: "tl4",
+        date: "2020",
+        heading: "Macrodata Refinement Scaled",
+        description:
+          "The severed floor expands to multiple departments, each handling classified data categories with growing operational capacity.",
+        stat: "12K",
+        statLabel: "severed employees worldwide",
+        category: "Growth",
+      },
+      {
+        id: "tl5",
+        date: "2024",
+        heading: "Global Expansion",
+        description:
+          "Lumon opens severed floors in 16 countries. The Board approves the most ambitious growth plan in company history.",
+        stat: "$4.2B",
+        statLabel: "annual revenue",
+      },
+      {
+        id: "tl6",
+        date: "2026",
+        heading: "The Future Is Severed",
+        description:
+          "With near-perfect wellness scores and record refinement output, Lumon proves that the future of work is here.",
+        stat: "99.9%",
+        statLabel: "wellness score average",
+        category: "Milestone",
+      },
     ],
   },
 };
