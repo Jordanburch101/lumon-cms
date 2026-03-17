@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
 import type { BentoBlock } from "@/types/block-types";
-
-const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 
 export function ImageCard({ image }: { image: BentoBlock["image"] }) {
   const src = getMediaUrl(image.src);
@@ -11,7 +9,7 @@ export function ImageCard({ image }: { image: BentoBlock["image"] }) {
   const { alt, title, description } = image;
   const badge = image.badge ?? null;
 
-  const isVideo = VIDEO_RE.test(src);
+  const isVideo = isVideoUrl(src);
 
   return (
     <div className="relative h-full overflow-hidden rounded-xl border border-border/50 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">

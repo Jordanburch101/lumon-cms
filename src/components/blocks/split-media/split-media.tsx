@@ -13,10 +13,9 @@ import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { CMSLink } from "@/components/ui/cms-link";
 import { useNearViewport } from "@/core/hooks/use-near-viewport";
-import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { cn, getBlurDataURL, getMediaUrl, isVideoUrl } from "@/core/lib/utils";
 import type { SplitMediaBlock } from "@/types/block-types";
 
-const VIDEO_RE = /\.(mp4|webm|ogg)$/i;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** A single row from the CMS block data. */
@@ -28,7 +27,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
   const isNearViewport = useNearViewport(rowRef);
   const mediaSrc = getMediaUrl(row.mediaSrc);
   const blurDataURL = getBlurDataURL(row.mediaSrc);
-  const isVideo = VIDEO_RE.test(mediaSrc);
+  const isVideo = isVideoUrl(mediaSrc);
   const mediaFirst = index % 2 === 0;
 
   // Detect desktop for parallax (mobile gets no parallax per spec)
