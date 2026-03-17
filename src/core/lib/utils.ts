@@ -5,9 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Resolve a Payload Media relation (populated object, ID, or string URL) to a URL. */
+/** Resolve a Payload Media relation (populated object, ID, or string URL) to a URL.
+ *  Appends `?v=updatedAt` when available to bust CDN/browser caches on re-upload or crop. */
 export function getMediaUrl(
-  media: number | string | { url?: string | null } | undefined | null
+  media:
+    | number
+    | string
+    | { url?: string | null; updatedAt?: string | null }
+    | undefined
+    | null
 ): string {
   if (!media || typeof media === "number") {
     return "";
@@ -15,7 +21,12 @@ export function getMediaUrl(
   if (typeof media === "string") {
     return media;
   }
-  return media.url || "";
+  const url = media.url || "";
+  if (!(url && media.updatedAt)) {
+    return url;
+  }
+  const v = new Date(media.updatedAt).getTime();
+  return `${url}?v=${String(v)}`;
 }
 
 /** Extract blurDataURL from a Payload Media object for next/image placeholder. */
