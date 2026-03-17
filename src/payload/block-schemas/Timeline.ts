@@ -4,8 +4,10 @@ export const TimelineBlock: Block = {
   slug: "timeline",
   labels: { singular: "Timeline", plural: "Timelines" },
   admin: {
-    description:
-      "Chronological timeline with dated entries. Each entry has heading, description, optional stat with label, and category tag. Use for company history, product roadmap, or process flows.",
+    custom: {
+      description:
+        "Chronological timeline with dated entries. Each entry has heading, description, optional stat with label, and category tag. Use for company history, product roadmap, or process flows.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },

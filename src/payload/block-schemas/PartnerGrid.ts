@@ -5,8 +5,10 @@ export const PartnerGridBlock: Block = {
   slug: "partnerGrid",
   labels: { singular: "Partner Grid", plural: "Partner Grids" },
   admin: {
-    description:
-      "Partner/integration cards with logo, name, description, and link. Use for partner ecosystems, integration directories, or vendor showcases.",
+    custom: {
+      description:
+        "Partner/integration cards with logo, name, description, and link. Use for partner ecosystems, integration directories, or vendor showcases.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },

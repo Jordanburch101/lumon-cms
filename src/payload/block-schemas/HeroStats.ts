@@ -6,8 +6,10 @@ export const HeroStatsBlock: Block = {
   dbName: "heroStat",
   labels: { singular: "Hero Stats", plural: "Hero Stats" },
   admin: {
-    description:
-      "Hero with optional stats grid (up to 4 key metrics) or media fallback. Two CTAs. Use when you want to lead with impressive numbers alongside a headline.",
+    custom: {
+      description:
+        "Hero with optional stats grid (up to 4 key metrics) or media fallback. Two CTAs. Use when you want to lead with impressive numbers alongside a headline.",
+    },
   },
   fields: [
     { name: "headline", type: "text", required: true },

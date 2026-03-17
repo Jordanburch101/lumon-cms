@@ -5,8 +5,10 @@ export const RichTextContentBlock: Block = {
   slug: "richTextContent",
   labels: { singular: "Rich Text", plural: "Rich Text" },
   admin: {
-    description:
-      "Free-form rich text content via Lexical editor. Width options: narrow, default, wide. Use for long-form prose, legal text, policy pages, or any unstructured content section.",
+    custom: {
+      description:
+        "Free-form rich text content via Lexical editor. Width options: narrow, default, wide. Use for long-form prose, legal text, policy pages, or any unstructured content section.",
+    },
   },
   fields: [
     {

@@ -5,8 +5,10 @@ export const JobListingsBlock: Block = {
   slug: "jobListings",
   labels: { singular: "Job Listings", plural: "Job Listings" },
   admin: {
-    description:
-      "Job posting list with title, department, location, employment type, optional salary, description, and apply link. Use for careers or hiring pages.",
+    custom: {
+      description:
+        "Job posting list with title, department, location, employment type, optional salary, description, and apply link. Use for careers or hiring pages.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },

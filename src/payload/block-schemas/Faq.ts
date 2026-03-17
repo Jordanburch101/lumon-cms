@@ -5,8 +5,10 @@ export const FaqBlock: Block = {
   slug: "faq",
   labels: { singular: "FAQ", plural: "FAQs" },
   admin: {
-    description:
-      "Accordion-style FAQ section with eyebrow, headline, subtext, question/answer pairs, and optional CTA link. Use on product, pricing, or support pages.",
+    custom: {
+      description:
+        "Accordion-style FAQ section with eyebrow, headline, subtext, question/answer pairs, and optional CTA link. Use on product, pricing, or support pages.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },

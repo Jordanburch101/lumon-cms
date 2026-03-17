@@ -5,8 +5,10 @@ export const ComparisonTableBlock: Block = {
   slug: "comparisonTable",
   labels: { singular: "Comparison Table", plural: "Comparison Tables" },
   admin: {
-    description:
-      "Feature comparison matrix with 2-4 plans. Features can be included, excluded, partial, or text values. Each plan has name, price, CTA. Use alongside pricing block for detailed plan comparison.",
+    custom: {
+      description:
+        "Feature comparison matrix with 2-4 plans. Features can be included, excluded, partial, or text values. Each plan has name, price, CTA. Use alongside pricing block for detailed plan comparison.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },

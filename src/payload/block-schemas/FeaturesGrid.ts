@@ -5,8 +5,10 @@ export const FeaturesGridBlock: Block = {
   slug: "featuresGrid",
   labels: { singular: "Features Grid", plural: "Features Grids" },
   admin: {
-    description:
-      "Icon + text feature cards in a responsive grid (2-9 items). Each card has icon, optional label, heading, description, and optional link. Use for capabilities, services, or benefit sections.",
+    custom: {
+      description:
+        "Icon + text feature cards in a responsive grid (2-9 items). Each card has icon, optional label, heading, description, and optional link. Use for capabilities, services, or benefit sections.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },

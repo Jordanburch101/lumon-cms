@@ -99,7 +99,7 @@ export default buildConfig({
                       slug: b.slug,
                       label: b.labels?.singular ?? b.slug,
                       description:
-                        (b.admin as Record<string, unknown> | undefined)
+                        (b.admin?.custom as Record<string, unknown> | undefined)
                           ?.description ?? null,
                     }))
                   : [];

@@ -4,8 +4,10 @@ export const TeamBlock: Block = {
   slug: "team",
   labels: { singular: "Team", plural: "Team" },
   admin: {
-    description:
-      "Team member grid with photos, names, roles, bios, and social links (1-12 members). Variants: detailed (full cards) or compact (minimal). Use on about or team pages.",
+    custom: {
+      description:
+        "Team member grid with photos, names, roles, bios, and social links (1-12 members). Variants: detailed (full cards) or compact (minimal). Use on about or team pages.",
+    },
   },
   fields: [
     { name: "eyebrow", type: "text" },
