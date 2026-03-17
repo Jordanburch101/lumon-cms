@@ -134,7 +134,7 @@ export function TimelineMilestone({
       {/* ── Content column ── */}
       <motion.div
         animate={animate}
-        className="pb-20 lg:pb-28"
+        className="pb-[120px] lg:pb-[160px]"
         initial={reducedMotion ? false : { opacity: 0.3, y: 16 }}
         transition={transition}
       >
