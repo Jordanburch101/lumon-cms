@@ -3,9 +3,11 @@
 import { motion, useInView, useReducedMotion, useScroll } from "motion/react";
 import { useRef } from "react";
 import type { TimelineBlock as TimelineBlockType } from "@/types/block-types";
-import { type MilestoneState, TimelineMilestone } from "./timeline-milestone";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import {
+  EASE,
+  type MilestoneState,
+  TimelineMilestone,
+} from "./timeline-milestone";
 
 function MilestoneWithState({
   item,

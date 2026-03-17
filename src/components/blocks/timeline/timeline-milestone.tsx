@@ -6,7 +6,7 @@ import { cn } from "@/core/lib/utils";
 import type { TimelineBlock } from "@/types/block-types";
 import { useStatCounter } from "./use-stat-counter";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+export const EASE = [0.16, 1, 0.3, 1] as const;
 
 export type MilestoneState = "upcoming" | "active" | "passed";
 type TimelineItem = TimelineBlock["items"][number];
@@ -78,11 +78,11 @@ function MilestoneStat({
       initial={reducedMotion ? false : { opacity: 0, y: 16 }}
       transition={{ ...transition, delay: reducedMotion ? 0 : STAGGER[3] }}
     >
+      <span className="sr-only">{item.stat}</span>
       <span
-        aria-label={item.stat}
+        aria-hidden="true"
         className="font-bold font-mono text-5xl text-primary tracking-tighter lg:text-6xl"
         data-field={`items.${String(index)}.stat`}
-        role="img"
       >
         {reducedMotion ? item.stat : statDisplay}
       </span>
