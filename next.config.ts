@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["sharp", "libsql", "@libsql/client"],
   images: {
+    localPatterns: [
+      { pathname: "/api/media/file/**", search: "?v=*" },
+      { pathname: "/api/media/file/**" },
+    ],
     remotePatterns: [
       {
         protocol: "https",
