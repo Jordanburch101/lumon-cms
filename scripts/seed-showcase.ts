@@ -188,6 +188,65 @@ async function seed() {
         buttonSize: "default" as const,
       },
     },
+    // Timeline
+    {
+      blockType: "timeline" as const,
+      eyebrow: "Our Journey",
+      heading: "The History of Lumon Industries",
+      description:
+        "From a modest topical salve company to the pioneer of severance technology — trace the milestones that shaped the world's most enigmatic corporation.",
+      items: [
+        {
+          date: "1865",
+          heading: "Kier Eagan Founds Lumon",
+          description:
+            "What began as a modest topical salve company in the town of Kier, PE would grow into one of the world's most enigmatic corporations. Kier's founding treatise outlined a vision far beyond commerce.",
+          category: "Origins",
+        },
+        {
+          date: "1941",
+          heading: "The Eagan Dynasty Continues",
+          description:
+            "Successive generations of Eagans maintain the founding vision, expanding Lumon's reach across industries and continents while preserving the core tenets of Kier's philosophy.",
+          stat: "4",
+          statLabel: "generations of leadership",
+          category: "Leadership",
+        },
+        {
+          date: "2003",
+          heading: "Severance Technology Conceived",
+          description:
+            "Lumon researchers achieve a breakthrough in neural partitioning, laying the groundwork for the severance procedure. The first theoretical models demonstrate complete memory bifurcation is possible.",
+          stat: "847",
+          statLabel: "volunteers in first trial",
+          category: "Product",
+        },
+        {
+          date: "2018",
+          heading: "First Severed Floor Opens",
+          description:
+            "The inaugural severed floor begins operations with a small team of pioneers. The Macrodata Refinement department is born, setting the template for all departments to follow.",
+        },
+        {
+          date: "2024",
+          heading: "Global Expansion",
+          description:
+            "Lumon opens severed floors in 16 countries. The Board approves the most ambitious growth plan in company history, with operations spanning every major economic region.",
+          stat: "$4.2B",
+          statLabel: "annual revenue",
+          category: "Growth",
+        },
+        {
+          date: "2026",
+          heading: "The Future Is Severed",
+          description:
+            "With near-perfect wellness scores and record refinement output, Lumon proves that the future of work is mysterious, important, and here. Every department reports unprecedented harmony.",
+          stat: "99.9%",
+          statLabel: "wellness score average",
+          category: "Milestone",
+        },
+      ],
+    },
     // Logo Cloud Grid
     {
       blockType: "logoCloud" as const,
