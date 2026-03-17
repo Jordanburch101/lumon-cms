@@ -1,6 +1,7 @@
 import type { LayoutBlock } from "@/types/block-types";
 import { BentoShowcase } from "./bento/bento";
 import { CinematicCta } from "./cinematic-cta/cinematic-cta";
+import { ComparisonTable } from "./comparison-table/comparison-table";
 import { CtaBand } from "./cta-band/cta-band";
 import { Faq } from "./faq/faq";
 import { FeaturesGrid } from "./features-grid/features-grid";
@@ -17,12 +18,11 @@ import { Pricing } from "./pricing/pricing";
 import { RichTextContent } from "./rich-text-content/rich-text-content";
 import { SplitMedia } from "./split-media/split-media";
 import { StatsBar } from "./stats-bar/stats-bar";
+import { TabbedContent } from "./tabbed-content/tabbed-content";
 import { Team } from "./team/team";
 import { Testimonials } from "./testimonials/testimonials";
-import { Trust } from "./trust/trust";
-import { ComparisonTable } from "./comparison-table/comparison-table";
-import { TabbedContent } from "./tabbed-content/tabbed-content";
 import { Timeline } from "./timeline/timeline";
+import { Trust } from "./trust/trust";
 
 export function renderBlock(block: LayoutBlock) {
   switch (block.blockType) {

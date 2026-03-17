@@ -1,5 +1,6 @@
 "use client";
 
+import type { TargetAndTransition, Transition } from "motion/react";
 import { motion } from "motion/react";
 import { cn } from "@/core/lib/utils";
 import type { TimelineBlock } from "@/types/block-types";
@@ -60,12 +61,12 @@ function MilestoneStat({
   statDisplay,
   transition,
 }: {
-  animate: object;
+  animate: TargetAndTransition;
   index: number;
   item: TimelineItem;
   reducedMotion: boolean;
   statDisplay: string;
-  transition: object;
+  transition: Transition;
 }) {
   if (!item.stat) {
     return null;
