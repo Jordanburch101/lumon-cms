@@ -98,7 +98,9 @@ export default buildConfig({
                   ? layoutField.blocks.map((b) => ({
                       slug: b.slug,
                       label: b.labels?.singular ?? b.slug,
-                      description: b.admin?.description ?? null,
+                      description:
+                        (b.admin as Record<string, unknown> | undefined)
+                          ?.description ?? null,
                     }))
                   : [];
               return {
