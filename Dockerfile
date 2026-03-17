@@ -27,7 +27,8 @@ ARG S3_ACCESS_KEY_ID
 ARG S3_SECRET_ACCESS_KEY
 ARG S3_ENDPOINT
 ARG NEXT_PUBLIC_SERVER_URL
-ARG DATABASE_URI
+# DATABASE_BUILD_URI = public libsql URL (private URL isn't reachable during build)
+ARG DATABASE_BUILD_URI
 ARG DATABASE_AUTH_TOKEN
 
 ENV PAYLOAD_SECRET=${PAYLOAD_SECRET} \
@@ -45,8 +46,8 @@ RUN bun run generate:types && \
     bun run generate:importmap && \
     bun run generate:field-map
 
-# Migrations — runs against production DB via build args
-RUN DATABASE_URI=${DATABASE_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
+# Migrations — connects to production DB via public URL (private network unavailable at build time)
+RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
 
 # Next.js build — uses file:./payload.db for any build-time data access
 RUN bun --bun run build
