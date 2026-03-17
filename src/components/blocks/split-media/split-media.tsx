@@ -79,6 +79,7 @@ function SplitRowItem({ row, index }: { index: number; row: SplitMediaRow }) {
             loop
             muted
             playsInline
+            poster={blurDataURL}
             preload="none"
             src={isNearViewport ? mediaSrc : undefined}
           />

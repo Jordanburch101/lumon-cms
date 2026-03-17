@@ -62,9 +62,12 @@ docs/plans/         — Design documents
 ## Commands
 
 - `bun dev` — Start dev server (port 3100, guarded — won't start a second instance)
-- `bun build` — Production build
+- `bun build` — Run migrations + production build (used by Railway CI)
 - `bun check` — Lint and format check (Ultracite)
 - `bun fix` — Auto-fix lint and format issues
+- `bun run migrate` — Apply pending migrations
+- `bun run migrate:create` — Generate a new migration from schema diff
+- `bun run migrate:fresh` — Drop all tables and rebuild from migrations (destroys data)
 - `bun storybook` — Start Storybook dev server (port 6006)
 - `bun storybook:build` — Build static Storybook to `storybook-static/`
 
@@ -122,6 +125,24 @@ Use these whenever creating new sections, components, or pages. The theme skill 
 When you encounter a task outside your current skillset — or the user asks "how do I do X", "can you do X", or "is there a skill for X" — use the `find-skills` skill to search the open agent skills ecosystem via `npx skills find [query]`. Install with `npx skills add <owner/repo@skill> -g -y`. Browse available skills at https://skills.sh/.
 
 ## Payload CMS
+
+### Database Migrations
+
+Schema changes are managed exclusively via migrations — `push` is disabled.
+
+**Workflow for schema changes** (adding/modifying blocks, collections, fields):
+1. Edit the schema file(s)
+2. Run `bun run migrate:create` to generate a migration
+3. Review the generated file in `src/migrations/`
+4. Run `bun run migrate` to apply it
+5. Run `bun generate:types` to update TypeScript types
+
+**Important rules:**
+- **Never re-enable `push: true`** — all schema changes go through migrations
+- **`bun build` auto-applies migrations** — Railway CI runs `bun run migrate && next build`
+- **Migration scripts use `bun -e` wrappers** because `bun payload` runs under Node.js (shebang `#!/usr/bin/env node`), and Node v24 breaks tsx's ESM hooks
+- **`migrate:fresh` destroys all data** — only use to reset a dev database
+- Migration files live in `src/migrations/` and are committed to git
 
 ### Architecture
 

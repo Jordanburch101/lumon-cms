@@ -66,6 +66,7 @@ For a collection called "Blog Post":
 
 ## Cross-Cutting Concerns
 
+- **Migrations**: `push` is disabled. After any schema or collection change, run `bun run migrate:create` to generate a migration file, review it in `src/migrations/`, then run `bun run migrate` to apply. Migrations are committed to git and auto-applied on Railway via `bun build`.
 - **Type generation**: Always run `bun generate:types` after any schema or collection change. This regenerates `src/payload-types.ts`.
 - **Lint check**: Always run `bun check` at the end to verify.
 - **Media fields**: Use `type: "upload"` with `relationTo: "media"` in schemas. In components, use `getMediaUrl()` and `getBlurDataURL()` from `@/core/lib/utils` to handle the `number | Media` union Payload returns.
@@ -111,7 +112,16 @@ File: `src/payload/collections/{Collection}.ts`
 - Add import: `import { {PascalName}Block } from "../block-schemas/{PascalName}";`
 - Add `{PascalName}Block` to the `blocks` array in the `layout` field
 
-**3. Regenerate types**
+**3. Generate and apply migration**
+
+```bash
+bun run migrate:create
+bun run migrate
+```
+
+Review the generated file in `src/migrations/` before applying. This creates the database tables/columns for the new block.
+
+**4. Regenerate types**
 
 ```bash
 bun generate:types
@@ -119,7 +129,7 @@ bun generate:types
 
 This updates `src/payload-types.ts` with the new block's discriminated union member.
 
-**4. Add type extraction**
+**5. Add type extraction**
 
 File: `src/types/block-types.ts`
 
@@ -128,9 +138,9 @@ Add a new type export:
 export type {PascalName}Block = ExtractBlock<"{camelName}">;
 ```
 
-> If the block belongs to a collection other than Pages, you may need a new extraction pattern. The existing `LayoutBlock` type is derived from `Page["layout"]`. See Recipe 2 Step 5 for the collection-specific pattern.
+> If the block belongs to a collection other than Pages, you may need a new extraction pattern. The existing `LayoutBlock` type is derived from `Page["layout"]`. See Recipe 2 Step 6 for the collection-specific pattern.
 
-**5. Create the component**
+**6. Create the component**
 
 Directory: `src/components/blocks/{kebab-name}/`
 
@@ -168,7 +178,7 @@ export function {ItemName}({ field1, field2 }: {ItemName}Props) {
 }
 ```
 
-**6. Register in the block renderer**
+**7. Register in the block renderer**
 
 File: `src/components/blocks/render-blocks.tsx`
 
@@ -181,7 +191,7 @@ File: `src/components/blocks/render-blocks.tsx`
 
 > If the block belongs to a collection other than Pages that has its own renderer, add the case there instead.
 
-**7. Add Storybook fixture**
+**8. Add Storybook fixture**
 
 File: `src/components/blocks/__fixtures__/block-fixtures.ts`
 
@@ -213,7 +223,7 @@ If the block has select/variant fields, also add control definitions to `blockAr
 
 The story will appear automatically on next `bun storybook`. No manual story file needed.
 
-**8. Verify**
+**9. Verify**
 
 ```bash
 bun check
@@ -309,7 +319,16 @@ File: `src/payload.config.ts`
 - Add import: `import { {PluralPascalName} } from "./payload/collections/{PluralPascalName}";`
 - Add to `collections` array: `[Users, Media, Pages, {PluralPascalName}]`
 
-**3. Optionally register in MCP plugin**
+**3. Generate and apply migration**
+
+```bash
+bun run migrate:create
+bun run migrate
+```
+
+Review the generated file in `src/migrations/` before applying.
+
+**4. Optionally register in MCP plugin**
 
 If the collection should be available via MCP tooling, add to the `mcpPlugin` config in `payload.config.ts`:
 
@@ -317,13 +336,13 @@ If the collection should be available via MCP tooling, add to the `mcpPlugin` co
 {pluralCamelName}: { enabled: true, description: "..." },
 ```
 
-**4. Regenerate types**
+**5. Regenerate types**
 
 ```bash
 bun generate:types
 ```
 
-**5. If collection has a layout/blocks field — add type extraction**
+**6. If collection has a layout/blocks field — add type extraction**
 
 File: `src/types/block-types.ts` (or a new file like `src/types/{collection}-block-types.ts`)
 
@@ -340,7 +359,7 @@ export type Extract{SingularPascalName}Block<T extends {SingularPascalName}Layou
 
 Also create a renderer component following the pattern in `src/components/blocks/render-blocks.tsx`.
 
-**6. If collection has public URLs — create frontend route**
+**7. If collection has public URLs — create frontend route**
 
 For a catch-all route (like Pages):
 
@@ -355,7 +374,7 @@ For static listing routes:
 
 File: `src/app/(frontend)/{plural-kebab-name}/page.tsx`
 
-**7. Verify**
+**8. Verify**
 
 ```bash
 bun check
@@ -368,9 +387,10 @@ bun check
 When adding, changing, or removing fields on an existing block:
 
 1. Edit the block schema in `src/payload/block-schemas/{PascalName}.ts`
-2. Run `bun generate:types` to update the generated types
-3. Update the component(s) in `src/components/blocks/{kebab-name}/` to use the new/changed fields
-4. Run `bun check` to verify
+2. Run `bun run migrate:create` to generate a migration, review it, then `bun run migrate` to apply
+3. Run `bun generate:types` to update the generated types
+4. Update the component(s) in `src/components/blocks/{kebab-name}/` to use the new/changed fields
+5. Run `bun check` to verify
 
 No changes needed to `block-types.ts`, `render-blocks.tsx`, or the collection file — those only change when adding or removing entire blocks.
 
