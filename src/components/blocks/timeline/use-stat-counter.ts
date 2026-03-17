@@ -21,7 +21,6 @@ function formatNumber(
 
 export function useStatCounter(stat: string | undefined, active: boolean) {
   const hasAnimated = useRef(false);
-  const [displayValue, setDisplayValue] = useState(stat ?? "");
 
   const match = stat?.match(STAT_REGEX);
   const prefix = match?.[1] ?? "";
@@ -36,6 +35,12 @@ export function useStatCounter(stat: string | undefined, active: boolean) {
     : 0;
 
   const canAnimate = Boolean(match && target > 0);
+
+  const [displayValue, setDisplayValue] = useState(
+    canAnimate
+      ? `${prefix}${formatNumber(0, decimalPlaces, hasCommas)}${suffix}`
+      : (stat ?? "")
+  );
 
   const motionValue = useMotionValue(0);
   const spring = useSpring(motionValue, { stiffness: 50, damping: 20 });

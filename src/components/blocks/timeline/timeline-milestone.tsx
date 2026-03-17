@@ -8,7 +8,7 @@ import { useStatCounter } from "./use-stat-counter";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-type MilestoneState = "upcoming" | "active" | "passed";
+export type MilestoneState = "upcoming" | "active" | "passed";
 type TimelineItem = TimelineBlock["items"][number];
 
 const STATE_OPACITY = { upcoming: 0.3, active: 1, passed: 0.55 } as const;
@@ -39,7 +39,7 @@ function MilestoneDot({
           state === "upcoming" &&
             "size-2 border-[1.5px] border-border/30 bg-transparent",
           state === "active" &&
-            "size-3.5 border-2 border-primary bg-background shadow-[0_0_16px_rgba(var(--primary),0.3)]",
+            "size-3.5 border-2 border-primary bg-background shadow-[0_0_16px_color-mix(in_oklch,var(--primary)_30%,transparent)]",
           state === "passed" && "size-2.5 bg-primary"
         )}
         initial={false}

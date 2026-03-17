@@ -3,11 +3,9 @@
 import { motion, useInView, useReducedMotion, useScroll } from "motion/react";
 import { useRef } from "react";
 import type { TimelineBlock as TimelineBlockType } from "@/types/block-types";
-import { TimelineMilestone } from "./timeline-milestone";
+import { type MilestoneState, TimelineMilestone } from "./timeline-milestone";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-type MilestoneState = "upcoming" | "active" | "passed";
 
 function MilestoneWithState({
   item,
@@ -72,7 +70,7 @@ export function Timeline({
       : { opacity: 0, y: 24 };
 
   return (
-    <section aria-label="Timeline" className="w-full" ref={sectionRef}>
+    <section aria-label={heading} className="w-full" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* ── Section header ── */}
         <motion.div
