@@ -4,6 +4,10 @@ import { link } from "../fields/link/link";
 export const JobListingsBlock: Block = {
   slug: "jobListings",
   labels: { singular: "Job Listings", plural: "Job Listings" },
+  admin: {
+    description:
+      "Job posting list with title, department, location, employment type, optional salary, description, and apply link. Use for careers or hiring pages.",
+  },
   fields: [
     { name: "eyebrow", type: "text" },
     { name: "heading", type: "text", required: true },

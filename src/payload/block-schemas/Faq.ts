@@ -4,6 +4,10 @@ import { link } from "../fields/link/link";
 export const FaqBlock: Block = {
   slug: "faq",
   labels: { singular: "FAQ", plural: "FAQs" },
+  admin: {
+    description:
+      "Accordion-style FAQ section with eyebrow, headline, subtext, question/answer pairs, and optional CTA link. Use on product, pricing, or support pages.",
+  },
   fields: [
     { name: "eyebrow", type: "text" },
     { name: "headline", type: "text", required: true },

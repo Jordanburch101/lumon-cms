@@ -4,6 +4,10 @@ import { link } from "../fields/link/link";
 export const LogoCloudBlock: Block = {
   slug: "logoCloud",
   labels: { singular: "Logo Cloud", plural: "Logo Clouds" },
+  admin: {
+    description:
+      "Partner/client logo display (4-20 logos) with optional links. Variants: scrolling marquee or static grid. Use for 'trusted by', technology stack, or partner sections.",
+  },
   fields: [
     { name: "eyebrow", type: "text" },
     {

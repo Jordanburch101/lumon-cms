@@ -3,6 +3,10 @@ import type { Block } from "payload";
 export const TabbedContentBlock: Block = {
   slug: "tabbedContent",
   labels: { singular: "Tabbed Content", plural: "Tabbed Content" },
+  admin: {
+    description:
+      "Tabbed interface with 2+ tabs. Each tab has label, heading, description, optional image, icon, and feature bullet list. Use for multi-faceted product features or service categories.",
+  },
   fields: [
     { name: "eyebrow", type: "text" },
     { name: "heading", type: "text", required: true },

@@ -4,6 +4,10 @@ import { link } from "../fields/link/link";
 export const SplitMediaBlock: Block = {
   slug: "splitMedia",
   labels: { singular: "Split Media", plural: "Split Media" },
+  admin: {
+    description:
+      "Alternating text + media rows. Each row has headline, body, video/image with overlay card, and arrow-link CTA. Use for product deep-dives or feature walkthroughs. Typically 2-3 rows.",
+  },
   fields: [
     {
       name: "rows",

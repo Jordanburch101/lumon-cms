@@ -4,6 +4,10 @@ import { link } from "../fields/link/link";
 export const HeroBlock: Block = {
   slug: "hero",
   labels: { singular: "Hero", plural: "Hero" },
+  admin: {
+    description:
+      "Full-width hero with background video/image, headline, subtext, and two CTA buttons. Use as the opening section of any page. Supports video with poster fallback.",
+  },
   fields: [
     { name: "mediaSrc", type: "upload", relationTo: "media", required: true },
     {

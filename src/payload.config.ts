@@ -79,6 +79,40 @@ export default buildConfig({
         pages: { enabled: true, description: "Site pages with layout blocks" },
         media: { enabled: true, description: "Uploaded images and videos" },
       },
+      mcp: {
+        tools: [
+          {
+            name: "listBlocks",
+            description:
+              "Returns all available layout block types with their slugs, labels, and descriptions. Call this before building a new page to know which blocks to use and what content each expects.",
+            parameters: {},
+            handler: (_args, req) => {
+              const pagesCollection = req.payload.config.collections.find(
+                (c) => c.slug === "pages"
+              );
+              const layoutField = pagesCollection?.fields.find(
+                (f) => "name" in f && f.name === "layout"
+              );
+              const blocks =
+                layoutField && "blocks" in layoutField
+                  ? layoutField.blocks.map((b) => ({
+                      slug: b.slug,
+                      label: b.labels?.singular ?? b.slug,
+                      description: b.admin?.description ?? null,
+                    }))
+                  : [];
+              return {
+                content: [
+                  {
+                    type: "text" as const,
+                    text: JSON.stringify(blocks, null, 2),
+                  },
+                ],
+              };
+            },
+          },
+        ],
+      },
       experimental: {
         tools: {
           collections: {

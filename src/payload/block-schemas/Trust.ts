@@ -3,6 +3,10 @@ import type { Block } from "payload";
 export const TrustBlock: Block = {
   slug: "trust",
   labels: { singular: "Trust", plural: "Trust" },
+  admin: {
+    description:
+      "Social proof strip with animated counter stats and optional partner logos. Use to build credibility with impressive numbers and brand associations.",
+  },
   fields: [
     { name: "eyebrow", type: "text" },
     {

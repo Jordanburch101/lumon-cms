@@ -3,6 +3,10 @@ import type { Block } from "payload";
 export const ImageGalleryBlock: Block = {
   slug: "imageGallery",
   labels: { singular: "Image Gallery", plural: "Image Galleries" },
+  admin: {
+    description:
+      "Grid of labeled images with captions. Each item has a label, caption, image, and alt text. Use for portfolio showcases, case study visuals, or photo galleries.",
+  },
   fields: [
     {
       name: "items",
