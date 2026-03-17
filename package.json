@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bash scripts/dev.sh",
-    "build": "bun run migrate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "check": "ultracite check",

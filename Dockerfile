@@ -20,8 +20,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build-time env vars
-# DATABASE_URI is intentionally omitted — falls back to file:./payload.db
-# for codegen/build. Railway injects the real libsql URL at runtime.
 ARG PAYLOAD_SECRET
 ARG S3_BUCKET
 ARG S3_REGION
@@ -29,6 +27,8 @@ ARG S3_ACCESS_KEY_ID
 ARG S3_SECRET_ACCESS_KEY
 ARG S3_ENDPOINT
 ARG NEXT_PUBLIC_SERVER_URL
+ARG DATABASE_URI
+ARG DATABASE_AUTH_TOKEN
 
 ENV PAYLOAD_SECRET=${PAYLOAD_SECRET} \
     S3_BUCKET=${S3_BUCKET} \
@@ -40,11 +40,15 @@ ENV PAYLOAD_SECRET=${PAYLOAD_SECRET} \
     NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
 
-# Payload codegen + Next.js build
+# Payload codegen
 RUN bun run generate:types && \
     bun run generate:importmap && \
     bun run generate:field-map
 
+# Migrations — runs against production DB via build args
+RUN DATABASE_URI=${DATABASE_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
+
+# Next.js build — uses file:./payload.db for any build-time data access
 RUN bun --bun run build
 
 # =============================================================================

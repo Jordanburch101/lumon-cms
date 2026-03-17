@@ -62,7 +62,7 @@ docs/plans/         — Design documents
 ## Commands
 
 - `bun dev` — Start dev server (port 3100, guarded — won't start a second instance)
-- `bun build` — Run migrations + production build (used by Railway CI)
+- `bun build` — Production build (Next.js only — migrations run separately in Dockerfile)
 - `bun check` — Lint and format check (Ultracite)
 - `bun fix` — Auto-fix lint and format issues
 - `bun run migrate` — Apply pending migrations
@@ -139,7 +139,7 @@ Schema changes are managed exclusively via migrations — `push` is disabled.
 
 **Important rules:**
 - **Never re-enable `push: true`** — all schema changes go through migrations
-- **`bun build` auto-applies migrations** — Railway CI runs `bun run migrate && next build`
+- **Migrations run in Dockerfile** — separate `RUN bun run migrate` step with `DATABASE_URI` build arg, before `next build`
 - **Migration scripts use `bun -e` wrappers** because `bun payload` runs under Node.js (shebang `#!/usr/bin/env node`), and Node v24 breaks tsx's ESM hooks
 - **`migrate:fresh` destroys all data** — only use to reset a dev database
 - Migration files live in `src/migrations/` and are committed to git
