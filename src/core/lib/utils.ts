@@ -12,7 +12,9 @@ type MediaInput =
   | undefined
   | null;
 
-/** Resolve a Payload Media relation to a clean URL (for next/image `src`). */
+/** Resolve a Payload Media relation to a cache-busted URL.
+ *  Appends `?v=updatedAt` so CDN/browser caches invalidate on crop or re-upload.
+ *  Requires `images.localPatterns` in next.config.ts to allow the query string. */
 export function getMediaUrl(media: MediaInput): string {
   if (!media || typeof media === "number") {
     return "";
@@ -20,19 +22,8 @@ export function getMediaUrl(media: MediaInput): string {
   if (typeof media === "string") {
     return media;
   }
-  return media.url || "";
-}
-
-/** Resolve a Payload Media relation to a cache-busted URL (for `<video>`, `<a>`, direct embeds).
- *  Appends `?v=updatedAt` so CDN/browser caches invalidate on crop or re-upload. */
-export function getMediaUrlBusted(media: MediaInput): string {
-  const url = getMediaUrl(media);
-  if (
-    !url ||
-    typeof media === "string" ||
-    typeof media === "number" ||
-    !media?.updatedAt
-  ) {
+  const url = media.url || "";
+  if (!(url && media.updatedAt)) {
     return url;
   }
   const v = new Date(media.updatedAt).getTime();
