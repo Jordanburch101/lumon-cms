@@ -10,9 +10,9 @@
         "-y",
         "supergateway",
         "--streamableHttp",
-        "http://localhost:3000/api/mcp",
+        "https://lumon.jordanburch.dev/api/mcp",
         "--header",
-        "Authorization: Bearer 70c3b8ef-3429-47be-b36b-5859f8c81ae7"
+        "Authorization: Bearer cb47c70c-348c-4a42-83d0-5f1fcf4359d8"
       ]
     }
   }

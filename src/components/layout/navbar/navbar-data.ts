@@ -1,16 +1,18 @@
 import {
   AnalyticsUpIcon,
+  BrainIcon,
+  CameraVideoIcon,
   ChartIcon,
-  CloudIcon,
-  CodeIcon,
-  DashboardSquare01Icon,
+  DnaIcon,
   FileIcon,
-  HeadphonesIcon,
-  LaptopIcon,
+  HeartCheckIcon,
+  LaborIcon,
   MailIcon,
+  MicroscopeIcon,
   News01Icon,
   ShieldIcon,
   UserGroupIcon,
+  UserIcon,
 } from "@hugeicons/core-free-icons";
 import type { IconSvgElement } from "@hugeicons/react";
 
@@ -35,50 +37,50 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   {
-    title: "Products",
+    title: "Divisions",
     groups: [
       {
-        title: "Platform",
+        title: "Core Operations",
         items: [
           {
-            title: "Analytics",
-            href: "/products/analytics",
-            description: "Track and measure what matters",
-            icon: AnalyticsUpIcon,
+            title: "Macrodata Refinement",
+            href: "/divisions/macrodata-refinement",
+            description: "Refining data to its essential form",
+            icon: BrainIcon,
           },
           {
-            title: "Dashboard",
-            href: "/products/dashboard",
-            description: "Visualize your data in real time",
-            icon: DashboardSquare01Icon,
+            title: "Optics & Design",
+            href: "/divisions/optics-design",
+            description: "Crafting visual identity with precision",
+            icon: CameraVideoIcon,
           },
           {
-            title: "Cloud",
-            href: "/products/cloud",
-            description: "Scalable infrastructure for teams",
-            icon: CloudIcon,
+            title: "Mammalian Nurturance",
+            href: "/divisions/mammalian-nurturance",
+            description: "Caring for what matters most",
+            icon: HeartCheckIcon,
           },
         ],
       },
       {
-        title: "Tools",
+        title: "Research & Development",
         items: [
           {
-            title: "API",
-            href: "/products/api",
-            description: "Build with our developer platform",
-            icon: CodeIcon,
+            title: "Biotech Solutions",
+            href: "/divisions/biotech",
+            description: "Advancing the science of wellbeing",
+            icon: DnaIcon,
           },
           {
-            title: "Integrations",
-            href: "/products/integrations",
-            description: "Connect your favorite tools",
-            icon: LaptopIcon,
+            title: "Topical Applications",
+            href: "/divisions/topical-applications",
+            description: "Surface-level solutions, deep impact",
+            icon: MicroscopeIcon,
           },
           {
-            title: "Security",
-            href: "/products/security",
-            description: "Enterprise-grade protection",
+            title: "Compliance & Integration",
+            href: "/divisions/compliance",
+            description: "Ensuring seamless departmental alignment",
             icon: ShieldIcon,
           },
         ],
@@ -86,45 +88,51 @@ export const navItems: NavItem[] = [
     ],
   },
   {
-    title: "Solutions",
+    title: "About",
     groups: [
       {
-        title: "By Use Case",
+        title: "Company",
         items: [
           {
-            title: "Marketing",
-            href: "/solutions/marketing",
-            description: "Grow your audience and convert",
+            title: "Our Mission",
+            href: "/about/mission",
+            description: "The work is mysterious and important",
             icon: ChartIcon,
           },
           {
-            title: "Sales",
-            href: "/solutions/sales",
-            description: "Close deals faster with insights",
-            icon: AnalyticsUpIcon,
+            title: "Leadership",
+            href: "/about/leadership",
+            description: "Guided by the vision of Kier Eagan",
+            icon: UserIcon,
           },
           {
-            title: "Engineering",
-            href: "/solutions/engineering",
-            description: "Ship better products, faster",
-            icon: CodeIcon,
+            title: "History",
+            href: "/about/history",
+            description: "A legacy spanning generations",
+            icon: AnalyticsUpIcon,
           },
         ],
       },
       {
-        title: "By Team Size",
+        title: "Culture",
         items: [
           {
-            title: "Startups",
-            href: "/solutions/startups",
-            description: "Move fast with the right tools",
+            title: "Employee Wellness",
+            href: "/about/wellness",
+            description: "Your wellbeing is our priority",
+            icon: HeartCheckIcon,
+          },
+          {
+            title: "The Eagan Legacy",
+            href: "/about/eagan-legacy",
+            description: "Nine core principles for a better world",
             icon: UserGroupIcon,
           },
           {
-            title: "Enterprise",
-            href: "/solutions/enterprise",
-            description: "Scale with confidence",
-            icon: CloudIcon,
+            title: "Work-Life Balance",
+            href: "/about/severance-program",
+            description: "A revolutionary approach to harmony",
+            icon: LaborIcon,
           },
         ],
       },
@@ -133,14 +141,14 @@ export const navItems: NavItem[] = [
   {
     title: "Resources",
     items: [
-      { title: "Blog", href: "/blog", icon: News01Icon },
-      { title: "Documentation", href: "/docs", icon: FileIcon },
-      { title: "Support", href: "/support", icon: HeadphonesIcon },
+      { title: "Newsroom", href: "/newsroom", icon: News01Icon },
+      { title: "Handbook", href: "/handbook", icon: FileIcon },
+      { title: "Investor Relations", href: "/investors", icon: ChartIcon },
       { title: "Contact", href: "/contact", icon: MailIcon },
     ],
   },
   {
-    title: "Pricing",
-    href: "/pricing",
+    title: "Careers",
+    href: "/careers",
   },
 ];

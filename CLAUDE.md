@@ -10,7 +10,7 @@
 - **Charts**: Recharts
 - **Themes**: next-themes (class-based, system default)
 - **CMS**: Payload CMS 3.x (SQLite/libsql, S3 storage via Railway)
-- **Database**: libsql on Railway (`libsql://libsql-production-9f2c.up.railway.app`)
+- **Database**: libsql on Railway (production), local SQLite `payload.db` (dev via `.env.local`)
 - **Object Storage**: Railway S3 bucket (`lumon-media`) for media uploads
 - **Code quality**: Ultracite (Biome-based) — `bun check` / `bun fix`
 - **Linting**: ESLint with next core-web-vitals + TypeScript
@@ -68,8 +68,31 @@ docs/plans/         — Design documents
 - `bun run migrate` — Apply pending migrations
 - `bun run migrate:create` — Generate a new migration from schema diff
 - `bun run migrate:fresh` — Drop all tables and rebuild from migrations (destroys data)
+- `bun run db:pull` — Pull remote Railway DB into local `payload.db`
+- `bun run db:push` — Push local `payload.db` to remote Railway DB (3s safety delay)
 - `bun storybook` — Start Storybook dev server (port 6006)
 - `bun storybook:build` — Build static Storybook to `storybook-static/`
+
+## Local Development Database
+
+Local dev uses a SQLite file (`payload.db`) instead of the remote Railway libsql. This is configured via `.env.local`:
+
+```
+DATABASE_URI=file:./payload.db
+```
+
+**Setup after cloning:**
+1. Create `.env.local` with `DATABASE_URI=file:./payload.db`
+2. `bun run migrate` — creates schema in local DB
+3. `bun run db:pull` — pulls all data from remote Railway DB
+
+**Sync workflow:**
+- `bun run db:pull` — overwrite local with remote (safe, use anytime)
+- `bun run db:push` — overwrite remote with local (destructive to remote, has 3s safety delay)
+
+**Important:** `db:pull`/`db:push` sync database rows only — media **files** live on Railway S3. Upload media to production separately.
+
+**Note:** Payload config changes (new fields, blocks, collections) require a **dev server restart** — they do NOT hot-reload like React components.
 
 ## Dev Server Rules
 
@@ -143,6 +166,7 @@ Schema changes are managed exclusively via migrations — `push` is disabled.
 - **Migration scripts use `bun -e` wrappers** because `bun payload` runs under Node.js (shebang `#!/usr/bin/env node`), and Node v24 breaks tsx's ESM hooks
 - **`migrate:fresh` destroys all data** — only use to reset a dev database
 - Migration files live in `src/migrations/` and are committed to git
+- `src/migrations/` is excluded from Biome lint (generated code with Payload's style)
 
 ### Architecture
 
