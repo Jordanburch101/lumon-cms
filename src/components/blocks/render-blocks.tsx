@@ -1,4 +1,4 @@
-import type { LayoutBlock } from "@/types/block-types";
+import type { HeroFieldBlock, LayoutBlock } from "@/types/block-types";
 import { BentoShowcase } from "./bento/bento";
 import { CinematicCta } from "./cinematic-cta/cinematic-cta";
 import { ComparisonTable } from "./comparison-table/comparison-table";
@@ -24,7 +24,7 @@ import { Testimonials } from "./testimonials/testimonials";
 import { Timeline } from "./timeline/timeline";
 import { Trust } from "./trust/trust";
 
-export function renderBlock(block: LayoutBlock) {
+export function renderHeroBlock(block: HeroFieldBlock) {
   switch (block.blockType) {
     case "hero":
       return <Hero {...block} />;
@@ -34,6 +34,22 @@ export function renderBlock(block: LayoutBlock) {
       return <HeroStats {...block} />;
     case "heroMinimal":
       return <HeroMinimal {...block} />;
+    default:
+      return null;
+  }
+}
+
+export function RenderHero({ blocks }: { blocks: HeroFieldBlock[] }) {
+  const block = blocks[0];
+  if (!block) {
+    return null;
+  }
+
+  return <div data-block-type={block.blockType}>{renderHeroBlock(block)}</div>;
+}
+
+export function renderBlock(block: LayoutBlock) {
+  switch (block.blockType) {
     case "bento":
       return <BentoShowcase {...block} />;
     case "splitMedia":

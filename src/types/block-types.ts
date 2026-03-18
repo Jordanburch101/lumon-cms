@@ -1,18 +1,36 @@
 import type { Page } from "@/payload-types";
 
-/** Single block from a Page layout — discriminated union on `blockType`. */
+/** Single block from the Page hero field — discriminated union on `blockType`. */
+export type HeroFieldBlock = NonNullable<Page["hero"]>[number];
+
+/** Extract one hero block type by its discriminant. */
+export type ExtractHeroBlock<T extends HeroFieldBlock["blockType"]> = Extract<
+  HeroFieldBlock,
+  { blockType: T }
+>;
+
+export type HeroBlock = ExtractHeroBlock<"hero">;
+export type HeroCenteredBlock = ExtractHeroBlock<"heroCentered">;
+export type HeroStatsBlock = ExtractHeroBlock<"heroStats">;
+export type HeroMinimalBlock = ExtractHeroBlock<"heroMinimal">;
+
+/** Union of all block types across all Page fields (hero + layout). */
+export type AnyPageBlock = HeroFieldBlock | LayoutBlock;
+
+/** Extract a block type from any Page field by its discriminant. */
+export type ExtractAnyBlock<T extends AnyPageBlock["blockType"]> = Extract<
+  AnyPageBlock,
+  { blockType: T }
+>;
+
+/** Single block from the Page layout field — discriminated union on `blockType`. */
 export type LayoutBlock = NonNullable<Page["layout"]>[number];
 
-/** Extract one block type by its discriminant. */
+/** Extract one layout block type by its discriminant. */
 export type ExtractBlock<T extends LayoutBlock["blockType"]> = Extract<
   LayoutBlock,
   { blockType: T }
 >;
-
-export type HeroBlock = ExtractBlock<"hero">;
-export type HeroCenteredBlock = ExtractBlock<"heroCentered">;
-export type HeroStatsBlock = ExtractBlock<"heroStats">;
-export type HeroMinimalBlock = ExtractBlock<"heroMinimal">;
 export type BentoBlock = ExtractBlock<"bento">;
 export type SplitMediaBlock = ExtractBlock<"splitMedia">;
 export type TestimonialsBlock = ExtractBlock<"testimonials">;

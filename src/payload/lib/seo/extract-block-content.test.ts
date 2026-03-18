@@ -274,7 +274,9 @@ describe("extractFirstImageFromBlocks", () => {
       { blockType: "hero", mediaSrc: null } as any,
       {
         blockType: "bento",
-        image: { src: { id: 5, url: "/media/bento.jpg", mimeType: "image/jpeg" } },
+        image: {
+          src: { id: 5, url: "/media/bento.jpg", mimeType: "image/jpeg" },
+        },
       } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(5);

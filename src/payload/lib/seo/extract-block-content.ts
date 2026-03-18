@@ -1,6 +1,8 @@
 import type { Page } from "@/payload-types";
 
+type HeroBlock = NonNullable<Page["hero"]>[number];
 type LayoutBlock = NonNullable<Page["layout"]>[number];
+type AnyBlock = HeroBlock | LayoutBlock;
 
 function truncateToSentence(text: string): string {
   if (text.length <= 160) {
@@ -13,7 +15,7 @@ function truncateToSentence(text: string): string {
     : `${truncated.trimEnd()}…`;
 }
 
-function getBlockText(block: LayoutBlock): string | undefined {
+function getBlockText(block: AnyBlock): string | undefined {
   switch (block.blockType) {
     case "hero":
       return block.subtext;
@@ -35,13 +37,13 @@ function getBlockText(block: LayoutBlock): string | undefined {
  * Returns max 160 chars trimmed to last complete sentence, or undefined.
  */
 export function extractFirstTextFromBlocks(
-  layout: LayoutBlock[] | null | undefined
+  blocks: AnyBlock[] | null | undefined
 ): string | undefined {
-  if (!layout?.length) {
+  if (!blocks?.length) {
     return undefined;
   }
 
-  for (const block of layout) {
+  for (const block of blocks) {
     const text = getBlockText(block);
     if (text?.trim()) {
       return truncateToSentence(text.trim());
@@ -74,7 +76,7 @@ function resolveImageMediaId(
   return value.id;
 }
 
-function getBlockImageId(block: LayoutBlock): number | undefined {
+function getBlockImageId(block: AnyBlock): number | undefined {
   switch (block.blockType) {
     case "hero":
       return resolveImageMediaId(
@@ -124,13 +126,13 @@ function getBlockImageId(block: LayoutBlock): number | undefined {
  * ImageGallery first item image.
  */
 export function extractFirstImageFromBlocks(
-  layout: LayoutBlock[] | null | undefined
+  blocks: AnyBlock[] | null | undefined
 ): number | undefined {
-  if (!layout?.length) {
+  if (!blocks?.length) {
     return undefined;
   }
 
-  for (const block of layout) {
+  for (const block of blocks) {
     const id = getBlockImageId(block);
     if (id) {
       return id;

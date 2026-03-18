@@ -2,7 +2,7 @@ import config from "@payload-config";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
-import { RenderBlocks } from "@/components/blocks/render-blocks";
+import { RenderBlocks, RenderHero } from "@/components/blocks/render-blocks";
 import { JsonLd } from "@/components/features/seo/json-ld";
 import {
   getCachedPage,
@@ -64,6 +64,7 @@ export default async function Page({ params }: Args) {
   return (
     <>
       <JsonLd page={page} settings={settings} />
+      <RenderHero blocks={page.hero ?? []} />
       <RenderBlocks blocks={page.layout ?? []} />
     </>
   );

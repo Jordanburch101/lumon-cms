@@ -21,6 +21,41 @@ import {
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+/** Extract block descriptors from a named blocks field inside Pages' tabs. */
+function getBlocksFromField(
+  // biome-ignore lint/suspicious/noExplicitAny: MCP handler req type is loosely typed by plugin.
+  req: any,
+  fieldName: string
+) {
+  const pagesCollection = req.payload.config.collections.find(
+    (c: { slug: string }) => c.slug === "pages"
+  );
+  const tabsField = pagesCollection?.fields.find(
+    (f: Record<string, unknown>) => "type" in f && f.type === "tabs"
+  );
+  if (!(tabsField && "tabs" in tabsField)) {
+    return [];
+  }
+  for (const tab of tabsField.tabs) {
+    for (const field of tab.fields) {
+      if ("name" in field && field.name === fieldName && "blocks" in field) {
+        return field.blocks.map(
+          (b: {
+            slug: string;
+            labels?: { singular?: string };
+            admin?: { custom?: Record<string, unknown> };
+          }) => ({
+            slug: b.slug,
+            label: b.labels?.singular ?? b.slug,
+            description: b.admin?.custom?.description ?? null,
+          })
+        );
+      }
+    }
+  }
+  return [];
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -90,27 +125,29 @@ export default buildConfig({
       mcp: {
         tools: [
           {
-            name: "listBlocks",
+            name: "listHeroBlocks",
             description:
-              "Returns all available layout block types with their slugs, labels, and descriptions. Call this before building a new page to know which blocks to use and what content each expects.",
+              "Returns available hero block types (max 1 per page) with slugs, labels, and descriptions. Use when choosing a hero variant for a page.",
             parameters: {},
             handler: (_args, req) => {
-              const pagesCollection = req.payload.config.collections.find(
-                (c) => c.slug === "pages"
-              );
-              const layoutField = pagesCollection?.fields.find(
-                (f) => "name" in f && f.name === "layout"
-              );
-              const blocks =
-                layoutField && "blocks" in layoutField
-                  ? layoutField.blocks.map((b) => ({
-                      slug: b.slug,
-                      label: b.labels?.singular ?? b.slug,
-                      description:
-                        (b.admin?.custom as Record<string, unknown> | undefined)
-                          ?.description ?? null,
-                    }))
-                  : [];
+              const blocks = getBlocksFromField(req, "hero");
+              return {
+                content: [
+                  {
+                    type: "text" as const,
+                    text: JSON.stringify(blocks, null, 2),
+                  },
+                ],
+              };
+            },
+          },
+          {
+            name: "listContentBlocks",
+            description:
+              "Returns available content/layout block types with slugs, labels, and descriptions. Use when building a page's content sections.",
+            parameters: {},
+            handler: (_args, req) => {
+              const blocks = getBlocksFromField(req, "layout");
               return {
                 content: [
                   {
@@ -152,13 +189,11 @@ export default buildConfig({
         // Plugin requires string return — empty string is converted to undefined
         // by the metadata helper at render time (page.meta?.description || undefined).
         // Editors see an empty auto-generated field and can fill it manually.
-        return (
-          extractFirstTextFromBlocks(
-            (doc as { layout?: unknown[] }).layout as Parameters<
-              typeof extractFirstTextFromBlocks
-            >[0]
-          ) ?? ""
-        );
+        const d = doc as { hero?: unknown[]; layout?: unknown[] };
+        const blocks = [...(d.hero ?? []), ...(d.layout ?? [])] as Parameters<
+          typeof extractFirstTextFromBlocks
+        >[0];
+        return extractFirstTextFromBlocks(blocks) ?? "";
       },
       generateURL: async ({ doc, req }) => {
         const settings = await req.payload.findGlobal({
@@ -173,23 +208,23 @@ export default buildConfig({
       generateImage: ({ doc }) => {
         // Cast: plugin type requires number but handles undefined gracefully at runtime
         // (auto-generate button shows nothing when no image found). Verified in plugin-seo@3.79.
-        return extractFirstImageFromBlocks(
-          (doc as { layout?: unknown[] }).layout as Parameters<
-            typeof extractFirstImageFromBlocks
-          >[0]
-        ) as number;
+        const d = doc as { hero?: unknown[]; layout?: unknown[] };
+        const blocks = [...(d.hero ?? []), ...(d.layout ?? [])] as Parameters<
+          typeof extractFirstImageFromBlocks
+        >[0];
+        return extractFirstImageFromBlocks(blocks) as number;
       },
       fields: ({ defaultFields }) => [
         // Add filterOptions to the plugin's image field to restrict to raster images only
         ...defaultFields.map((field) =>
           "name" in field && field.name === "image"
-            ? {
+            ? ({
                 ...field,
                 filterOptions: {
                   mimeType: { not_in: ["image/svg+xml"] },
                   _or: [{ mimeType: { contains: "image/" } }],
                 },
-              }
+              } as typeof field)
             : field
         ),
         {

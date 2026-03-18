@@ -4,7 +4,7 @@ import { cookies, draftMode } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getPayload } from "payload";
 import { cache } from "react";
-import { RenderBlocks } from "@/components/blocks/render-blocks";
+import { RenderBlocks, RenderHero } from "@/components/blocks/render-blocks";
 import {
   getCachedSiteSettings,
   getPageDirect,
@@ -53,7 +53,12 @@ export default async function PreviewPage({ params }: Args) {
     notFound();
   }
 
-  return <RenderBlocks blocks={page.layout ?? []} />;
+  return (
+    <>
+      <RenderHero blocks={page.hero ?? []} />
+      <RenderBlocks blocks={page.layout ?? []} />
+    </>
+  );
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {

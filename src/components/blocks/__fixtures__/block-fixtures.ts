@@ -11,19 +11,20 @@
  *   3. Stories appear automatically on next `bun storybook`
  */
 
-import type { ExtractBlock, LayoutBlock } from "@/types/block-types";
+import type { AnyPageBlock, ExtractAnyBlock } from "@/types/block-types";
 
 /**
  * Mapped type: one fixture per blockType, typed against Payload's generated schema.
  * Uses DeepPartial so nested arrays/objects don't require every optional field,
  * but top-level required fields (headline, blockType, etc.) are still enforced.
+ * Covers both hero field blocks and layout field blocks.
  */
 type DeepPartial<T> = T extends object
   ? { [P in keyof T]?: DeepPartial<T[P]> }
   : T;
 
 type BlockFixtures = {
-  [K in LayoutBlock["blockType"]]: DeepPartial<ExtractBlock<K>> & {
+  [K in AnyPageBlock["blockType"]]: DeepPartial<ExtractAnyBlock<K>> & {
     blockType: K;
   };
 };
