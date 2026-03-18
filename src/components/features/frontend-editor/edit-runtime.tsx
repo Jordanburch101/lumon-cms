@@ -332,7 +332,7 @@ function lookupDescriptor(
       const remaining = parts.slice(i).join(".");
       if (remaining in current) {
         const found = current[remaining];
-        return found.type !== "array" ? (found as FieldDescriptor) : null;
+        return found.type === "array" ? null : (found as FieldDescriptor);
       }
       return null;
     }

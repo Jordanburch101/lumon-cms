@@ -32,12 +32,12 @@ function makeArgs(
     operation: overrides.operation ?? "create",
     req: {
       file:
-        overrides.fileData !== null
-          ? {
+        overrides.fileData === null
+          ? undefined
+          : {
               data: overrides.fileData ?? Buffer.from("fake-image"),
               mimetype: overrides.mimeType ?? "image/jpeg",
-            }
-          : undefined,
+            },
       payload: {
         logger: {
           error: () => {

@@ -114,6 +114,7 @@ export function FlipCounter({ stat, delay = 0, inView }: FlipCounterProps) {
               delay={charDelay}
               digit={parsed}
               inView={inView}
+              // biome-ignore lint/suspicious/noArrayIndexKey: static char list from number — order never changes
               key={`${i}-${char}`}
             />
           );
@@ -124,6 +125,7 @@ export function FlipCounter({ stat, delay = 0, inView }: FlipCounterProps) {
             char={char}
             delay={charDelay}
             inView={inView}
+            // biome-ignore lint/suspicious/noArrayIndexKey: static char list from number — order never changes
             key={`${i}-${char}`}
           />
         );

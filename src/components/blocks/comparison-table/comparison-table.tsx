@@ -154,11 +154,11 @@ function groupFeatures(features: Feature[]) {
   for (const f of features) {
     const cat = f.category || null;
     const existingIdx = seen.get(cat);
-    if (existingIdx !== undefined) {
-      groups[existingIdx].items.push(f);
-    } else {
+    if (existingIdx === undefined) {
       seen.set(cat, groups.length);
       groups.push({ category: cat, items: [f] });
+    } else {
+      groups[existingIdx].items.push(f);
     }
   }
   return groups;

@@ -88,6 +88,7 @@ export function FeaturedQuote({
                 {words.map((word, i) => (
                   <span
                     className="inline-flex overflow-hidden align-bottom"
+                    // biome-ignore lint/suspicious/noArrayIndexKey: static word list from string split — order never changes
                     key={`${testimonial.id}-${i}`}
                   >
                     <motion.span
