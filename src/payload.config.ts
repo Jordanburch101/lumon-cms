@@ -144,13 +144,14 @@ export default buildConfig({
         const settings = await req.payload.findGlobal({
           slug: "site-settings",
         });
+        const siteName = settings.siteName?.trim();
         const separator = settings.separator || " | ";
-        const siteName = settings.siteName || "";
-        return `${doc.title}${separator}${siteName}`;
+        return siteName ? `${doc.title}${separator}${siteName}` : doc.title;
       },
       generateDescription: ({ doc }) => {
-        // Return extracted text or undefined — plugin skips the field when undefined.
-        // Empty string would produce an empty <meta description> which is worse than omitting.
+        // Plugin requires string return — empty string is converted to undefined
+        // by the metadata helper at render time (page.meta?.description || undefined).
+        // Editors see an empty auto-generated field and can fill it manually.
         return (
           extractFirstTextFromBlocks(
             (doc as { layout?: unknown[] }).layout as Parameters<
@@ -170,7 +171,8 @@ export default buildConfig({
         );
       },
       generateImage: ({ doc }) => {
-        // Returns media ID or undefined — plugin skips the field when undefined
+        // Cast: plugin type requires number but handles undefined gracefully at runtime
+        // (auto-generate button shows nothing when no image found). Verified in plugin-seo@3.79.
         return extractFirstImageFromBlocks(
           (doc as { layout?: unknown[] }).layout as Parameters<
             typeof extractFirstImageFromBlocks

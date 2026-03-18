@@ -318,6 +318,52 @@ describe("generatePageMetadata — Twitter card", () => {
   });
 });
 
+describe("generatePageMetadata — edge cases", () => {
+  it("omits canonical when baseUrl is empty/undefined", () => {
+    const page = makePage({ slug: "about", meta: {} });
+    const result = generatePageMetadata(
+      page,
+      makeSettings({ baseUrl: undefined })
+    );
+    expect(result.alternates).toBeUndefined();
+  });
+
+  it("title falls back to page title only when siteName is empty", () => {
+    const page = makePage({ slug: "about", meta: {} });
+    const result = generatePageMetadata(page, makeSettings({ siteName: "" }));
+    // Should NOT produce "About Us | " with trailing separator
+    expect(result.title).toBe("About Us");
+  });
+
+  it("title falls back to page title only when siteName is whitespace", () => {
+    const page = makePage({ slug: "about", meta: {} });
+    const result = generatePageMetadata(page, makeSettings({ siteName: "  " }));
+    expect(result.title).toBe("About Us");
+  });
+
+  it("handles unpopulated media image (raw number ID)", () => {
+    const page = makePage({ meta: { image: 42 } });
+    const result = generatePageMetadata(
+      page,
+      makeSettings({ defaultOgImage: null })
+    );
+    // Should not produce an OG image entry for a raw number
+    expect(result.openGraph?.images).toBeUndefined();
+  });
+
+  it("makes relative media URLs absolute", () => {
+    const page = makePage({
+      meta: { image: { id: 1, url: "/media/og.jpg", width: 800, height: 600 } },
+    });
+    const result = generatePageMetadata(
+      page,
+      makeSettings({ baseUrl: "https://lumon.com" })
+    );
+    const images = result.openGraph?.images as Array<{ url: string }>;
+    expect(images?.[0]?.url).toBe("https://lumon.com/media/og.jpg");
+  });
+});
+
 describe("generatePageMetadata — description", () => {
   it("uses page meta description when present", () => {
     const page = makePage({ meta: { description: "We do severance." } });

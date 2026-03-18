@@ -76,9 +76,12 @@ export function generatePageMetadata(
   const isDraft = page._status === "draft";
 
   // Title: page meta → fallback to "{title}{separator}{siteName}"
+  // Guard against empty siteName to avoid trailing separator ("About | ")
+  const siteName = settings.siteName?.trim() || undefined;
   const separator = settings.separator || " | ";
   const title =
-    page.meta?.title || `${page.title}${separator}${settings.siteName || ""}`;
+    page.meta?.title ||
+    (siteName ? `${page.title}${separator}${siteName}` : page.title);
 
   // Description
   const description = page.meta?.description || undefined;

@@ -1,5 +1,14 @@
 import { TRAILING_SLASH_RE } from "@/core/lib/utils";
-import type { Media, Page, SiteSetting } from "@/payload-types";
+import type { Page, SiteSetting } from "@/payload-types";
+
+const ABSOLUTE_URL_RE = /^https?:\/\//;
+
+function resolveAbsoluteUrl(url: string, baseUrl: string | undefined): string {
+  if (ABSOLUTE_URL_RE.test(url)) {
+    return url;
+  }
+  return baseUrl ? `${baseUrl}${url}` : url;
+}
 
 interface JsonLdProps {
   page: Page;
@@ -25,17 +34,19 @@ export function JsonLd({ page, settings }: JsonLdProps) {
 
   // Organization — home page only
   if (isHome && settings.jsonLd?.organizationName) {
-    const orgLogo = settings.jsonLd.organizationLogo as
-      | Media
-      | null
-      | undefined;
+    // Guard against unpopulated media (raw number ID) and ensure absolute URL
+    const rawLogo = settings.jsonLd.organizationLogo;
+    const logoUrl =
+      rawLogo && typeof rawLogo !== "number" && rawLogo.url
+        ? resolveAbsoluteUrl(rawLogo.url, settings.baseUrl || undefined)
+        : undefined;
     graph.push({
       "@type": "Organization",
       name: settings.jsonLd.organizationName,
       ...(settings.jsonLd.organizationUrl
         ? { url: settings.jsonLd.organizationUrl }
         : {}),
-      ...(orgLogo?.url ? { logo: orgLogo.url } : {}),
+      ...(logoUrl ? { logo: logoUrl } : {}),
     });
   }
 

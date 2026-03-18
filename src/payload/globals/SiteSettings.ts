@@ -2,9 +2,19 @@ import type { GlobalConfig, TextFieldValidation } from "payload";
 import { isAdminOrEditor } from "../access";
 import { revalidateGlobalOnChange } from "../hooks/revalidateGlobal";
 
+const validateNonEmpty: TextFieldValidation = (value) => {
+  if (value !== undefined && value !== null && !value.trim()) {
+    return "This field cannot be empty";
+  }
+  return true;
+};
+
 const validateUrl: TextFieldValidation = (value) => {
   if (!value) {
     return true;
+  }
+  if (!value.trim()) {
+    return "URL cannot be empty";
   }
   if (!(value.startsWith("https://") || value.startsWith("http://"))) {
     return "URL must start with https:// or http://";
@@ -26,7 +36,13 @@ export const SiteSettings: GlobalConfig = {
     afterChange: [revalidateGlobalOnChange(["site-settings", "sitemap"])],
   },
   fields: [
-    { name: "siteName", type: "text", required: true, label: "Site Name" },
+    {
+      name: "siteName",
+      type: "text",
+      required: true,
+      label: "Site Name",
+      validate: validateNonEmpty,
+    },
     {
       name: "baseUrl",
       type: "text",
