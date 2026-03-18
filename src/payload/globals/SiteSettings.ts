@@ -1,6 +1,6 @@
 import type { GlobalConfig, TextFieldValidation } from "payload";
 import { isAdminOrEditor } from "../access";
-import { revalidateGlobalOnChange } from "../hooks/revalidateOnChange/revalidate-global";
+import { revalidateGlobalOnChange } from "../hooks/revalidate-global";
 
 const validateUrl: TextFieldValidation = (value) => {
   if (!value) {
@@ -108,7 +108,12 @@ export const SiteSettings: GlobalConfig = {
           relationTo: "media",
           label: "Organization Logo",
         },
-        { name: "organizationUrl", type: "text", label: "Organization URL" },
+        {
+          name: "organizationUrl",
+          type: "text",
+          label: "Organization URL",
+          validate: validateUrl,
+        },
       ],
     },
   ],

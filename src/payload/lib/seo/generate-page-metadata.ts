@@ -1,7 +1,32 @@
 import type { Metadata } from "next";
+import { TRAILING_SLASH_RE } from "@/core/lib/utils";
 import type { Media, Page, SiteSetting } from "@/payload-types";
 
-const TRAILING_SLASH_RE = /\/$/;
+/** Ensure a URL is absolute — prepend baseUrl if it's a relative path. */
+function toAbsoluteUrl(url: string, baseUrl: string | undefined): string {
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    return url;
+  }
+  return baseUrl ? `${baseUrl}${url}` : url;
+}
+
+/** Resolve a media field that may be a number (unpopulated) or object (populated). */
+function resolveMediaUrl(
+  media: number | Media | null | undefined,
+  baseUrl: string | undefined
+): { url: string; width?: number | null; height?: number | null } | undefined {
+  if (!media || typeof media === "number") {
+    return undefined;
+  }
+  if (!media.url) {
+    return undefined;
+  }
+  return {
+    url: toAbsoluteUrl(media.url, baseUrl),
+    width: media.width,
+    height: media.height,
+  };
+}
 
 function buildRobots(
   page: Page,
@@ -24,18 +49,18 @@ function buildRobots(
 }
 
 function buildOgImages(
-  metaImage: Media | null | undefined,
-  defaultImage: Media | null | undefined
+  metaResolved: ReturnType<typeof resolveMediaUrl>,
+  defaultResolved: ReturnType<typeof resolveMediaUrl>
 ) {
-  const url = metaImage?.url || defaultImage?.url;
-  if (!url) {
+  const image = metaResolved || defaultResolved;
+  if (!image) {
     return undefined;
   }
   return [
     {
-      url,
-      ...(metaImage?.width ? { width: metaImage.width } : {}),
-      ...(metaImage?.height ? { height: metaImage.height } : {}),
+      url: image.url,
+      ...(image.width ? { width: image.width } : {}),
+      ...(image.height ? { height: image.height } : {}),
     },
   ];
 }
@@ -58,11 +83,12 @@ export function generatePageMetadata(
   // Description
   const description = page.meta?.description || undefined;
 
-  // Images
-  const metaImage = page.meta?.image as Media | null | undefined;
-  const defaultImage = settings.defaultOgImage as Media | null | undefined;
-  const ogImages = buildOgImages(metaImage, defaultImage);
-  const ogImageUrl = metaImage?.url || defaultImage?.url || undefined;
+  // Images — resolve populated media objects and ensure absolute URLs
+  const baseUrl = settings.baseUrl || undefined;
+  const metaResolved = resolveMediaUrl(page.meta?.image, baseUrl);
+  const defaultResolved = resolveMediaUrl(settings.defaultOgImage, baseUrl);
+  const ogImages = buildOgImages(metaResolved, defaultResolved);
+  const ogImageUrl = metaResolved?.url || defaultResolved?.url || undefined;
 
   // Canonical: custom override → fallback to baseUrl/slug
   const slug = page.slug === "home" ? "" : page.slug;

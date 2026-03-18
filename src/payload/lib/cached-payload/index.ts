@@ -2,15 +2,16 @@ import config from "@payload-config";
 import { cacheLife, cacheTag } from "next/cache";
 import { getPayload } from "payload";
 import { cache } from "react";
+import { TRAILING_SLASH_RE } from "@/core/lib/utils";
 import { tagResolvedRelationships } from "../relationship-walker";
-
-const TRAILING_SLASH_RE = /\/$/;
 
 /**
  * Fetch a page by slug with caching and relationship tagging.
  * Uses Next.js `'use cache'` — invalidated via `revalidateTag`.
+ * Wrapped in React `cache()` to deduplicate within a single request
+ * (called from both generateMetadata and the Page component).
  */
-export async function getCachedPage(slug: string) {
+export const getCachedPage = cache(async (slug: string) => {
   "use cache";
   cacheLife("hours");
 
@@ -30,7 +31,7 @@ export async function getCachedPage(slug: string) {
   }
 
   return page;
-}
+});
 
 /**
  * Fetch a page by slug WITHOUT caching. Used for draft/preview mode.

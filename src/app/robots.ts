@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
+import { TRAILING_SLASH_RE } from "@/core/lib/utils";
 import { getCachedSiteSettings } from "@/payload/lib/cached-payload";
-
-const TRAILING_SLASH_RE = /\/$/;
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const settings = await getCachedSiteSettings();
@@ -13,8 +12,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   return {
     rules: {
       userAgent: "*",
-      ...(globalIndex ? { allow: "/" } : { disallow: "/" }),
-      disallow: ["/admin", "/api"],
+      ...(globalIndex ? { allow: "/" } : {}),
+      disallow: globalIndex ? ["/admin", "/api"] : "/",
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };

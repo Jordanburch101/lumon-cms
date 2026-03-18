@@ -7,6 +7,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
+import { TRAILING_SLASH_RE } from "./core/lib/utils";
 import { Media } from "./payload/collections/Media";
 import { Pages } from "./payload/collections/Pages";
 import { Users } from "./payload/collections/Users";
@@ -19,7 +20,6 @@ import {
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
-const TRAILING_SLASH_RE = /\/$/;
 
 export default buildConfig({
   admin: {
@@ -149,12 +149,14 @@ export default buildConfig({
         return `${doc.title}${separator}${siteName}`;
       },
       generateDescription: ({ doc }) => {
+        // Return extracted text or undefined — plugin skips the field when undefined.
+        // Empty string would produce an empty <meta description> which is worse than omitting.
         return (
           extractFirstTextFromBlocks(
             (doc as { layout?: unknown[] }).layout as Parameters<
               typeof extractFirstTextFromBlocks
             >[0]
-          ) || ""
+          ) ?? ""
         );
       },
       generateURL: async ({ doc, req }) => {
@@ -181,6 +183,17 @@ export default buildConfig({
           name: "canonicalUrl",
           type: "text" as const,
           label: "Canonical URL",
+          validate: (value: string | null | undefined) => {
+            if (!value) {
+              return true;
+            }
+            if (
+              !(value.startsWith("https://") || value.startsWith("http://"))
+            ) {
+              return "URL must start with https:// or http://";
+            }
+            return true;
+          },
           admin: {
             description:
               "Override the auto-generated canonical URL. Leave blank to use the default.",

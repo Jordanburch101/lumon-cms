@@ -1,6 +1,5 @@
+import { TRAILING_SLASH_RE } from "@/core/lib/utils";
 import type { Media, Page, SiteSetting } from "@/payload-types";
-
-const TRAILING_SLASH_RE = /\/$/;
 
 interface JsonLdProps {
   page: Page;
