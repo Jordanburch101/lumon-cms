@@ -30,6 +30,7 @@
     "@payloadcms/db-sqlite": "^3.79.0",
     "@payloadcms/next": "^3.79.0",
     "@payloadcms/plugin-mcp": "^3.79.0",
+    "@payloadcms/plugin-seo": "^3.79.1",
     "@payloadcms/richtext-lexical": "^3.79.0",
     "@payloadcms/storage-s3": "^3.79.0",
     "@tailwindcss/typography": "^0.5.19",

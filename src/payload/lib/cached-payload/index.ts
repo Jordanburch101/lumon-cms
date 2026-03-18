@@ -43,3 +43,16 @@ export async function getPageDirect(slug: string, draft = false) {
 
   return result.docs[0] ?? null;
 }
+
+/**
+ * Fetch SiteSettings global with caching.
+ * Uses Next.js `'use cache'` — invalidated when SiteSettings changes.
+ */
+export async function getCachedSiteSettings() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("site-settings");
+
+  const payload = await getPayload({ config });
+  return payload.findGlobal({ slug: "site-settings" });
+}
