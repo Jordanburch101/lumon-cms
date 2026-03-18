@@ -18,7 +18,7 @@ import {
 } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
 import { useNearViewport } from "@/core/hooks/use-near-viewport";
-import { getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { CinematicCtaBlock } from "@/types/block-types";
 
 export function CinematicCta({
@@ -28,6 +28,8 @@ export function CinematicCta({
   subtext,
   cta,
 }: CinematicCtaBlock) {
+  const videoUrl = getMediaUrl(videoSrc);
+  const blurDataURL = getBlurDataURL(videoSrc);
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -110,7 +112,6 @@ export function CinematicCta({
   useMotionValueEvent(clipAmount, "change", (v) => setVideoVisible(v > 80));
 
   const isNearViewport = useNearViewport(containerRef, "400px");
-  const videoUrl = getMediaUrl(videoSrc);
 
   // Text fades in after curtains are mostly open
   const textOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
@@ -132,6 +133,7 @@ export function CinematicCta({
           loop
           muted
           playsInline
+          poster={blurDataURL || undefined}
           preload="none"
           ref={videoRef}
           src={isNearViewport ? videoUrl : undefined}

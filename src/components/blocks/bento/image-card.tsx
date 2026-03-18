@@ -22,6 +22,7 @@ export function ImageCard({ image }: { image: BentoBlock["image"] }) {
           loop
           muted
           playsInline
+          poster={blurDataURL || undefined}
           src={src}
         />
       )}

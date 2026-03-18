@@ -38,6 +38,7 @@ export function ShowcaseCard({
           loop
           muted
           playsInline
+          poster={blurDataURL || undefined}
           preload="none"
           src={src}
         />

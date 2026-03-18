@@ -18,7 +18,9 @@
     "test": "bun test",
     "test:watch": "bun test --watch",
     "storybook": "bun .storybook/generate.ts && storybook dev -p 6006",
-    "storybook:build": "bun .storybook/generate.ts && storybook build"
+    "storybook:build": "bun .storybook/generate.ts && storybook build",
+    "db:pull": "bun --env-file=.env scripts/db-sync.ts pull",
+    "db:push": "bun --env-file=.env scripts/db-sync.ts push"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1006.0",
