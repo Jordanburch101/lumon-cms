@@ -49,8 +49,8 @@ RUN bun run generate:types && \
 # Migrations — connects to production DB via public URL (private network unavailable at build time)
 RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
 
-# Next.js build — uses file:./payload.db for any build-time data access
-RUN bun --bun run build
+# Next.js build — connects to production DB for prerendering (robots.txt, sitemap, etc.)
+RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun --bun run build
 
 # =============================================================================
 # Stage 3: Production runner
