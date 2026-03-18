@@ -139,8 +139,10 @@ export default buildConfig({
       collections: ["pages"],
       uploadsCollection: "media",
       tabbedUI: true,
-      generateTitle: async ({ doc, payload }) => {
-        const settings = await payload.findGlobal({ slug: "site-settings" });
+      generateTitle: async ({ doc, req }) => {
+        const settings = await req.payload.findGlobal({
+          slug: "site-settings",
+        });
         const separator = settings.separator || " | ";
         const siteName = settings.siteName || "";
         return `${doc.title}${separator}${siteName}`;
@@ -154,16 +156,20 @@ export default buildConfig({
           ) || ""
         );
       },
-      generateURL: async ({ doc, payload }) => {
-        const settings = await payload.findGlobal({ slug: "site-settings" });
+      generateURL: async ({ doc, req }) => {
+        const settings = await req.payload.findGlobal({
+          slug: "site-settings",
+        });
         const slug = doc.slug === "home" ? "" : doc.slug;
         return `${settings.baseUrl || ""}/${slug}`;
       },
       generateImage: ({ doc }) => {
-        return extractFirstImageFromBlocks(
-          (doc as { layout?: unknown[] }).layout as Parameters<
-            typeof extractFirstImageFromBlocks
-          >[0]
+        return (
+          extractFirstImageFromBlocks(
+            (doc as { layout?: unknown[] }).layout as Parameters<
+              typeof extractFirstImageFromBlocks
+            >[0]
+          ) ?? ""
         );
       },
       fields: ({ defaultFields }) => [
