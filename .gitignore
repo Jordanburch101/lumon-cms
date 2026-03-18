@@ -48,6 +48,7 @@ next-env.d.ts
 # playwright
 .playwright-mcp/
 *.png
+!public/block-thumbnails/*.png
 .superpowers
 
 # Payload
