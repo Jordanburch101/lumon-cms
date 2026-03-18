@@ -1,6 +1,6 @@
 import type { GlobalConfig, TextFieldValidation } from "payload";
 import { isAdminOrEditor } from "../access";
-import { revalidateGlobalOnChange } from "../hooks/revalidate-global";
+import { revalidateGlobalOnChange } from "../hooks/revalidateGlobal";
 
 const validateUrl: TextFieldValidation = (value) => {
   if (!value) {
