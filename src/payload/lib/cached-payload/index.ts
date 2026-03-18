@@ -83,7 +83,7 @@ interface CollectionCustom {
   sitemap?: { enabled?: boolean; urlPrefix?: string };
 }
 
-function shouldExcludeDoc(
+export function shouldExcludeDoc(
   meta: DocMeta | undefined,
   globalNoIndex: boolean
 ): boolean {
@@ -99,7 +99,7 @@ function shouldExcludeDoc(
   return false;
 }
 
-function buildDocEntry(
+export function buildDocEntry(
   doc: SitemapDoc,
   baseUrl: string,
   urlPrefix: string
