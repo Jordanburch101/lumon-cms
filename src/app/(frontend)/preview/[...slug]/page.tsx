@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { cookies, draftMode } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getPayload } from "payload";
+import { cache } from "react";
 import { RenderBlocks } from "@/components/blocks/render-blocks";
 import {
   getCachedSiteSettings,
@@ -14,7 +15,9 @@ interface Args {
   params: Promise<{ slug: string[] }>;
 }
 
-async function authenticate() {
+// Wrapped in cache() to deduplicate within a single request
+// (called from both PreviewPage and generateMetadata)
+const authenticate = cache(async function authenticate() {
   const draft = await draftMode();
   if (!draft.isEnabled) {
     return false;
@@ -32,7 +35,7 @@ async function authenticate() {
   });
 
   return !!user;
-}
+});
 
 export default async function PreviewPage({ params }: Args) {
   const { slug: slugSegments } = await params;

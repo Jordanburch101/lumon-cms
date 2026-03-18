@@ -19,6 +19,7 @@ import {
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+const TRAILING_SLASH_RE = /\/$/;
 
 export default buildConfig({
   admin: {
@@ -161,16 +162,18 @@ export default buildConfig({
           slug: "site-settings",
         });
         const slug = doc.slug === "home" ? "" : doc.slug;
-        return `${settings.baseUrl || ""}/${slug}`;
+        return `${settings.baseUrl || ""}/${slug}`.replace(
+          TRAILING_SLASH_RE,
+          ""
+        );
       },
       generateImage: ({ doc }) => {
-        return (
-          extractFirstImageFromBlocks(
-            (doc as { layout?: unknown[] }).layout as Parameters<
-              typeof extractFirstImageFromBlocks
-            >[0]
-          ) ?? ""
-        );
+        // Returns media ID or undefined — plugin skips the field when undefined
+        return extractFirstImageFromBlocks(
+          (doc as { layout?: unknown[] }).layout as Parameters<
+            typeof extractFirstImageFromBlocks
+          >[0]
+        ) as number;
       },
       fields: ({ defaultFields }) => [
         ...defaultFields,

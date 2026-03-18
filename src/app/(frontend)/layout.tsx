@@ -18,6 +18,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Static export — cannot fetch SiteSettings dynamically.
+// Update "Lumon" if the site name changes in SiteSettings.
 export const metadata: Metadata = {
   title: {
     template: "%s",

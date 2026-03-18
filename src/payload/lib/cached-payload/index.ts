@@ -1,6 +1,7 @@
 import config from "@payload-config";
 import { cacheLife, cacheTag } from "next/cache";
 import { getPayload } from "payload";
+import { cache } from "react";
 import { tagResolvedRelationships } from "../relationship-walker";
 
 const TRAILING_SLASH_RE = /\/$/;
@@ -49,15 +50,17 @@ export async function getPageDirect(slug: string, draft = false) {
 /**
  * Fetch SiteSettings global with caching.
  * Uses Next.js `'use cache'` — invalidated when SiteSettings changes.
+ * Wrapped in React `cache()` to deduplicate within a single request
+ * (e.g., when called from both generateMetadata and the Page component).
  */
-export async function getCachedSiteSettings() {
+export const getCachedSiteSettings = cache(async () => {
   "use cache";
   cacheLife("hours");
   cacheTag("site-settings");
 
   const payload = await getPayload({ config });
   return payload.findGlobal({ slug: "site-settings" });
-}
+});
 
 interface SitemapEntry {
   lastModified?: Date;
@@ -136,7 +139,6 @@ export async function getCachedSitemapData() {
     const result = await payload.find({
       collection: collection.slug,
       draft: false,
-      limit: 1000,
       pagination: false,
       select: { slug: true, updatedAt: true, meta: true },
     });

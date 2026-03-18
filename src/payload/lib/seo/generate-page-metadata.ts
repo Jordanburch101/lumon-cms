@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { Media, Page, SiteSetting } from "@/payload-types";
 
+const TRAILING_SLASH_RE = /\/$/;
+
 function buildRobots(
   page: Page,
   settings: SiteSetting,
@@ -66,7 +68,9 @@ export function generatePageMetadata(
   const slug = page.slug === "home" ? "" : page.slug;
   const canonical =
     page.meta?.canonicalUrl ||
-    (settings.baseUrl ? `${settings.baseUrl}/${slug}` : undefined);
+    (settings.baseUrl
+      ? `${settings.baseUrl}/${slug}`.replace(TRAILING_SLASH_RE, "")
+      : undefined);
 
   return {
     title,

@@ -1,5 +1,7 @@
 import type { Media, Page, SiteSetting } from "@/payload-types";
 
+const TRAILING_SLASH_RE = /\/$/;
+
 interface JsonLdProps {
   page: Page;
   settings: SiteSetting;
@@ -7,14 +9,15 @@ interface JsonLdProps {
 
 export function JsonLd({ page, settings }: JsonLdProps) {
   const slug = page.slug === "home" ? "" : page.slug;
-  const pageUrl = settings.baseUrl ? `${settings.baseUrl}/${slug}` : undefined;
+  const pageUrl = settings.baseUrl
+    ? `${settings.baseUrl}/${slug}`.replace(TRAILING_SLASH_RE, "")
+    : undefined;
   const isHome = page.slug === "home";
 
-  const schemas: Record<string, unknown>[] = [];
+  const graph: Record<string, unknown>[] = [];
 
   // WebPage — every page
-  schemas.push({
-    "@context": "https://schema.org",
+  graph.push({
     "@type": "WebPage",
     name: page.meta?.title || page.title,
     ...(page.meta?.description ? { description: page.meta.description } : {}),
@@ -27,8 +30,7 @@ export function JsonLd({ page, settings }: JsonLdProps) {
       | Media
       | null
       | undefined;
-    schemas.push({
-      "@context": "https://schema.org",
+    graph.push({
       "@type": "Organization",
       name: settings.jsonLd.organizationName,
       ...(settings.jsonLd.organizationUrl
@@ -39,6 +41,9 @@ export function JsonLd({ page, settings }: JsonLdProps) {
   }
 
   // BreadcrumbList — non-home pages
+  // Note: intermediate breadcrumb segments link to {baseUrl}/{segment} which
+  // may not be a real page. This is acceptable for flat-slug pages; revisit
+  // if nested slug routing is introduced.
   if (!isHome && pageUrl && settings.baseUrl) {
     const segments = page.slug.split("/");
     const items = [
@@ -58,23 +63,19 @@ export function JsonLd({ page, settings }: JsonLdProps) {
       })),
     ];
 
-    schemas.push({
-      "@context": "https://schema.org",
+    graph.push({
       "@type": "BreadcrumbList",
       itemListElement: items,
     });
   }
 
+  const jsonLd = { "@context": "https://schema.org", "@graph": graph };
+
   return (
-    <>
-      {schemas.map((schema) => (
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: intentional JSON-LD injection
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-          key={schema["@type"] as string}
-          type="application/ld+json"
-        />
-      ))}
-    </>
+    <script
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify escapes all special chars
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      type="application/ld+json"
+    />
   );
 }

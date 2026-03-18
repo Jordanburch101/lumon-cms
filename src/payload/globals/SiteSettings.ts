@@ -1,6 +1,19 @@
-import type { GlobalConfig } from "payload";
+import type { GlobalConfig, TextFieldValidation } from "payload";
 import { isAdminOrEditor } from "../access";
 import { revalidateGlobalOnChange } from "../hooks/revalidateOnChange/revalidate-global";
+
+const validateUrl: TextFieldValidation = (value) => {
+  if (!value) {
+    return true;
+  }
+  if (!(value.startsWith("https://") || value.startsWith("http://"))) {
+    return "URL must start with https:// or http://";
+  }
+  if (value.endsWith("/")) {
+    return "URL must not have a trailing slash";
+  }
+  return true;
+};
 
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
@@ -19,6 +32,7 @@ export const SiteSettings: GlobalConfig = {
       type: "text",
       required: true,
       label: "Base URL",
+      validate: validateUrl,
       admin: {
         description: "Full URL without trailing slash (e.g. https://lumon.dev)",
       },
