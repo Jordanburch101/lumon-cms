@@ -6,6 +6,10 @@ export const HeroCenteredBlock: Block = {
   dbName: "heroCtrd",
   labels: { singular: "Hero Centered", plural: "Hero Centered" },
   admin: {
+    group: "Heroes",
+    images: {
+      thumbnail: "/block-thumbnails/hero-centered.png",
+    },
     custom: {
       description:
         "Center-aligned hero with background video/image, headline, subtext, and two CTA buttons. Same fields as Hero but centered layout. Best for landing pages and campaign openers.",

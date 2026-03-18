@@ -4,6 +4,10 @@ export const BentoBlock: Block = {
   slug: "bento",
   labels: { singular: "Bento Showcase", plural: "Bento Showcases" },
   admin: {
+    group: "Content",
+    images: {
+      thumbnail: "/block-thumbnails/bento.png",
+    },
     custom: {
       description:
         "Feature showcase with headline, subtext, an image card (title, description, badge), and an optional area chart. Use for 'what we do' or primary feature highlight sections.",

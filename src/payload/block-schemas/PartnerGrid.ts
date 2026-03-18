@@ -5,6 +5,10 @@ export const PartnerGridBlock: Block = {
   slug: "partnerGrid",
   labels: { singular: "Partner Grid", plural: "Partner Grids" },
   admin: {
+    group: "Social Proof",
+    images: {
+      thumbnail: "/block-thumbnails/partner-grid.png",
+    },
     custom: {
       description:
         "Partner/integration cards with logo, name, description, and link. Use for partner ecosystems, integration directories, or vendor showcases.",

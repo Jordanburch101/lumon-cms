@@ -5,6 +5,10 @@ export const CtaBandBlock: Block = {
   slug: "ctaBand",
   labels: { singular: "CTA Band", plural: "CTA Bands" },
   admin: {
+    group: "CTAs",
+    images: {
+      thumbnail: "/block-thumbnails/cta-band.png",
+    },
     custom: {
       description:
         "Compact call-to-action strip with heading, subtext, and one or two buttons. Variants: primary (colored background) or card (centered). Use between content sections to drive action.",

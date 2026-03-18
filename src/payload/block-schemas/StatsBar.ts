@@ -4,6 +4,10 @@ export const StatsBarBlock: Block = {
   slug: "statsBar",
   labels: { singular: "Stats Bar", plural: "Stats Bars" },
   admin: {
+    group: "Social Proof",
+    images: {
+      thumbnail: "/block-thumbnails/stats-bar.png",
+    },
     custom: {
       description:
         "Horizontal stats display (1-6 items) with value, label, and optional description. Variants: default, card, minimal. Use for key metrics between content sections.",

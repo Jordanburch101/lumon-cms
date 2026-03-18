@@ -5,6 +5,10 @@ export const HeroBlock: Block = {
   slug: "hero",
   labels: { singular: "Hero", plural: "Hero" },
   admin: {
+    group: "Heroes",
+    images: {
+      thumbnail: "/block-thumbnails/hero.png",
+    },
     custom: {
       description:
         "Full-width hero with background video/image, headline, subtext, and two CTA buttons. Use as the opening section of any page. Supports video with poster fallback.",

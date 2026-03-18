@@ -4,6 +4,10 @@ export const TestimonialsBlock: Block = {
   slug: "testimonials",
   labels: { singular: "Testimonials", plural: "Testimonials" },
   admin: {
+    group: "Social Proof",
+    images: {
+      thumbnail: "/block-thumbnails/testimonials.png",
+    },
     custom: {
       description:
         "Social proof section. One featured quote spotlight on the left with auto-rotating smaller quote cards on the right. Needs 5+ testimonials (1+ featured, 4+ non-featured). Use on homepage or pricing pages.",

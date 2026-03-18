@@ -5,6 +5,10 @@ export const PricingBlock: Block = {
   slug: "pricing",
   labels: { singular: "Pricing", plural: "Pricing" },
   admin: {
+    group: "Commerce",
+    images: {
+      thumbnail: "/block-thumbnails/pricing.png",
+    },
     custom: {
       description:
         "Pricing table with tiered plans. Each tier has name, description, monthly/annual price, feature list, CTA button, optional badge, and recommended flag. Use on pricing pages.",

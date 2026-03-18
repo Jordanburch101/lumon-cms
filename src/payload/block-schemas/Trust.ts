@@ -4,6 +4,10 @@ export const TrustBlock: Block = {
   slug: "trust",
   labels: { singular: "Trust", plural: "Trust" },
   admin: {
+    group: "Social Proof",
+    images: {
+      thumbnail: "/block-thumbnails/trust.png",
+    },
     custom: {
       description:
         "Social proof strip with animated counter stats and optional partner logos. Use to build credibility with impressive numbers and brand associations.",

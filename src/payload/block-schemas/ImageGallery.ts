@@ -4,6 +4,10 @@ export const ImageGalleryBlock: Block = {
   slug: "imageGallery",
   labels: { singular: "Image Gallery", plural: "Image Galleries" },
   admin: {
+    group: "Content",
+    images: {
+      thumbnail: "/block-thumbnails/image-gallery.png",
+    },
     custom: {
       description:
         "Grid of labeled images with captions. Each item has a label, caption, image, and alt text. Use for portfolio showcases, case study visuals, or photo galleries.",

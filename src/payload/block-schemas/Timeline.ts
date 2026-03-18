@@ -4,6 +4,10 @@ export const TimelineBlock: Block = {
   slug: "timeline",
   labels: { singular: "Timeline", plural: "Timelines" },
   admin: {
+    group: "Content",
+    images: {
+      thumbnail: "/block-thumbnails/timeline.png",
+    },
     custom: {
       description:
         "Chronological timeline with dated entries. Each entry has heading, description, optional stat with label, and category tag. Use for company history, product roadmap, or process flows.",

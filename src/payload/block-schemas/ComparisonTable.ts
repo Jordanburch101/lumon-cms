@@ -5,6 +5,10 @@ export const ComparisonTableBlock: Block = {
   slug: "comparisonTable",
   labels: { singular: "Comparison Table", plural: "Comparison Tables" },
   admin: {
+    group: "Commerce",
+    images: {
+      thumbnail: "/block-thumbnails/comparison-table.png",
+    },
     custom: {
       description:
         "Feature comparison matrix with 2-4 plans. Features can be included, excluded, partial, or text values. Each plan has name, price, CTA. Use alongside pricing block for detailed plan comparison.",

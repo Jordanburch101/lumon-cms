@@ -4,6 +4,10 @@ export const TabbedContentBlock: Block = {
   slug: "tabbedContent",
   labels: { singular: "Tabbed Content", plural: "Tabbed Content" },
   admin: {
+    group: "Content",
+    images: {
+      thumbnail: "/block-thumbnails/tabbed-content.png",
+    },
     custom: {
       description:
         "Tabbed interface with 2+ tabs. Each tab has label, heading, description, optional image, icon, and feature bullet list. Use for multi-faceted product features or service categories.",

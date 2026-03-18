@@ -5,6 +5,10 @@ export const SplitMediaBlock: Block = {
   slug: "splitMedia",
   labels: { singular: "Split Media", plural: "Split Media" },
   admin: {
+    group: "Content",
+    images: {
+      thumbnail: "/block-thumbnails/split-media.png",
+    },
     custom: {
       description:
         "Alternating text + media rows. Each row has headline, body, video/image with overlay card, and arrow-link CTA. Use for product deep-dives or feature walkthroughs. Typically 2-3 rows.",

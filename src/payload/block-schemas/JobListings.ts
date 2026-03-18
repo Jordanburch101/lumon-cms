@@ -5,6 +5,10 @@ export const JobListingsBlock: Block = {
   slug: "jobListings",
   labels: { singular: "Job Listings", plural: "Job Listings" },
   admin: {
+    group: "Commerce",
+    images: {
+      thumbnail: "/block-thumbnails/job-listings.png",
+    },
     custom: {
       description:
         "Job posting list with title, department, location, employment type, optional salary, description, and apply link. Use for careers or hiring pages.",

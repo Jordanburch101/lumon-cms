@@ -4,6 +4,10 @@ export const LatestArticlesBlock: Block = {
   slug: "latestArticles",
   labels: { singular: "Latest Articles", plural: "Latest Articles" },
   admin: {
+    group: "Content",
+    images: {
+      thumbnail: "/block-thumbnails/latest-articles.png",
+    },
     custom: {
       description:
         "Blog/article card grid with image, title, excerpt, author, date, and read time. Use for content marketing sections, blog highlights, or news feeds.",

@@ -5,6 +5,10 @@ export const CinematicCtaBlock: Block = {
   slug: "cinematicCta",
   labels: { singular: "Cinematic CTA", plural: "Cinematic CTAs" },
   admin: {
+    group: "CTAs",
+    images: {
+      thumbnail: "/block-thumbnails/cinematic-cta.png",
+    },
     custom: {
       description:
         "Full-bleed background video with label, headline, subtext, and CTA button. Use as a dramatic section closer or transition between page sections.",
