@@ -193,26 +193,6 @@ export default buildConfig({
             : field
         ),
         {
-          name: "canonicalUrl",
-          type: "text" as const,
-          label: "Canonical URL",
-          validate: (value: string | null | undefined) => {
-            if (!value) {
-              return true;
-            }
-            if (
-              !(value.startsWith("https://") || value.startsWith("http://"))
-            ) {
-              return "URL must start with https:// or http://";
-            }
-            return true;
-          },
-          admin: {
-            description:
-              "Override the auto-generated canonical URL. Leave blank to use the default.",
-          },
-        },
-        {
           name: "robots",
           type: "group" as const,
           label: "Robots",

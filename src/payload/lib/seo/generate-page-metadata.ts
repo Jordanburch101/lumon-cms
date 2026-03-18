@@ -93,13 +93,11 @@ export function generatePageMetadata(
   const ogImages = buildOgImages(metaResolved, defaultResolved);
   const ogImageUrl = metaResolved?.url || defaultResolved?.url || undefined;
 
-  // Canonical: custom override → fallback to baseUrl/slug
+  // Canonical: auto-generated from baseUrl/slug
   const slug = page.slug === "home" ? "" : page.slug;
-  const canonical =
-    page.meta?.canonicalUrl ||
-    (settings.baseUrl
-      ? `${settings.baseUrl}/${slug}`.replace(TRAILING_SLASH_RE, "")
-      : undefined);
+  const canonical = settings.baseUrl
+    ? `${settings.baseUrl}/${slug}`.replace(TRAILING_SLASH_RE, "")
+    : undefined;
 
   return {
     title,

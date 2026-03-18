@@ -36,17 +36,14 @@ function makeMedia(
 
 // ── toAbsoluteUrl (tested indirectly through generatePageMetadata) ───
 
-describe("toAbsoluteUrl (via canonical / OG image URL)", () => {
-  it("absolute URLs pass through unchanged", () => {
+describe("toAbsoluteUrl (via OG image URL)", () => {
+  it("absolute image URLs pass through unchanged", () => {
     const page = makePage({
-      meta: {
-        canonicalUrl: "https://example.com/custom-canonical",
-      },
+      meta: { image: makeMedia(1, "https://cdn.example.com/og.jpg") },
     });
     const result = generatePageMetadata(page, makeSettings());
-    expect(result.alternates?.canonical).toBe(
-      "https://example.com/custom-canonical"
-    );
+    const images = result.openGraph?.images as Array<{ url: string }>;
+    expect(images?.[0]?.url).toBe("https://cdn.example.com/og.jpg");
   });
 
   it("relative media URL gets baseUrl prepended", () => {
@@ -173,15 +170,7 @@ describe("generatePageMetadata — title", () => {
 });
 
 describe("generatePageMetadata — canonical URL", () => {
-  it("uses canonical URL from page meta.canonicalUrl", () => {
-    const page = makePage({
-      meta: { canonicalUrl: "https://lumon.com/custom-url" },
-    });
-    const result = generatePageMetadata(page, makeSettings());
-    expect(result.alternates?.canonical).toBe("https://lumon.com/custom-url");
-  });
-
-  it("falls back to baseUrl/slug when no canonicalUrl", () => {
+  it("generates canonical from baseUrl/slug", () => {
     const page = makePage({ slug: "about", meta: {} });
     const result = generatePageMetadata(
       page,
