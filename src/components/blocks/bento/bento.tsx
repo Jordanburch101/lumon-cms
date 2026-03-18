@@ -10,6 +10,7 @@ export function BentoShowcase({
   headline,
   subtext,
   image,
+  showcase,
   chartData,
 }: BentoBlock) {
   return (
@@ -44,7 +45,7 @@ export function BentoShowcase({
 
             {/* Row 2: Showcase (2col) + Notifications (1col) */}
             <div className="sm:col-span-2">
-              <ShowcaseCard />
+              <ShowcaseCard showcase={showcase} />
             </div>
             <div className="hidden lg:block">
               <NotificationsCard />

@@ -1567,6 +1567,41 @@
           "notNull": false,
           "autoincrement": false
         },
+        "showcase_src_id": {
+          "name": "showcase_src_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_alt": {
+          "name": "showcase_alt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_title": {
+          "name": "showcase_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_description": {
+          "name": "showcase_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_badge": {
+          "name": "showcase_badge",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "block_name": {
           "name": "block_name",
           "type": "text",
@@ -1595,6 +1630,11 @@
           "name": "pages_blocks_bento_image_image_src_idx",
           "columns": ["image_src_id"],
           "isUnique": false
+        },
+        "pages_blocks_bento_showcase_showcase_src_idx": {
+          "name": "pages_blocks_bento_showcase_showcase_src_idx",
+          "columns": ["showcase_src_id"],
+          "isUnique": false
         }
       },
       "foreignKeys": {
@@ -1603,6 +1643,15 @@
           "tableFrom": "pages_blocks_bento",
           "tableTo": "media",
           "columnsFrom": ["image_src_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "pages_blocks_bento_showcase_src_id_media_id_fk": {
+          "name": "pages_blocks_bento_showcase_src_id_media_id_fk",
+          "tableFrom": "pages_blocks_bento",
+          "tableTo": "media",
+          "columnsFrom": ["showcase_src_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
@@ -7104,6 +7153,41 @@
           "notNull": false,
           "autoincrement": false
         },
+        "showcase_src_id": {
+          "name": "showcase_src_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_alt": {
+          "name": "showcase_alt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_title": {
+          "name": "showcase_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_description": {
+          "name": "showcase_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "showcase_badge": {
+          "name": "showcase_badge",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "_uuid": {
           "name": "_uuid",
           "type": "text",
@@ -7139,6 +7223,11 @@
           "name": "_pages_v_blocks_bento_image_image_src_idx",
           "columns": ["image_src_id"],
           "isUnique": false
+        },
+        "_pages_v_blocks_bento_showcase_showcase_src_idx": {
+          "name": "_pages_v_blocks_bento_showcase_showcase_src_idx",
+          "columns": ["showcase_src_id"],
+          "isUnique": false
         }
       },
       "foreignKeys": {
@@ -7147,6 +7236,15 @@
           "tableFrom": "_pages_v_blocks_bento",
           "tableTo": "media",
           "columnsFrom": ["image_src_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "_pages_v_blocks_bento_showcase_src_id_media_id_fk": {
+          "name": "_pages_v_blocks_bento_showcase_src_id_media_id_fk",
+          "tableFrom": "_pages_v_blocks_bento",
+          "tableTo": "media",
+          "columnsFrom": ["showcase_src_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
@@ -12745,6 +12843,6 @@
   "internal": {
     "indexes": {}
   },
-  "id": "1edc1e59-c1b0-4144-99f7-c49a6c69c647",
+  "id": "17f7eb5e-f5f4-40f9-8790-eac97f7ca4cf",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

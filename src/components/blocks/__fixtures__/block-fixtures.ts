@@ -208,6 +208,14 @@ export const blockFixtures: BlockFixtures = {
       description: "Real-time monitoring of macrodata refinement progress.",
       badge: "New",
     },
+    showcase: {
+      src: mockMedia("Bento Showcase Video", 800, 450),
+      alt: "Visual storytelling showcase",
+      title: "Visual Storytelling",
+      description:
+        "Full-bleed video and image blocks that bring your brand to life.",
+      badge: "Cinematic",
+    },
     chartData: [
       { month: "Jan", visitors: 120 },
       { month: "Feb", visitors: 180 },

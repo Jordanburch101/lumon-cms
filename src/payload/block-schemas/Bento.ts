@@ -24,6 +24,17 @@ export const BentoBlock: Block = {
       ],
     },
     {
+      name: "showcase",
+      type: "group",
+      fields: [
+        { name: "src", type: "upload", relationTo: "media", required: true },
+        { name: "alt", type: "text", required: true },
+        { name: "title", type: "text", required: true },
+        { name: "description", type: "text", required: true },
+        { name: "badge", type: "text" },
+      ],
+    },
+    {
       name: "chartData",
       type: "array",
       fields: [
