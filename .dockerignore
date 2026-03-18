@@ -2,6 +2,7 @@
 .next
 node_modules
 .agents
+.claude
 docs
 scripts/upload-to-prod.ts
 .env
@@ -12,6 +13,7 @@ scripts/upload-to-prod.ts
 .worktrees
 .superpowers
 .playwright-mcp
+storybook-static
 *.md
 *.png
 payload.db
