@@ -37,11 +37,11 @@ import { TimelineBlock } from "../block-schemas/Timeline";
 import { TrustBlock } from "../block-schemas/Trust";
 import { revalidateOnChange } from "../hooks/revalidateOnChange";
 
-const { afterChange, afterDelete } = revalidateOnChange();
+const { afterChange, afterDelete } = revalidateOnChange({ tags: ["sitemap"] });
 
 export const Pages: CollectionConfig = {
   slug: "pages",
-  custom: { linkable: true },
+  custom: { linkable: true, sitemap: { enabled: true, urlPrefix: "" } },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "updatedAt"],
@@ -101,15 +101,6 @@ export const Pages: CollectionConfig = {
         TabbedContentBlock,
         ComparisonTableBlock,
         JobListingsBlock,
-      ],
-    },
-    {
-      name: "meta",
-      type: "group",
-      fields: [
-        { name: "title", type: "text" },
-        { name: "description", type: "textarea" },
-        { name: "image", type: "upload", relationTo: "media" },
       ],
     },
   ],

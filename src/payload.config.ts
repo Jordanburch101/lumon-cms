@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { mcpPlugin } from "@payloadcms/plugin-mcp";
+import { seoPlugin } from "@payloadcms/plugin-seo";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
@@ -9,7 +10,12 @@ import sharp from "sharp";
 import { Media } from "./payload/collections/Media";
 import { Pages } from "./payload/collections/Pages";
 import { Users } from "./payload/collections/Users";
+import { SiteSettings } from "./payload/globals/SiteSettings";
 import { optimizeVideoTask } from "./payload/jobs/optimize-video";
+import {
+  extractFirstImageFromBlocks,
+  extractFirstTextFromBlocks,
+} from "./payload/lib/seo/extract-block-content";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -26,6 +32,7 @@ export default buildConfig({
         : false,
   },
   collections: [Users, Media, Pages],
+  globals: [SiteSettings],
   editor: lexicalEditor(),
   secret:
     process.env.PAYLOAD_SECRET ??
@@ -127,6 +134,109 @@ export default buildConfig({
           },
         },
       },
+    }),
+    seoPlugin({
+      collections: ["pages"],
+      uploadsCollection: "media",
+      tabbedUI: true,
+      generateTitle: async ({ doc, payload }) => {
+        const settings = await payload.findGlobal({ slug: "site-settings" });
+        const separator = settings.separator || " | ";
+        const siteName = settings.siteName || "";
+        return `${doc.title}${separator}${siteName}`;
+      },
+      generateDescription: ({ doc }) => {
+        return (
+          extractFirstTextFromBlocks(
+            (doc as { layout?: unknown[] }).layout as Parameters<
+              typeof extractFirstTextFromBlocks
+            >[0]
+          ) || ""
+        );
+      },
+      generateURL: async ({ doc, payload }) => {
+        const settings = await payload.findGlobal({ slug: "site-settings" });
+        const slug = doc.slug === "home" ? "" : doc.slug;
+        return `${settings.baseUrl || ""}/${slug}`;
+      },
+      generateImage: ({ doc }) => {
+        return extractFirstImageFromBlocks(
+          (doc as { layout?: unknown[] }).layout as Parameters<
+            typeof extractFirstImageFromBlocks
+          >[0]
+        );
+      },
+      fields: ({ defaultFields }) => [
+        ...defaultFields,
+        {
+          name: "canonicalUrl",
+          type: "text" as const,
+          label: "Canonical URL",
+          admin: {
+            description:
+              "Override the auto-generated canonical URL. Leave blank to use the default.",
+          },
+        },
+        {
+          name: "robots",
+          type: "group" as const,
+          label: "Robots",
+          fields: [
+            {
+              name: "override",
+              type: "checkbox" as const,
+              defaultValue: false,
+              label: "Override global robots settings",
+              admin: {
+                description:
+                  "Enable to set custom robots directives for this page.",
+              },
+            },
+            {
+              name: "index",
+              type: "checkbox" as const,
+              defaultValue: true,
+              label: "Allow indexing",
+              admin: {
+                condition: (
+                  _: Record<string, unknown>,
+                  siblingData: Record<string, unknown>
+                ) => siblingData?.override === true,
+              },
+            },
+            {
+              name: "follow",
+              type: "checkbox" as const,
+              defaultValue: true,
+              label: "Allow link following",
+              admin: {
+                condition: (
+                  _: Record<string, unknown>,
+                  siblingData: Record<string, unknown>
+                ) => siblingData?.override === true,
+              },
+            },
+          ],
+        },
+        {
+          name: "keywords",
+          type: "text" as const,
+          label: "Keywords",
+          admin: {
+            description: "Comma-separated keywords (optional).",
+          },
+        },
+        {
+          name: "excludeFromSitemap",
+          type: "checkbox" as const,
+          defaultValue: false,
+          label: "Exclude from sitemap",
+          admin: {
+            description:
+              "Hide this page from the sitemap. It can still be indexed if linked to externally.",
+          },
+        },
+      ],
     }),
   ],
 });
