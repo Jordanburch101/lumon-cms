@@ -42,7 +42,7 @@ export default buildConfig({
         authToken: process.env.DATABASE_AUTH_TOKEN,
       }),
     },
-    push: false,
+    push: !process.env.DATABASE_AUTH_TOKEN,
   }),
   sharp,
   jobs: {

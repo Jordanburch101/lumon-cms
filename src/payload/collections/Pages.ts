@@ -1,4 +1,5 @@
-import type { CollectionConfig, TextFieldValidation } from "payload";
+import type { CollectionConfig, TextField, TextFieldValidation } from "payload";
+import { slugField } from "payload";
 import { isAdminOrEditor } from "../access";
 
 const RESERVED_SLUGS = new Set(["admin", "api", "preview", "next", "media"]);
@@ -64,17 +65,14 @@ export const Pages: CollectionConfig = {
       type: "text",
       required: true,
     },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      index: true,
-      validate: validateSlug,
-      admin: {
-        position: "sidebar",
+    slugField({
+      useAsSlug: "title",
+      overrides: (field) => {
+        const slugTextField = field.fields[1] as TextField;
+        slugTextField.validate = validateSlug;
+        return field;
       },
-    },
+    }),
     {
       name: "layout",
       type: "blocks",
