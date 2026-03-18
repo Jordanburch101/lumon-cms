@@ -65,9 +65,13 @@ export const SiteSettings: GlobalConfig = {
       type: "upload",
       relationTo: "media",
       label: "Default OG Image",
+      filterOptions: {
+        mimeType: { not_in: ["image/svg+xml"] },
+        _or: [{ mimeType: { contains: "image/" } }],
+      },
       admin: {
         description:
-          "Fallback social share image when a page has no meta image",
+          "Fallback social share image when a page has no meta image. Must be a raster image (no SVGs or videos).",
       },
     },
     {
@@ -123,6 +127,10 @@ export const SiteSettings: GlobalConfig = {
           type: "upload",
           relationTo: "media",
           label: "Organization Logo",
+          filterOptions: {
+            mimeType: { not_in: ["image/svg+xml"] },
+            _or: [{ mimeType: { contains: "image/" } }],
+          },
         },
         {
           name: "organizationUrl",

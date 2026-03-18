@@ -180,7 +180,18 @@ export default buildConfig({
         ) as number;
       },
       fields: ({ defaultFields }) => [
-        ...defaultFields,
+        // Add filterOptions to the plugin's image field to restrict to raster images only
+        ...defaultFields.map((field) =>
+          "name" in field && field.name === "image"
+            ? {
+                ...field,
+                filterOptions: {
+                  mimeType: { not_in: ["image/svg+xml"] },
+                  _or: [{ mimeType: { contains: "image/" } }],
+                },
+              }
+            : field
+        ),
         {
           name: "canonicalUrl",
           type: "text" as const,
