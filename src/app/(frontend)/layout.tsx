@@ -19,8 +19,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lumon",
-  description: "Next.js + Payload CMS template and component showcase",
+  title: {
+    template: "%s",
+    default: "Lumon",
+  },
 };
 
 export default function FrontendLayout({

@@ -4,7 +4,11 @@ import { cookies, draftMode } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getPayload } from "payload";
 import { RenderBlocks } from "@/components/blocks/render-blocks";
-import { getPageDirect } from "@/payload/lib/cached-payload";
+import {
+  getCachedSiteSettings,
+  getPageDirect,
+} from "@/payload/lib/cached-payload";
+import { generatePageMetadata } from "@/payload/lib/seo/generate-page-metadata";
 
 interface Args {
   params: Promise<{ slug: string[] }>;
@@ -59,13 +63,17 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   }
 
   const page = await getPageDirect(slug, true);
-
   if (!page) {
     return {};
   }
 
+  const settings = await getCachedSiteSettings();
+  const metadata = generatePageMetadata(page, settings);
+
+  // Preview pages always noindex/nofollow
   return {
+    ...metadata,
     title: `Preview: ${page.meta?.title || page.title}`,
-    description: page.meta?.description || undefined,
+    robots: { index: false, follow: false },
   };
 }

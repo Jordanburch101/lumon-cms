@@ -3,7 +3,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import { RenderBlocks } from "@/components/blocks/render-blocks";
-import { getCachedPage } from "@/payload/lib/cached-payload";
+import { JsonLd } from "@/components/features/seo/json-ld";
+import {
+  getCachedPage,
+  getCachedSiteSettings,
+} from "@/payload/lib/cached-payload";
+import { generatePageMetadata } from "@/payload/lib/seo/generate-page-metadata";
 
 interface Args {
   params: Promise<{ slug?: string[] }>;
@@ -16,6 +21,7 @@ export async function generateStaticParams() {
       collection: "pages",
       limit: 100,
       select: { slug: true },
+      draft: false,
     });
 
     const params = pages.docs.map((page) => ({
@@ -29,6 +35,20 @@ export async function generateStaticParams() {
   }
 }
 
+export async function generateMetadata({ params }: Args): Promise<Metadata> {
+  const { slug: slugSegments } = await params;
+  const slug = slugSegments?.join("/") || "home";
+
+  const page = await getCachedPage(slug);
+  const settings = await getCachedSiteSettings();
+
+  if (!page) {
+    return {};
+  }
+
+  return generatePageMetadata(page, settings);
+}
+
 export default async function Page({ params }: Args) {
   const { slug: slugSegments } = await params;
   const slug = slugSegments?.join("/") || "home";
@@ -39,21 +59,12 @@ export default async function Page({ params }: Args) {
     notFound();
   }
 
-  return <RenderBlocks blocks={page.layout ?? []} />;
-}
+  const settings = await getCachedSiteSettings();
 
-export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { slug: slugSegments } = await params;
-  const slug = slugSegments?.join("/") || "home";
-
-  const page = await getCachedPage(slug);
-
-  if (!page) {
-    return {};
-  }
-
-  return {
-    title: page.meta?.title || page.title,
-    description: page.meta?.description || undefined,
-  };
+  return (
+    <>
+      <JsonLd page={page} settings={settings} />
+      <RenderBlocks blocks={page.layout ?? []} />
+    </>
+  );
 }
