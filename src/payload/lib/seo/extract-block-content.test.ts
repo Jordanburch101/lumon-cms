@@ -133,76 +133,104 @@ describe("extractFirstImageFromBlocks", () => {
     expect(extractFirstImageFromBlocks([])).toBeUndefined();
   });
 
-  it("extracts hero mediaSrc as a raw number", () => {
+  it("skips unpopulated hero mediaSrc (raw number — no mimeType)", () => {
     const layout = [{ blockType: "hero", mediaSrc: 42 } as any];
-    expect(extractFirstImageFromBlocks(layout)).toBe(42);
+    expect(extractFirstImageFromBlocks(layout)).toBeUndefined();
   });
 
-  it("extracts hero mediaSrc from a populated object with id", () => {
+  it("extracts hero mediaSrc from populated image object", () => {
     const layout = [
       {
         blockType: "hero",
-        mediaSrc: { id: 7, url: "/media/hero.jpg" },
+        mediaSrc: { id: 7, url: "/media/hero.jpg", mimeType: "image/jpeg" },
       } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(7);
   });
 
-  it("extracts splitMedia first row mediaSrc as a raw number", () => {
+  it("skips hero mediaSrc when it is a video", () => {
     const layout = [
       {
-        blockType: "splitMedia",
-        rows: [{ mediaSrc: 99 }],
+        blockType: "hero",
+        mediaSrc: { id: 7, url: "/media/hero.mp4", mimeType: "video/mp4" },
       } as any,
     ];
-    expect(extractFirstImageFromBlocks(layout)).toBe(99);
+    expect(extractFirstImageFromBlocks(layout)).toBeUndefined();
   });
 
-  it("extracts splitMedia first row mediaSrc from a populated object", () => {
+  it("skips hero mediaSrc when it is an SVG", () => {
+    const layout = [
+      {
+        blockType: "hero",
+        mediaSrc: { id: 7, url: "/media/icon.svg", mimeType: "image/svg+xml" },
+      } as any,
+    ];
+    expect(extractFirstImageFromBlocks(layout)).toBeUndefined();
+  });
+
+  it("extracts splitMedia first row image (not video)", () => {
     const layout = [
       {
         blockType: "splitMedia",
-        rows: [{ mediaSrc: { id: 13, url: "/media/split.jpg" } }],
+        rows: [
+          {
+            mediaSrc: {
+              id: 13,
+              url: "/media/split.jpg",
+              mimeType: "image/webp",
+            },
+          },
+        ],
       } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(13);
   });
 
-  it("extracts bento image.src as a raw number", () => {
+  it("skips splitMedia video and finds next image", () => {
     const layout = [
       {
-        blockType: "bento",
-        image: { src: 55 },
+        blockType: "splitMedia",
+        rows: [
+          {
+            mediaSrc: { id: 10, url: "/media/vid.mp4", mimeType: "video/mp4" },
+          },
+        ],
       } as any,
-    ];
-    expect(extractFirstImageFromBlocks(layout)).toBe(55);
-  });
-
-  it("extracts bento image.src from a populated object", () => {
-    const layout = [
       {
         blockType: "bento",
-        image: { src: { id: 20, url: "/media/bento.jpg" } },
+        image: {
+          src: { id: 20, url: "/media/bento.png", mimeType: "image/png" },
+        },
       } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(20);
   });
 
-  it("extracts imageGallery first item image as a raw number", () => {
+  it("extracts bento image.src from populated image object", () => {
     const layout = [
       {
-        blockType: "imageGallery",
-        items: [{ image: 88 }],
+        blockType: "bento",
+        image: {
+          src: { id: 20, url: "/media/bento.jpg", mimeType: "image/jpeg" },
+        },
       } as any,
     ];
-    expect(extractFirstImageFromBlocks(layout)).toBe(88);
+    expect(extractFirstImageFromBlocks(layout)).toBe(20);
   });
 
-  it("extracts imageGallery first item image from a populated object", () => {
+  it("extracts imageGallery first item image", () => {
     const layout = [
       {
         blockType: "imageGallery",
-        items: [{ image: { id: 33, url: "/media/gallery.jpg" } }],
+        items: [
+          {
+            image: {
+              id: 33,
+              url: "/media/gallery.jpg",
+              mimeType: "image/jpeg",
+            },
+          },
+        ],
       } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(33);
@@ -210,8 +238,14 @@ describe("extractFirstImageFromBlocks", () => {
 
   it("returns first block's image when multiple blocks have images", () => {
     const layout = [
-      { blockType: "hero", mediaSrc: 1 } as any,
-      { blockType: "bento", image: { src: 2 } } as any,
+      {
+        blockType: "hero",
+        mediaSrc: { id: 1, url: "/a.jpg", mimeType: "image/jpeg" },
+      } as any,
+      {
+        blockType: "bento",
+        image: { src: { id: 2, url: "/b.jpg", mimeType: "image/png" } },
+      } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(1);
   });
@@ -219,7 +253,10 @@ describe("extractFirstImageFromBlocks", () => {
   it("skips blocks with no media and returns first match", () => {
     const layout = [
       { blockType: "imageGallery", items: [] } as any,
-      { blockType: "hero", mediaSrc: 77 } as any,
+      {
+        blockType: "hero",
+        mediaSrc: { id: 77, url: "/h.jpg", mimeType: "image/jpeg" },
+      } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(77);
   });
@@ -237,7 +274,7 @@ describe("extractFirstImageFromBlocks", () => {
       { blockType: "hero", mediaSrc: null } as any,
       {
         blockType: "bento",
-        image: { src: { id: 5, url: "/media/bento.jpg" } },
+        image: { src: { id: 5, url: "/media/bento.jpg", mimeType: "image/jpeg" } },
       } as any,
     ];
     expect(extractFirstImageFromBlocks(layout)).toBe(5);

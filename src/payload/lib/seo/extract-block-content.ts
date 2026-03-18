@@ -51,34 +51,65 @@ export function extractFirstTextFromBlocks(
   return undefined;
 }
 
-function resolveMediaId(
-  value: number | { id: number } | null | undefined
+const IMAGE_MIME_RE = /^image\/(?!svg\+xml)/;
+
+/**
+ * Resolve a media relation to its ID, but only if it's a raster image.
+ * Skips videos, SVGs, and unpopulated relations (raw number IDs without
+ * mimeType info are skipped since we can't verify they're images).
+ */
+function resolveImageMediaId(
+  value: number | { id: number; mimeType?: string | null } | null | undefined
 ): number | undefined {
   if (!value) {
     return undefined;
   }
-  if (typeof value === "object") {
-    return value.id;
+  if (typeof value === "number") {
+    // Unpopulated — can't verify mimeType, skip to be safe
+    return undefined;
   }
-  return value;
+  if (!(value.mimeType && IMAGE_MIME_RE.test(value.mimeType))) {
+    return undefined;
+  }
+  return value.id;
 }
 
 function getBlockImageId(block: LayoutBlock): number | undefined {
   switch (block.blockType) {
     case "hero":
-      return resolveMediaId(block.mediaSrc as number | { id: number } | null);
+      return resolveImageMediaId(
+        block.mediaSrc as
+          | number
+          | { id: number; mimeType?: string | null }
+          | null
+      );
     case "splitMedia": {
       const row = block.rows?.[0];
       return row
-        ? resolveMediaId(row.mediaSrc as number | { id: number } | null)
+        ? resolveImageMediaId(
+            row.mediaSrc as
+              | number
+              | { id: number; mimeType?: string | null }
+              | null
+          )
         : undefined;
     }
     case "bento":
-      return resolveMediaId(block.image?.src as number | { id: number } | null);
+      return resolveImageMediaId(
+        block.image?.src as
+          | number
+          | { id: number; mimeType?: string | null }
+          | null
+      );
     case "imageGallery": {
       const item = block.items?.[0];
       return item
-        ? resolveMediaId(item.image as number | { id: number } | null)
+        ? resolveImageMediaId(
+            item.image as
+              | number
+              | { id: number; mimeType?: string | null }
+              | null
+          )
         : undefined;
     }
     default:
@@ -87,7 +118,8 @@ function getBlockImageId(block: LayoutBlock): number | undefined {
 }
 
 /**
- * Walks layout blocks in order, returns the first media ID found.
+ * Walks layout blocks in order, returns the first **raster image** media ID.
+ * Skips videos and SVGs. Requires populated media relations (with mimeType).
  * Checks: Hero mediaSrc, SplitMedia first row mediaSrc, Bento image.src,
  * ImageGallery first item image.
  */
