@@ -16,5 +16,6 @@ scripts/upload-to-prod.ts
 storybook-static
 *.md
 *.png
+!public/block-thumbnails/*.png
 payload.db
 payload.db-journal

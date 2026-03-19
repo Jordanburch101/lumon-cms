@@ -23,39 +23,12 @@ import {
   blockArgTypes,
   blockFixtures,
 } from "../src/components/blocks/__fixtures__/block-fixtures";
+import { BLOCK_CATEGORIES as CATEGORIES } from "../src/components/blocks/block-categories";
 
 const OUT_DIR = resolve(
   import.meta.dirname,
   "../src/components/blocks/__fixtures__"
 );
-
-// ─── Category mapping ─────────────────────────────────
-const CATEGORIES: Record<string, string> = {
-  hero: "Heroes",
-  heroCentered: "Heroes",
-  heroMinimal: "Heroes",
-  heroStats: "Heroes",
-  bento: "Content",
-  featuresGrid: "Content",
-  splitMedia: "Content",
-  richTextContent: "Content",
-  latestArticles: "Content",
-  imageGallery: "Content",
-  testimonials: "Social Proof",
-  team: "Social Proof",
-  trust: "Social Proof",
-  logoCloud: "Social Proof",
-  cinematicCta: "CTAs",
-  ctaBand: "CTAs",
-  pricing: "Commerce",
-  faq: "Commerce",
-  statsBar: "Social Proof",
-  partnerGrid: "Social Proof",
-  jobListings: "Commerce",
-  timeline: "Content",
-  tabbedContent: "Content",
-  comparisonTable: "Commerce",
-};
 
 // Convert blockType to readable display name
 // heroMinimal → Hero Minimal

@@ -11,8 +11,10 @@
 
 import { mkdir, readdir } from "node:fs/promises";
 import { join } from "node:path";
+import { platform } from "node:os";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
+import { BLOCK_CATEGORIES } from "../src/components/blocks/block-categories";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -22,38 +24,7 @@ const OUTPUT_DIR = join(import.meta.dir, "../public/block-thumbnails");
 const VIEWPORT = { width: 1440, height: 900 };
 const THUMB = { width: 480, height: 320 };
 const SETTLE_MS = 500;
-
-// ---------------------------------------------------------------------------
-// Category map — same source of truth as .storybook/generate.ts
-// Maps Payload block slug → Storybook sidebar category
-// ---------------------------------------------------------------------------
-
-const CATEGORIES: Record<string, string> = {
-  hero: "Heroes",
-  heroCentered: "Heroes",
-  heroMinimal: "Heroes",
-  heroStats: "Heroes",
-  bento: "Content",
-  featuresGrid: "Content",
-  splitMedia: "Content",
-  richTextContent: "Content",
-  latestArticles: "Content",
-  imageGallery: "Content",
-  testimonials: "Social Proof",
-  team: "Social Proof",
-  trust: "Social Proof",
-  logoCloud: "Social Proof",
-  cinematicCta: "CTAs",
-  ctaBand: "CTAs",
-  pricing: "Commerce",
-  faq: "Commerce",
-  statsBar: "Social Proof",
-  partnerGrid: "Social Proof",
-  jobListings: "Commerce",
-  timeline: "Content",
-  tabbedContent: "Content",
-  comparisonTable: "Commerce",
-};
+const CONCURRENCY = 4;
 
 // ---------------------------------------------------------------------------
 // Slug ↔ story ID conversion
@@ -69,7 +40,7 @@ function toKebab(s: string): string {
 
 /** Payload slug → Storybook story ID */
 function slugToStoryId(slug: string): string {
-  const category = CATEGORIES[slug];
+  const category = BLOCK_CATEGORIES[slug];
   if (!category) throw new Error(`Unknown block slug: ${slug}`);
   const categoryKebab = category.toLowerCase().replace(/\s+/g, "-");
   const exportKebab = toKebab(slug.charAt(0).toUpperCase() + slug.slice(1));
@@ -85,19 +56,15 @@ function slugToFilename(slug: string): string {
 // Component path → block slug mapping (for --changed)
 // ---------------------------------------------------------------------------
 
-/** Map of component directory/file paths to block slugs */
 const PATH_TO_SLUGS: Record<string, string[]> = {
-  // Most blocks: directory name matches kebab slug
-  // Heroes share a directory, so hero/ maps to all 4
   "hero/hero.tsx": ["hero"],
   "hero/hero-centered.tsx": ["heroCentered"],
   "hero/hero-minimal.tsx": ["heroMinimal"],
   "hero/hero-stats.tsx": ["heroStats"],
 };
 
-// Auto-populate for non-hero blocks (directory name = kebab slug)
-for (const slug of Object.keys(CATEGORIES)) {
-  if (slug.startsWith("hero")) continue; // handled above
+for (const slug of Object.keys(BLOCK_CATEGORIES)) {
+  if (slug.startsWith("hero")) continue;
   const dir = toKebab(slug.charAt(0).toUpperCase() + slug.slice(1));
   PATH_TO_SLUGS[`${dir}/`] = [slug];
 }
@@ -112,13 +79,11 @@ function detectChangedSlugs(): string[] {
   const slugs = new Set<string>();
 
   for (const file of files) {
-    // Block components: src/components/blocks/{dir}/{file}
     const blockMatch = file.match(
       /^src\/components\/blocks\/([^_][^/]+)\/(.+\.tsx?)$/
     );
     if (blockMatch) {
       const [, dir, filename] = blockMatch;
-      // Check specific file first (for heroes), then directory
       const key = `${dir}/${filename}`;
       const dirKey = `${dir}/`;
       for (const s of PATH_TO_SLUGS[key] ?? PATH_TO_SLUGS[dirKey] ?? []) {
@@ -127,19 +92,16 @@ function detectChangedSlugs(): string[] {
       continue;
     }
 
-    // Block schemas: src/payload/block-schemas/{Name}.ts
     const schemaMatch = file.match(/^src\/payload\/block-schemas\/(\w+)\.ts$/);
     if (schemaMatch) {
       const name = schemaMatch[1];
-      // PascalCase → camelCase
       const slug = name.charAt(0).toLowerCase() + name.slice(1);
-      if (slug in CATEGORIES) slugs.add(slug);
+      if (slug in BLOCK_CATEGORIES) slugs.add(slug);
       continue;
     }
 
-    // Fixtures: if block-fixtures.ts changes, regen all
     if (file.includes("block-fixtures.ts")) {
-      return Object.keys(CATEGORIES);
+      return Object.keys(BLOCK_CATEGORIES);
     }
   }
 
@@ -150,19 +112,23 @@ function detectChangedSlugs(): string[] {
 // Args
 // ---------------------------------------------------------------------------
 
-const urlFlagIdx = process.argv.indexOf("--url");
-const externalUrl =
-  urlFlagIdx !== -1 ? process.argv[urlFlagIdx + 1] : undefined;
+function parseFlag(flag: string): string | undefined {
+  const idx = process.argv.indexOf(flag);
+  if (idx === -1) return undefined;
+  const value = process.argv[idx + 1];
+  if (!value || value.startsWith("--")) {
+    throw new Error(`${flag} requires a value`);
+  }
+  return value;
+}
 
-const slugsFlagIdx = process.argv.indexOf("--slugs");
-const explicitSlugs =
-  slugsFlagIdx !== -1
-    ? process.argv[slugsFlagIdx + 1].split(",").map((s) => s.trim())
-    : undefined;
-
+const externalUrl = parseFlag("--url");
+const slugsArg = parseFlag("--slugs");
+const explicitSlugs = slugsArg
+  ? slugsArg.split(",").map((s) => s.trim())
+  : undefined;
 const changedMode = process.argv.includes("--changed");
 
-// Resolve which slugs to process
 let targetSlugs: string[] | undefined;
 if (explicitSlugs) {
   targetSlugs = explicitSlugs;
@@ -186,7 +152,6 @@ let server: ReturnType<typeof Bun.serve> | undefined;
 async function startLocalServer(): Promise<string> {
   const staticDir = join(import.meta.dir, "../storybook-static");
 
-  // Verify the build exists
   const indexFile = Bun.file(join(staticDir, "index.json"));
   if (!(await indexFile.exists())) {
     throw new Error(
@@ -195,7 +160,7 @@ async function startLocalServer(): Promise<string> {
   }
 
   server = Bun.serve({
-    port: 0, // random available port
+    port: 0,
     async fetch(req) {
       let pathname = new URL(req.url).pathname;
       if (pathname === "/") pathname = "/index.html";
@@ -204,7 +169,6 @@ async function startLocalServer(): Promise<string> {
       if (await file.exists()) {
         return new Response(file);
       }
-      // SPA fallback
       return new Response(Bun.file(join(staticDir, "index.html")));
     },
   });
@@ -254,6 +218,7 @@ async function discoverAllStories(baseUrl: string): Promise<StoryTarget[]> {
 
     const exportName = entry.exportName ?? entry.name;
     const filename = `${toKebab(exportName)}.png`;
+    // Derive the camelCase slug from the export name for display
     const slug = exportName.charAt(0).toLowerCase() + exportName.slice(1);
 
     stories.push({ id: entry.id, slug, filename });
@@ -263,55 +228,148 @@ async function discoverAllStories(baseUrl: string): Promise<StoryTarget[]> {
 }
 
 // ---------------------------------------------------------------------------
-// Find Chromium executable
+// Find Chromium executable (cross-platform)
 // ---------------------------------------------------------------------------
 
 async function findChromium(): Promise<string> {
-  const cacheDir = join(
-    process.env.HOME ?? "~",
-    "Library/Caches/ms-playwright"
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? "~";
+  const os = platform();
+
+  // Playwright cache locations by platform
+  const cacheDirs: string[] = [];
+  if (os === "darwin") {
+    cacheDirs.push(join(home, "Library/Caches/ms-playwright"));
+  } else if (os === "linux") {
+    cacheDirs.push(join(home, ".cache/ms-playwright"));
+  } else if (os === "win32") {
+    cacheDirs.push(join(home, "AppData/Local/ms-playwright"));
+  }
+  // Fallback: try all common locations
+  cacheDirs.push(
+    join(home, "Library/Caches/ms-playwright"),
+    join(home, ".cache/ms-playwright")
   );
 
-  const entries = await readdir(cacheDir);
-  const dirs = entries
-    .filter((e) => e.startsWith("chromium-") && !e.includes("headless_shell"))
-    .map((e) => join(cacheDir, e))
-    .sort();
+  for (const cacheDir of cacheDirs) {
+    let entries: string[];
+    try {
+      entries = await readdir(cacheDir);
+    } catch {
+      continue;
+    }
 
-  if (dirs.length === 0) {
-    throw new Error(
-      "No Chromium found in ~/Library/Caches/ms-playwright/ — run `bunx playwright install chromium`"
-    );
-  }
+    const dirs = entries
+      .filter((e) => e.startsWith("chromium-") && !e.includes("headless_shell"))
+      .map((e) => join(cacheDir, e))
+      .sort();
 
-  const latestDir = dirs[dirs.length - 1];
+    if (dirs.length === 0) continue;
 
-  const candidates = [
-    "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
-    "chrome-mac/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
-    "chrome-mac-arm64/Chromium.app/Contents/MacOS/Chromium",
-    "chrome-mac/Chromium.app/Contents/MacOS/Chromium",
-  ];
+    const latestDir = dirs[dirs.length - 1];
 
-  for (const candidate of candidates) {
-    const fullPath = join(latestDir, candidate);
-    const { exitCode } = Bun.spawnSync(["test", "-f", fullPath]);
-    if (exitCode === 0) return fullPath;
+    // Executable paths by platform
+    const candidates: string[] = [];
+    if (os === "darwin") {
+      candidates.push(
+        "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+        "chrome-mac/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+        "chrome-mac-arm64/Chromium.app/Contents/MacOS/Chromium",
+        "chrome-mac/Chromium.app/Contents/MacOS/Chromium"
+      );
+    } else if (os === "linux") {
+      candidates.push(
+        "chrome-linux64/chrome",
+        "chrome-linux/chrome",
+        "chrome-linux64/Google Chrome for Testing",
+        "chrome-linux/Google Chrome for Testing"
+      );
+    } else if (os === "win32") {
+      candidates.push(
+        "chrome-win64/chrome.exe",
+        "chrome-win/chrome.exe"
+      );
+    }
+
+    for (const candidate of candidates) {
+      const fullPath = join(latestDir, candidate);
+      const { exitCode } = Bun.spawnSync(["test", "-f", fullPath]);
+      if (exitCode === 0) return fullPath;
+    }
   }
 
   throw new Error(
-    `Chromium executable not found in ${latestDir} — tried:\n${candidates.map((c) => `  ${c}`).join("\n")}`
+    `Chromium not found — run \`bunx playwright install chromium\`\nSearched: ${cacheDirs.join(", ")}`
   );
 }
 
 // ---------------------------------------------------------------------------
-// Screenshot & resize
+// Screenshot a single story
+// ---------------------------------------------------------------------------
+
+async function screenshotStory(
+  context: Awaited<ReturnType<typeof chromium.launch>>["contexts"][0],
+  baseUrl: string,
+  story: StoryTarget
+): Promise<boolean> {
+  const page = await context.newPage();
+  const storyUrl = `${baseUrl}/iframe.html?id=${story.id}&viewMode=story&globals=theme:light`;
+
+  try {
+    await page.goto(storyUrl, { waitUntil: "networkidle" });
+
+    await page.addStyleTag({
+      content: `
+        #storybook-root > div {
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+          min-height: 100vh;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: center !important;
+        }
+      `,
+    });
+
+    await page.waitForTimeout(SETTLE_MS);
+
+    const buffer = await page.screenshot({ type: "png" });
+
+    const contentHeight = await page.evaluate(() => {
+      const root = document.querySelector("#storybook-root > div");
+      return root ? root.scrollHeight : 0;
+    });
+    const cropPosition = contentHeight > VIEWPORT.height ? "top" : "centre";
+
+    const resized = await sharp(buffer)
+      .resize(THUMB.width, THUMB.height, {
+        fit: "cover",
+        position: cropPosition,
+      })
+      .png()
+      .toBuffer();
+
+    const outPath = join(OUTPUT_DIR, story.filename);
+    await Bun.write(outPath, resized);
+
+    console.log(`  ✓ ${story.filename}`);
+    return true;
+  } catch (err) {
+    console.error(
+      `  ✗ ${story.filename}: ${err instanceof Error ? err.message : err}`
+    );
+    return false;
+  } finally {
+    await page.close();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Main — parallel screenshot processing
 // ---------------------------------------------------------------------------
 
 async function main() {
   const baseUrl = externalUrl ?? (await startLocalServer());
 
-  // Resolve story targets
   let stories: StoryTarget[];
   if (targetSlugs) {
     stories = storiesFromSlugs(targetSlugs);
@@ -337,62 +395,18 @@ async function main() {
     deviceScaleFactor: 1,
   });
 
+  // Process stories in parallel batches
   let succeeded = 0;
   let failed = 0;
 
-  for (const story of stories) {
-    const page = await context.newPage();
-    const storyUrl = `${baseUrl}/iframe.html?id=${story.id}&viewMode=story&globals=theme:light`;
-
-    try {
-      await page.goto(storyUrl, { waitUntil: "networkidle" });
-
-      // Remove decorator padding and vertically center short blocks
-      await page.addStyleTag({
-        content: `
-          #storybook-root > div {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            min-height: 100vh;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-          }
-        `,
-      });
-
-      await page.waitForTimeout(SETTLE_MS);
-
-      const buffer = await page.screenshot({ type: "png" });
-
-      // Detect whether the block is taller than the viewport — if so,
-      // crop from top (heroes, bentos); otherwise center crop (CTAs, bars)
-      const contentHeight = await page.evaluate(() => {
-        const root = document.querySelector("#storybook-root > div");
-        return root ? root.scrollHeight : 0;
-      });
-      const cropPosition = contentHeight > VIEWPORT.height ? "top" : "centre";
-
-      const resized = await sharp(buffer)
-        .resize(THUMB.width, THUMB.height, {
-          fit: "cover",
-          position: cropPosition,
-        })
-        .png()
-        .toBuffer();
-
-      const outPath = join(OUTPUT_DIR, story.filename);
-      await Bun.write(outPath, resized);
-
-      console.log(`  ✓ ${story.filename}`);
-      succeeded++;
-    } catch (err) {
-      console.error(
-        `  ✗ ${story.filename}: ${err instanceof Error ? err.message : err}`
-      );
-      failed++;
-    } finally {
-      await page.close();
+  for (let i = 0; i < stories.length; i += CONCURRENCY) {
+    const batch = stories.slice(i, i + CONCURRENCY);
+    const results = await Promise.all(
+      batch.map((story) => screenshotStory(context, baseUrl, story))
+    );
+    for (const ok of results) {
+      if (ok) succeeded++;
+      else failed++;
     }
   }
 

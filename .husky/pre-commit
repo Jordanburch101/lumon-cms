@@ -17,6 +17,13 @@ if [ $exit_code -eq 0 ]; then
   echo "$output"
   git add public/block-thumbnails/*.png
 else
-  echo "⚠ Thumbnail generation failed (non-blocking):"
+  echo ""
+  echo "┌─────────────────────────────────────────────┐"
+  echo "│ ⚠  Block thumbnail generation failed        │"
+  echo "│    Run 'bun run generate:thumbnails' manually│"
+  echo "└─────────────────────────────────────────────┘"
+  echo ""
   echo "$output"
+  echo ""
+  # Non-blocking — don't fail the commit for thumbnails
 fi
