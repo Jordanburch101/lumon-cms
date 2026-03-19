@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook: regenerate block thumbnails for any changed blocks.
+# Requires storybook-static/ to be built (bun storybook:build).
+# Skips silently if no block files are staged or storybook-static is missing.
+
+# Exit early if storybook-static doesn't exist
+if [ ! -f "storybook-static/index.json" ]; then
+  exit 0
+fi
+
+# Run the thumbnail script in --changed mode (reads git staged files)
+output=$(bun scripts/generate-thumbnails.ts --changed 2>&1)
+exit_code=$?
+
+# If nothing to do, continue silently
+if echo "$output" | grep -q "nothing to do"; then
+  exit 0
+fi
+
+# If the script ran, show output and stage updated thumbnails
+if [ $exit_code -eq 0 ]; then
+  echo "$output"
+  git add public/block-thumbnails/*.png
+else
+  echo "⚠ Thumbnail generation failed (non-blocking):"
+  echo "$output"
+  # Don't block the commit — thumbnails can be regenerated later
+fi
+
+exit 0
