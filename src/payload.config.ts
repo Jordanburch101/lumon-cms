@@ -6,8 +6,10 @@ import { seoPlugin } from "@payloadcms/plugin-seo";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
+import { betterAuthPlugin } from "payload-auth/better-auth";
 import sharp from "sharp";
 import { TRAILING_SLASH_RE } from "./core/lib/utils";
+import { payloadAuthOptions } from "./lib/auth/options";
 import { Media } from "./payload/collections/Media";
 import { Pages } from "./payload/collections/Pages";
 import { Users } from "./payload/collections/Users";
@@ -62,10 +64,8 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
-    autoLogin:
-      process.env.NODE_ENV === "development" && process.env.AUTOLOGIN_EMAIL
-        ? { email: process.env.AUTOLOGIN_EMAIL }
-        : false,
+    // TODO: Re-enable dev auto-login once Better Auth strategy is verified
+    autoLogin: false,
   },
   collections: [Users, Media, Pages],
   globals: [SiteSettings],
@@ -100,6 +100,7 @@ export default buildConfig({
     }),
   },
   plugins: [
+    betterAuthPlugin(payloadAuthOptions),
     ...(process.env.S3_BUCKET
       ? [
           s3Storage({
