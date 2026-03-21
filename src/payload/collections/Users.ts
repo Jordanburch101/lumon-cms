@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { betterAuthStrategy } from "@/lib/auth/strategy";
 import { adminFieldOnly, isAdmin, isAdminOrSelf, isLoggedIn } from "../access";
 
 export const Users: CollectionConfig = {
@@ -6,7 +7,9 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: "email",
   },
-  auth: true,
+  auth: {
+    strategies: [betterAuthStrategy],
+  },
   access: {
     read: isLoggedIn,
     create: isAdmin,
