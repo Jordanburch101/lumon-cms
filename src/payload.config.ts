@@ -8,6 +8,10 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { TRAILING_SLASH_RE } from "./core/lib/utils";
+import { BaAccounts } from "./payload/collections/auth/BaAccounts";
+import { BaSessions } from "./payload/collections/auth/BaSessions";
+import { BaTwoFactors } from "./payload/collections/auth/BaTwoFactors";
+import { BaVerifications } from "./payload/collections/auth/BaVerifications";
 import { Media } from "./payload/collections/Media";
 import { Pages } from "./payload/collections/Pages";
 import { Users } from "./payload/collections/Users";
@@ -67,7 +71,15 @@ export default buildConfig({
         ? { email: process.env.AUTOLOGIN_EMAIL }
         : false,
   },
-  collections: [Users, Media, Pages],
+  collections: [
+    Users,
+    Media,
+    Pages,
+    BaSessions,
+    BaAccounts,
+    BaVerifications,
+    BaTwoFactors,
+  ],
   globals: [SiteSettings],
   editor: lexicalEditor(),
   secret:

@@ -35,5 +35,22 @@ export const Users: CollectionConfig = {
         position: "sidebar",
       },
     },
+    {
+      name: "emailVerified",
+      type: "checkbox",
+      defaultValue: false,
+      admin: { position: "sidebar" },
+    },
+    {
+      name: "image",
+      type: "text",
+      admin: { hidden: true },
+    },
+    {
+      name: "twoFactorEnabled",
+      type: "checkbox",
+      defaultValue: false,
+      admin: { position: "sidebar" },
+    },
   ],
 };
