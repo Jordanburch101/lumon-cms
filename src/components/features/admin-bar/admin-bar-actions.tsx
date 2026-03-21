@@ -310,10 +310,16 @@ export function AdminBarActions({
               onClick={async () => {
                 setMenuOpen(false);
                 try {
-                  await fetch("/api/users/logout", {
-                    method: "POST",
-                    credentials: "include",
-                  });
+                  await Promise.all([
+                    fetch("/api/users/logout", {
+                      method: "POST",
+                      credentials: "include",
+                    }),
+                    fetch("/api/auth/sign-out", {
+                      method: "POST",
+                      credentials: "include",
+                    }),
+                  ]);
                 } catch {
                   /* silent */
                 }
