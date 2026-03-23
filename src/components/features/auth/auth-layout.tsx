@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { useRef } from "react";
 import { cn, isVideoUrl } from "@/core/lib/utils";
@@ -34,7 +35,7 @@ function LogoSvg({ className }: { className?: string }) {
 
 export function AuthLayout({
   children,
-  mediaSrc = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80",
+  mediaSrc = "https://bucket.jordanburch.dev/hero-vid-new.mp4",
   heading = "Lumon Industries",
   subtext = "The work is mysterious and important.",
 }: AuthLayoutProps) {
@@ -100,7 +101,10 @@ export function AuthLayout({
             transition={{ duration: 1, ease: EASE, delay: 0.6 }}
           />
 
-          <div className="flex items-center gap-3">
+          <Link
+            className="flex items-center gap-3 transition-opacity hover:opacity-80"
+            href="/"
+          >
             <LogoSvg className="h-8 w-8 shrink-0 text-white/70" />
             <div>
               <h2 className="font-semibold text-lg text-white tracking-tight">
@@ -108,7 +112,7 @@ export function AuthLayout({
               </h2>
               <p className="text-sm text-white/50">{subtext}</p>
             </div>
-          </div>
+          </Link>
         </motion.div>
       </div>
 
@@ -116,16 +120,24 @@ export function AuthLayout({
       <motion.div
         animate={inView ? { opacity: 1, y: 0 } : {}}
         className={cn(
-          "flex w-full flex-col items-center justify-center bg-background px-6 py-12",
+          "relative flex w-full flex-col items-center justify-center bg-background px-6 py-12",
           "lg:w-[55%]"
         )}
         initial={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
       >
+        {/* Back to site */}
+        <Link
+          className="absolute top-6 right-6 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.15em] transition-colors hover:text-foreground"
+          href="/"
+        >
+          &larr; Back to site
+        </Link>
+
         {/* Mobile-only logo */}
-        <div className="mb-8 lg:hidden">
+        <Link className="mb-8 lg:hidden" href="/">
           <LogoSvg className="h-10 w-10 text-foreground" />
-        </div>
+        </Link>
 
         {/* Centered content slot */}
         <div className="w-full max-w-[380px]">{children}</div>
