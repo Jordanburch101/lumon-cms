@@ -249,15 +249,9 @@ export function LoginPage() {
             {/* Footer */}
             <motion.p
               {...fieldVariants(7)}
-              className="pt-2 text-center text-muted-foreground text-sm"
+              className="pt-2 text-center text-muted-foreground/60 text-xs"
             >
-              Don&apos;t have an account?{" "}
-              <a
-                className="font-medium text-foreground underline decoration-border underline-offset-4"
-                href="/register"
-              >
-                Request access
-              </a>
+              Need help? Contact your administrator.
             </motion.p>
           </form>
         )}
