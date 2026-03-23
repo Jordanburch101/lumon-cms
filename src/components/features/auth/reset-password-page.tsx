@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/payload/lib/auth/client";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { EASE, fieldVariants, Spinner } from "./auth-constants";
 
 export function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -47,17 +46,6 @@ export function ResetPasswordPage() {
     }
     setLoading(false);
   }
-
-  const fieldVariants = (i: number) => ({
-    initial: { opacity: 0, y: 16 },
-    animate: inView
-      ? {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.7, ease: EASE, delay: 0.1 + i * 0.05 },
-        }
-      : {},
-  });
 
   const inputClassName =
     "h-11 rounded-lg px-3.5 text-sm placeholder:text-muted-foreground/50";
@@ -112,7 +100,7 @@ export function ResetPasswordPage() {
     return (
       <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
         {/* New password */}
-        <motion.div {...fieldVariants(2)}>
+        <motion.div {...fieldVariants(2, inView)}>
           <Label className="mb-1.5 text-[13px]" htmlFor="password">
             New password
           </Label>
@@ -128,7 +116,7 @@ export function ResetPasswordPage() {
         </motion.div>
 
         {/* Confirm password */}
-        <motion.div {...fieldVariants(3)}>
+        <motion.div {...fieldVariants(3, inView)}>
           <Label className="mb-1.5 text-[13px]" htmlFor="confirm-password">
             Confirm password
           </Label>
@@ -144,7 +132,7 @@ export function ResetPasswordPage() {
         </motion.div>
 
         {/* Submit button */}
-        <motion.div {...fieldVariants(4)}>
+        <motion.div {...fieldVariants(4, inView)}>
           <Button
             className="h-11 w-full rounded-lg font-semibold text-sm"
             disabled={loading}
@@ -152,27 +140,7 @@ export function ResetPasswordPage() {
           >
             {loading ? (
               <>
-                <svg
-                  aria-label="Loading"
-                  className="h-4 w-4 animate-spin"
-                  fill="none"
-                  role="img"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <Spinner />
                 Resetting
               </>
             ) : (
@@ -201,7 +169,7 @@ export function ResetPasswordPage() {
       <div ref={formRef}>
         {/* Eyebrow */}
         <motion.p
-          {...fieldVariants(0)}
+          {...fieldVariants(0, inView)}
           className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.2em]"
         >
           Account recovery
@@ -209,7 +177,7 @@ export function ResetPasswordPage() {
 
         {/* Heading */}
         <motion.h1
-          {...fieldVariants(1)}
+          {...fieldVariants(1, inView)}
           className="mt-3 font-semibold text-3xl tracking-tight"
         >
           Set a new password

@@ -6,8 +6,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useRef } from "react";
 import { cn, isVideoUrl } from "@/core/lib/utils";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { EASE } from "./auth-constants";
 
 interface AuthLayoutProps {
   children: ReactNode;

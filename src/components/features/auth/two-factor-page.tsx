@@ -8,8 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/core/lib/utils";
 import { authClient } from "@/payload/lib/auth/client";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { EASE } from "./auth-constants";
 
 export function TwoFactorPage() {
   const [code, setCode] = useState("");

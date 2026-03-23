@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/payload/lib/auth/client";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { EASE, fieldVariants, Spinner } from "./auth-constants";
 
 export function LoginPage() {
   const formRef = useRef<HTMLDivElement>(null);
@@ -56,17 +55,6 @@ export function LoginPage() {
     setLoading(false);
   }
 
-  const fieldVariants = (i: number) => ({
-    initial: { opacity: 0, y: 16 },
-    animate: inView
-      ? {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.7, ease: EASE, delay: 0.1 + i * 0.05 },
-        }
-      : {},
-  });
-
   const inputClassName =
     "h-11 rounded-lg px-3.5 text-sm placeholder:text-muted-foreground/50";
 
@@ -75,7 +63,7 @@ export function LoginPage() {
       <div ref={formRef}>
         {/* Eyebrow */}
         <motion.p
-          {...fieldVariants(0)}
+          {...fieldVariants(0, inView)}
           className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.2em]"
         >
           Welcome back
@@ -83,7 +71,7 @@ export function LoginPage() {
 
         {/* Heading */}
         <motion.h1
-          {...fieldVariants(1)}
+          {...fieldVariants(1, inView)}
           className="mt-3 font-semibold text-3xl tracking-tight"
         >
           Sign in to your account
@@ -101,7 +89,7 @@ export function LoginPage() {
         ) : (
           <form className="mt-8 space-y-5" onSubmit={handleSignIn}>
             {/* Email */}
-            <motion.div {...fieldVariants(2)}>
+            <motion.div {...fieldVariants(2, inView)}>
               <Label className="mb-1.5 text-[13px]" htmlFor="email">
                 Email
               </Label>
@@ -117,7 +105,7 @@ export function LoginPage() {
             </motion.div>
 
             {/* Password */}
-            <motion.div {...fieldVariants(3)}>
+            <motion.div {...fieldVariants(3, inView)}>
               <div className="mb-1.5 flex items-center justify-between">
                 <Label className="text-[13px]" htmlFor="password">
                   Password
@@ -140,7 +128,7 @@ export function LoginPage() {
             </motion.div>
 
             {/* Sign In button */}
-            <motion.div {...fieldVariants(4)}>
+            <motion.div {...fieldVariants(4, inView)}>
               <Button
                 className="h-11 w-full rounded-lg font-semibold text-sm"
                 disabled={loading}
@@ -148,27 +136,7 @@ export function LoginPage() {
               >
                 {loading ? (
                   <>
-                    <svg
-                      aria-label="Loading"
-                      className="h-4 w-4 animate-spin"
-                      fill="none"
-                      role="img"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        fill="currentColor"
-                      />
-                    </svg>
+                    <Spinner />
                     Signing in
                   </>
                 ) : (
@@ -179,7 +147,7 @@ export function LoginPage() {
 
             {/* Divider */}
             <motion.div
-              {...fieldVariants(5)}
+              {...fieldVariants(5, inView)}
               className="relative flex items-center gap-4 py-1"
             >
               <motion.div
@@ -208,7 +176,7 @@ export function LoginPage() {
             </motion.div>
 
             {/* Magic Link button */}
-            <motion.div {...fieldVariants(6)}>
+            <motion.div {...fieldVariants(6, inView)}>
               <Button
                 className="h-11 w-full rounded-lg text-sm"
                 disabled={loading}
@@ -248,7 +216,7 @@ export function LoginPage() {
 
             {/* Footer */}
             <motion.p
-              {...fieldVariants(7)}
+              {...fieldVariants(7, inView)}
               className="pt-2 text-center text-muted-foreground/60 text-xs"
             >
               Need help? Contact your administrator.
