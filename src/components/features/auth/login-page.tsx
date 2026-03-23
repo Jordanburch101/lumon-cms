@@ -149,8 +149,10 @@ export function LoginPage() {
                 {loading ? (
                   <>
                     <svg
+                      aria-label="Loading"
                       className="h-4 w-4 animate-spin"
                       fill="none"
+                      role="img"
                       viewBox="0 0 24 24"
                     >
                       <circle
