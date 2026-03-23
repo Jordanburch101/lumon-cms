@@ -3,7 +3,9 @@
 import { motion, useInView } from "motion/react";
 import { type FormEvent, useRef, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
-import { cn } from "@/core/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { authClient } from "@/payload/lib/auth/client";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -65,12 +67,8 @@ export function LoginPage() {
       : {},
   });
 
-  const inputClassName = cn(
-    "h-11 w-full rounded-lg border border-border bg-background px-3.5 text-foreground text-sm",
-    "placeholder:text-muted-foreground/50",
-    "focus:border-foreground/20 focus:outline-none focus:ring-2 focus:ring-ring/20",
-    "transition-all duration-200"
-  );
+  const inputClassName =
+    "h-11 rounded-lg px-3.5 text-sm placeholder:text-muted-foreground/50";
 
   return (
     <AuthLayout>
@@ -104,13 +102,10 @@ export function LoginPage() {
           <form className="mt-8 space-y-5" onSubmit={handleSignIn}>
             {/* Email */}
             <motion.div {...fieldVariants(2)}>
-              <label
-                className="mb-1.5 block font-medium text-[13px]"
-                htmlFor="email"
-              >
+              <Label className="mb-1.5 text-[13px]" htmlFor="email">
                 Email
-              </label>
-              <input
+              </Label>
+              <Input
                 autoComplete="email"
                 className={inputClassName}
                 id="email"
@@ -124,9 +119,9 @@ export function LoginPage() {
             {/* Password */}
             <motion.div {...fieldVariants(3)}>
               <div className="mb-1.5 flex items-center justify-between">
-                <label className="font-medium text-[13px]" htmlFor="password">
+                <Label className="text-[13px]" htmlFor="password">
                   Password
-                </label>
+                </Label>
                 <a
                   className="text-[12px] text-muted-foreground"
                   href="/forgot-password"
@@ -134,7 +129,7 @@ export function LoginPage() {
                   Forgot?
                 </a>
               </div>
-              <input
+              <Input
                 autoComplete="current-password"
                 className={inputClassName}
                 id="password"
@@ -146,17 +141,13 @@ export function LoginPage() {
 
             {/* Sign In button */}
             <motion.div {...fieldVariants(4)}>
-              <button
-                className={cn(
-                  "h-11 w-full rounded-lg bg-primary font-semibold text-primary-foreground text-sm",
-                  "transition-all duration-200",
-                  "disabled:cursor-not-allowed disabled:opacity-50"
-                )}
+              <Button
+                className="h-11 w-full rounded-lg font-semibold text-sm"
                 disabled={loading}
                 type="submit"
               >
                 {loading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <>
                     <svg
                       className="h-4 w-4 animate-spin"
                       fill="none"
@@ -177,11 +168,11 @@ export function LoginPage() {
                       />
                     </svg>
                     Signing in
-                  </span>
+                  </>
                 ) : (
                   "Sign In"
                 )}
-              </button>
+              </Button>
             </motion.div>
 
             {/* Divider */}
@@ -216,16 +207,12 @@ export function LoginPage() {
 
             {/* Magic Link button */}
             <motion.div {...fieldVariants(6)}>
-              <button
-                className={cn(
-                  "flex items-center justify-center gap-2",
-                  "h-11 w-full rounded-lg border border-border bg-background text-sm",
-                  "transition-all duration-200",
-                  "disabled:cursor-not-allowed disabled:opacity-50"
-                )}
+              <Button
+                className="h-11 w-full rounded-lg text-sm"
                 disabled={loading}
                 onClick={handleMagicLink}
                 type="button"
+                variant="outline"
               >
                 <svg
                   aria-hidden="true"
@@ -242,7 +229,7 @@ export function LoginPage() {
                   <path d="M22 7l-10 6L2 7" />
                 </svg>
                 Sign in with Magic Link
-              </button>
+              </Button>
             </motion.div>
 
             {/* Error */}
