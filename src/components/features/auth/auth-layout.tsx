@@ -34,7 +34,7 @@ function LogoSvg({ className }: { className?: string }) {
 
 export function AuthLayout({
   children,
-  mediaSrc,
+  mediaSrc = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80",
   heading = "Lumon Industries",
   subtext = "The work is mysterious and important.",
 }: AuthLayoutProps) {
