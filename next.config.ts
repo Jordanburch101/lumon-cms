@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  redirects: async () => [
+    {
+      source: "/admin/login",
+      destination: "/login",
+      permanent: false,
+    },
+    {
+      source: "/admin/logout",
+      destination: "/login",
+      permanent: false,
+    },
+  ],
   headers: async () => [
     {
       source: "/_next/image",
