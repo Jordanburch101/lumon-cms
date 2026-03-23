@@ -6,7 +6,6 @@ import { AuthLayout } from "@/components/features/auth/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authClient } from "@/payload/lib/auth/client";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -24,15 +23,21 @@ export function ForgotPasswordPage() {
     setLoading(true);
     setError("");
 
-    const result = await authClient.forgetPassword({
-      email,
-      redirectTo: "/reset-password",
-    });
+    try {
+      const res = await fetch("/api/auth/request-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, redirectTo: "/reset-password" }),
+      });
+      const data = await res.json();
 
-    if (result.error) {
-      setError(result.error.message ?? "Failed to send reset link");
-    } else {
-      setSent(true);
+      if (res.ok) {
+        setSent(true);
+      } else {
+        setError(data.message ?? "Failed to send reset link");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
     }
 
     setLoading(false);
