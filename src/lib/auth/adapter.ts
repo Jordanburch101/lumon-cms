@@ -49,6 +49,29 @@ const OPERATOR_MAP: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
+// Field-name reverse mapping: DB column (snake_case) → Payload field (camelCase)
+//
+// BA's factory transforms field names to DB column names (via the user-configured
+// `fields` mappings) BEFORE calling our adapter methods. But Payload's Local API
+// expects the Payload field names (camelCase), not the DB column names.
+// We reverse the snake_case back to camelCase.
+// ---------------------------------------------------------------------------
+function snakeToCamel(s: string): string {
+  return s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+/** Convert all keys in an object from snake_case to camelCase */
+function snakeToCamelKeys(
+  obj: Record<string, unknown>
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[snakeToCamel(key)] = value;
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // Where-clause translation
 // ---------------------------------------------------------------------------
 function translateWhere(clauses: CleanedWhere[]): PayloadWhere {
@@ -67,7 +90,9 @@ function translateWhere(clauses: CleanedWhere[]): PayloadWhere {
       value = `%${String(value)}`;
     }
 
-    return { [c.field]: { [op]: value } };
+    // Reverse-map DB column name (snake_case) to Payload field name (camelCase)
+    const fieldName = snakeToCamel(c.field);
+    return { [fieldName]: { [op]: value } };
   }
 
   // Walk left-to-right, grouping AND-connected clauses together.
@@ -105,13 +130,23 @@ function translateWhere(clauses: CleanedWhere[]): PayloadWhere {
 }
 
 // ---------------------------------------------------------------------------
-// Stringify IDs — Payload uses numeric IDs, BA expects strings
+// Output transformation: camelCase Payload fields → snake_case for BA factory
+// Also stringify IDs (Payload uses numeric, BA expects strings)
 // ---------------------------------------------------------------------------
-function stringifyId<T>(doc: T): T {
-  if (doc && typeof doc === "object" && "id" in doc) {
-    return { ...doc, id: String((doc as Record<string, unknown>).id) };
+function camelToSnake(s: string): string {
+  return s.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+}
+
+function transformOutput<T>(doc: T): T {
+  if (!doc || typeof doc !== "object") {
+    return doc;
   }
-  return doc;
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(doc as Record<string, unknown>)) {
+    const snakeKey = camelToSnake(key);
+    result[snakeKey] = key === "id" ? String(value) : value;
+  }
+  return result as T;
 }
 
 // ---------------------------------------------------------------------------
@@ -131,7 +166,7 @@ export const payloadAdapter = createAdapterFactory({
       const payload = await getPayloadLazy();
       const collection = getCollection(model);
 
-      const createData = { ...data } as Record<string, unknown>;
+      const createData = snakeToCamelKeys(data as Record<string, unknown>);
 
       // Payload's auth-enabled collections require a password on create.
       // BA stores passwords in the account table instead, so inject a random
@@ -147,7 +182,7 @@ export const payloadAdapter = createAdapterFactory({
         overrideAccess: true,
       });
 
-      return stringifyId(doc) as typeof data;
+      return transformOutput(doc) as typeof data;
     },
 
     async findOne({ model, where }) {
@@ -163,7 +198,7 @@ export const payloadAdapter = createAdapterFactory({
       });
 
       const doc = result.docs[0] ?? null;
-      return doc ? stringifyId(doc) : null;
+      return doc ? transformOutput(doc) : null;
     },
 
     async findMany({ model, where, limit, sortBy, offset }) {
@@ -172,7 +207,8 @@ export const payloadAdapter = createAdapterFactory({
 
       let sort: string | undefined;
       if (sortBy) {
-        sort = sortBy.direction === "desc" ? `-${sortBy.field}` : sortBy.field;
+        const field = snakeToCamel(sortBy.field);
+        sort = sortBy.direction === "desc" ? `-${field}` : field;
       }
 
       const result = await payload.find({
@@ -188,7 +224,7 @@ export const payloadAdapter = createAdapterFactory({
         overrideAccess: true,
       });
 
-      return result.docs.map(stringifyId) as never;
+      return result.docs.map(transformOutput) as never;
     },
 
     async count({ model, where }) {
@@ -211,13 +247,13 @@ export const payloadAdapter = createAdapterFactory({
       const result = await payload.update({
         collection: collection as "users",
         where: translateWhere(where),
-        data: update as never,
+        data: snakeToCamelKeys(update as Record<string, unknown>) as never,
         depth: 0,
         overrideAccess: true,
       });
 
       const doc = result.docs[0] ?? null;
-      return doc ? stringifyId(doc) : null;
+      return doc ? transformOutput(doc) : null;
     },
 
     async updateMany({ model, where, update }) {
@@ -227,7 +263,7 @@ export const payloadAdapter = createAdapterFactory({
       const result = await payload.update({
         collection: collection as "users",
         where: translateWhere(where),
-        data: update as never,
+        data: snakeToCamelKeys(update as Record<string, unknown>) as never,
         depth: 0,
         overrideAccess: true,
       });
