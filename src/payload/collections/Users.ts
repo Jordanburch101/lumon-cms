@@ -17,6 +17,36 @@ export const Users: CollectionConfig = {
   auth: {
     strategies: [betterAuthStrategy],
   },
+  hooks: {
+    afterLogout: [
+      async ({ req }) => {
+        // Clear Better Auth session cookie on Payload logout.
+        // Without this, the BA strategy re-authenticates after the JWT is cleared.
+        const cookieHeader = req.headers.get("cookie") || "";
+        if (cookieHeader.includes("better-auth.session_token")) {
+          // Call BA's sign-out to destroy the session server-side
+          try {
+            const { auth } = await import("@/payload/lib/auth/server");
+            await auth.api.signOut({ headers: req.headers });
+          } catch {
+            // Best-effort — session will expire naturally
+          }
+
+          // Also clear the cookies via response headers
+          if (req.responseHeaders) {
+            req.responseHeaders.append(
+              "Set-Cookie",
+              "better-auth.session_token=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+            );
+            req.responseHeaders.append(
+              "Set-Cookie",
+              "better-auth.session_data=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+            );
+          }
+        }
+      },
+    ],
+  },
   access: {
     read: isLoggedIn,
     create: isAdmin,
