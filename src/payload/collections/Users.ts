@@ -46,8 +46,7 @@ export const Users: CollectionConfig = {
         }
 
         const { symmetricEncrypt, generateRandomString } = await import(
-          // @ts-expect-error -- internal BA module, no public types
-          "better-auth/dist/crypto/index.mjs"
+          "better-auth/crypto"
         );
         const { createOTP } = await import("@better-auth/utils/otp");
 
@@ -160,8 +159,7 @@ export const Users: CollectionConfig = {
         }
 
         const { symmetricEncrypt, generateRandomString } = await import(
-          // @ts-expect-error -- internal BA module, no public types
-          "better-auth/dist/crypto/index.mjs"
+          "better-auth/crypto"
         );
 
         // Generate 10 backup codes in XXXXX-XXXXX format
