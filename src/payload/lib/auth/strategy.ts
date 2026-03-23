@@ -3,9 +3,17 @@ import type { AuthStrategy } from "payload";
 export const betterAuthStrategy: AuthStrategy = {
   name: "better-auth",
   authenticate: async ({ payload, headers }) => {
-    // Fast path: no BA cookie → skip DB lookup entirely
     const cookieHeader = headers.get("cookie") || "";
+
+    // Skip if no BA cookie present
     if (!cookieHeader.includes("better-auth.session_token")) {
+      return { user: null };
+    }
+
+    // If a payload-token JWT exists, let Payload's built-in JWT strategy handle it.
+    // This ensures Payload's logout (which only clears the JWT) works correctly —
+    // without this, the BA strategy would re-authenticate after JWT logout.
+    if (cookieHeader.includes("payload-token")) {
       return { user: null };
     }
 
