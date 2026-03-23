@@ -208,7 +208,7 @@ export function LoginPage() {
             {/* Magic Link button */}
             <motion.div {...fieldVariants(6)}>
               <Button
-                className="magic-link-btn h-11 w-full rounded-lg text-sm"
+                className="h-11 w-full rounded-lg text-sm"
                 disabled={loading}
                 onClick={handleMagicLink}
                 type="button"
