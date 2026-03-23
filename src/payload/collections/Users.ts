@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { betterAuthStrategy } from "@/lib/auth/strategy";
+import { betterAuthStrategy } from "@/payload/lib/auth/strategy";
 import { adminFieldOnly, isAdmin, isAdminOrSelf, isLoggedIn } from "../access";
 
 function getRole(user: unknown): string | undefined {

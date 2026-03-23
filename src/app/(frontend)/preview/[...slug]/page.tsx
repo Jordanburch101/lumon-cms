@@ -1,15 +1,15 @@
 import config from "@payload-config";
 import type { Metadata } from "next";
-import { cookies, draftMode } from "next/headers";
+import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getPayload } from "payload";
 import { cache } from "react";
-import { RenderBlocks, RenderHero } from "@/components/blocks/render-blocks";
 import {
   getCachedSiteSettings,
   getPageDirect,
 } from "@/payload/lib/cached-payload";
 import { generatePageMetadata } from "@/payload/lib/seo/generate-page-metadata";
+import { PreviewClient } from "./preview-client";
 
 interface Args {
   params: Promise<{ slug: string[] }>;
@@ -18,12 +18,9 @@ interface Args {
 // Wrapped in cache() to deduplicate within a single request
 // (called from both PreviewPage and generateMetadata)
 const authenticate = cache(async function authenticate() {
-  const draft = await draftMode();
-  if (!draft.isEnabled) {
-    return false;
-  }
-
-  // Verify the user is still authenticated via Payload
+  // Allow access if the user is authenticated via Payload (payload-token cookie).
+  // Draft mode is not required — the live preview iframe doesn't have it,
+  // but it shares the same-origin auth cookies from the admin panel.
   const payload = await getPayload({ config });
   const cookieStore = await cookies();
   const cookieHeader = cookieStore
@@ -53,12 +50,7 @@ export default async function PreviewPage({ params }: Args) {
     notFound();
   }
 
-  return (
-    <>
-      <RenderHero blocks={page.hero ?? []} />
-      <RenderBlocks blocks={page.layout ?? []} />
-    </>
-  );
+  return <PreviewClient initialData={page} />;
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {

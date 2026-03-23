@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/core/lib/utils";
-import { authClient } from "@/lib/auth/client";
+import { authClient } from "@/payload/lib/auth/client";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 

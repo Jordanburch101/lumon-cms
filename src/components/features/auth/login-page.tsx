@@ -4,7 +4,7 @@ import { motion, useInView } from "motion/react";
 import { type FormEvent, useRef, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
 import { cn } from "@/core/lib/utils";
-import { authClient } from "@/lib/auth/client";
+import { authClient } from "@/payload/lib/auth/client";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
