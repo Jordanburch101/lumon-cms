@@ -78,6 +78,10 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
+    sendResetPassword: ({ user, url }) => {
+      // TODO: Wire up Resend or similar
+      console.log("Password reset for", user.email, ":", url);
+    },
   },
   plugins: [
     twoFactor({
