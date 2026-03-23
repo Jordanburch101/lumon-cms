@@ -88,8 +88,8 @@ export function Navbar() {
           <div className="hidden items-center gap-1 md:flex">
             <SearchTrigger />
             <ThemeToggle />
-            <Button className="ml-2" size="default">
-              Get Started
+            <Button asChild className="ml-2" size="default">
+              <a href="/login">Get Started</a>
             </Button>
           </div>
 

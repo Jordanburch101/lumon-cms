@@ -90,8 +90,8 @@ export function NavbarMobile() {
               <SearchTrigger />
               <ThemeToggle />
             </div>
-            <Button className="w-full" size="lg">
-              Get Started
+            <Button asChild className="w-full" size="lg">
+              <a href="/login">Get Started</a>
             </Button>
           </SheetFooter>
         </SheetContent>
