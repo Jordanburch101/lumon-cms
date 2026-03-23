@@ -232,4 +232,32 @@ describe("transformOutput", () => {
     expect(transformOutput("string")).toBe("string");
     expect(transformOutput(123)).toBe(123);
   });
+
+  test("strips internal Payload auth fields", () => {
+    const input = {
+      id: 1,
+      name: "Test",
+      email: "test@test.com",
+      salt: "abc123",
+      hash: "def456",
+      loginAttempts: 0,
+      lockUntil: null,
+      resetPasswordToken: "token",
+      resetPasswordExpiration: "2026-01-01",
+      _verified: true,
+      _strategy: "local",
+    };
+    const result = transformOutput(input) as Record<string, unknown>;
+    expect(result.id).toBe("1");
+    expect(result.name).toBe("Test");
+    expect(result.email).toBe("test@test.com");
+    expect(result.salt).toBeUndefined();
+    expect(result.hash).toBeUndefined();
+    expect(result.login_attempts).toBeUndefined();
+    expect(result.lock_until).toBeUndefined();
+    expect(result.reset_password_token).toBeUndefined();
+    expect(result.reset_password_expiration).toBeUndefined();
+    expect(result._verified).toBeUndefined();
+    expect(result._strategy).toBeUndefined();
+  });
 });

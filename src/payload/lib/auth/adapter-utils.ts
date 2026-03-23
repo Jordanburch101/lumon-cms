@@ -129,13 +129,28 @@ export function translateWhere(clauses: CleanedWhere[]): PayloadWhere {
 
 // ---------------------------------------------------------------------------
 // Output transformation: camelCase → snake_case + stringify IDs
+// Strip internal Payload auth fields that should never leave the adapter.
 // ---------------------------------------------------------------------------
+const INTERNAL_FIELDS = new Set([
+  "salt",
+  "hash",
+  "loginAttempts",
+  "lockUntil",
+  "resetPasswordToken",
+  "resetPasswordExpiration",
+  "_verified",
+  "_strategy",
+]);
+
 export function transformOutput<T>(doc: T): T {
   if (!doc || typeof doc !== "object") {
     return doc;
   }
   const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(doc as Record<string, unknown>)) {
+    if (INTERNAL_FIELDS.has(key)) {
+      continue;
+    }
     const snakeKey = camelToSnake(key);
     result[snakeKey] = key === "id" ? String(value) : value;
   }

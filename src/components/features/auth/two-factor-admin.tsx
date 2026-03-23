@@ -34,15 +34,20 @@ export const TwoFactorAdmin: React.FC = () => {
     try {
       const res = await fetch(`/api/users/${id}/2fa/enable`, {
         method: "POST",
+        credentials: "include",
       });
+      const data = (await res.json()) as {
+        error?: string;
+        totpURI?: string;
+      };
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: string }).error ?? `Failed (${res.status})`
-        );
+        throw new Error(data.error ?? `Failed (${res.status})`);
       }
-      const data = (await res.json()) as { totpURI: string };
-      setState((s) => ({ ...s, loading: false, totpURI: data.totpURI }));
+      setState((s) => ({
+        ...s,
+        loading: false,
+        totpURI: data.totpURI ?? null,
+      }));
     } catch (err) {
       setState((s) => ({
         ...s,
@@ -66,14 +71,14 @@ export const TwoFactorAdmin: React.FC = () => {
     try {
       const res = await fetch(`/api/users/${id}/2fa/disable`, {
         method: "POST",
+        credentials: "include",
       });
+      const data = (await res.json()) as { error?: string };
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: string }).error ?? `Failed (${res.status})`
-        );
+        throw new Error(data.error ?? `Failed (${res.status})`);
       }
-      setState((s) => ({ ...s, loading: false }));
+      // Reload to refresh the twoFactorEnabled field from server
+      window.location.reload();
     } catch (err) {
       setState((s) => ({
         ...s,
@@ -91,15 +96,17 @@ export const TwoFactorAdmin: React.FC = () => {
     try {
       const res = await fetch(`/api/users/${id}/2fa/backup-codes`, {
         method: "POST",
+        credentials: "include",
       });
+      const data = (await res.json()) as { codes?: string[]; error?: string };
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: string }).error ?? `Failed (${res.status})`
-        );
+        throw new Error(data.error ?? `Failed (${res.status})`);
       }
-      const data = (await res.json()) as { codes: string[] };
-      setState((s) => ({ ...s, backupCodes: data.codes, loading: false }));
+      setState((s) => ({
+        ...s,
+        backupCodes: data.codes ?? null,
+        loading: false,
+      }));
     } catch (err) {
       setState((s) => ({
         ...s,

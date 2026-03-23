@@ -34,13 +34,15 @@ export const Users: CollectionConfig = {
 
           // Also clear the cookies via response headers
           if (req.responseHeaders) {
+            const secure =
+              process.env.NODE_ENV === "production" ? "; Secure" : "";
             req.responseHeaders.append(
               "Set-Cookie",
-              "better-auth.session_token=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+              `better-auth.session_token=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax${secure}`
             );
             req.responseHeaders.append(
               "Set-Cookie",
-              "better-auth.session_data=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+              `better-auth.session_data=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax${secure}`
             );
           }
         }
