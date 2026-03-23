@@ -1,13 +1,12 @@
 import type { CollectionConfig } from "payload";
 import { betterAuthStrategy } from "@/payload/lib/auth/strategy";
-import { adminFieldOnly, isAdmin, isAdminOrSelf, isLoggedIn } from "../access";
-
-function getRole(user: unknown): string | undefined {
-  if (user && typeof user === "object" && "role" in user) {
-    return (user as { role: string }).role;
-  }
-  return undefined;
-}
+import {
+  adminFieldOnly,
+  getRole,
+  isAdmin,
+  isAdminOrSelf,
+  isLoggedIn,
+} from "../access";
 
 export const Users: CollectionConfig = {
   slug: "users",

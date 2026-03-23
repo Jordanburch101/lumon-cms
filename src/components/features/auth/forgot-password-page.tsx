@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
+import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
 import { Button } from "@/components/ui/button";
@@ -76,12 +77,12 @@ export function ForgotPasswordPage() {
               We&apos;ve sent a password reset link to {email}.
             </p>
             <p className="pt-4 text-muted-foreground text-sm">
-              <a
+              <Link
                 className="font-medium text-foreground underline decoration-border underline-offset-4"
                 href="/login"
               >
                 Back to sign in
-              </a>
+              </Link>
             </p>
           </motion.div>
         ) : (
@@ -147,12 +148,12 @@ export function ForgotPasswordPage() {
               {...fieldVariants(5, inView)}
               className="pt-2 text-center text-muted-foreground text-sm"
             >
-              <a
+              <Link
                 className="font-medium text-foreground underline decoration-border underline-offset-4"
                 href="/login"
               >
                 Back to sign in
-              </a>
+              </Link>
             </motion.p>
           </form>
         )}

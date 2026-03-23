@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
+import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
 import { Button } from "@/components/ui/button";
@@ -110,12 +111,12 @@ export function LoginPage() {
                 <Label className="text-[13px]" htmlFor="password">
                   Password
                 </Label>
-                <a
+                <Link
                   className="text-[12px] text-muted-foreground"
                   href="/forgot-password"
                 >
                   Forgot?
-                </a>
+                </Link>
               </div>
               <Input
                 autoComplete="current-password"

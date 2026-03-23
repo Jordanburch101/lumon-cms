@@ -12,7 +12,7 @@ import type { Access, FieldAccess } from "payload";
  *   Guest  — read-only, own profile only for Users
  */
 
-function getRole(user: unknown): string | undefined {
+export function getRole(user: unknown): string | undefined {
   if (user && typeof user === "object" && "role" in user) {
     return (user as { role: string }).role;
   }

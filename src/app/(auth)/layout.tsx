@@ -1,16 +1,6 @@
-import { Geist_Mono, Nunito_Sans } from "next/font/google";
+import { fontVariables } from "@/core/lib/fonts";
 import { Providers } from "@/providers/providers";
 import "../globals.css";
-
-const nunitoSans = Nunito_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export default function AuthLayout({
   children,
@@ -19,9 +9,7 @@ export default function AuthLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${nunitoSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${fontVariables} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

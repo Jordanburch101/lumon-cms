@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type FormEvent, useRef, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
@@ -63,12 +64,12 @@ export function ResetPasswordPage() {
             Invalid or expired reset link.
           </p>
           <p className="text-muted-foreground text-sm">
-            <a
+            <Link
               className="font-medium text-foreground underline decoration-border underline-offset-4"
               href="/forgot-password"
             >
               Request a new reset link
-            </a>
+            </Link>
           </p>
         </motion.div>
       );
@@ -86,12 +87,12 @@ export function ResetPasswordPage() {
             Password reset successfully.
           </p>
           <p className="text-muted-foreground text-sm">
-            <a
+            <Link
               className="font-medium text-foreground underline decoration-border underline-offset-4"
               href="/login"
             >
               Sign in
-            </a>
+            </Link>
           </p>
         </motion.div>
       );

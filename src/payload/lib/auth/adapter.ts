@@ -1,3 +1,12 @@
+/**
+ * Custom Better Auth adapter that uses Payload's Local API as the database layer.
+ *
+ * Known limitations:
+ * - The `select` parameter from BA is ignored — all queries return full documents.
+ *   Payload's Local API `select` could be mapped for performance, but is not critical.
+ * - Offset-to-page conversion only works when offset is a multiple of limit.
+ *   BA primarily uses limit-based queries without offset, so this rarely triggers.
+ */
 import { createAdapterFactory } from "better-auth/adapters";
 import type { Payload } from "payload";
 import {
@@ -89,6 +98,7 @@ export const payloadAdapter = createAdapterFactory({
         where: where ? translateWhere(where) : {},
         limit: limit ?? 100,
         sort,
+        // Note: offset-to-page only correct when offset is a multiple of limit
         page:
           offset === undefined
             ? undefined

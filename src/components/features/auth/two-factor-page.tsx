@@ -5,8 +5,8 @@ import { type FormEvent, useRef, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/core/lib/utils";
 import { authClient } from "@/payload/lib/auth/client";
 import { EASE } from "./auth-constants";
 
@@ -95,16 +95,10 @@ export function TwoFactorPage() {
           transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
         >
           {backupMode ? (
-            <input
+            <Input
               autoComplete="off"
               autoFocus
-              className={cn(
-                "h-14 w-full rounded-lg border border-border bg-background px-4",
-                "font-mono text-sm",
-                "outline-none transition-shadow",
-                "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
-                "placeholder:text-muted-foreground/50"
-              )}
+              className="h-14 rounded-lg px-4 font-mono text-sm placeholder:text-muted-foreground/50"
               disabled={loading}
               onChange={(e) => setBackupCode(e.target.value)}
               placeholder="Enter backup code"
@@ -112,16 +106,10 @@ export function TwoFactorPage() {
               value={backupCode}
             />
           ) : (
-            <input
+            <Input
               autoComplete="one-time-code"
               autoFocus
-              className={cn(
-                "h-14 w-full rounded-lg border border-border bg-background px-4",
-                "text-center font-mono text-2xl tracking-[0.5em]",
-                "outline-none transition-shadow",
-                "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
-                "placeholder:text-base placeholder:text-muted-foreground/50 placeholder:tracking-normal"
-              )}
+              className="h-14 rounded-lg px-4 text-center font-mono text-2xl tracking-[0.5em] placeholder:text-base placeholder:text-muted-foreground/50 placeholder:tracking-normal"
               disabled={loading}
               inputMode="numeric"
               maxLength={6}
