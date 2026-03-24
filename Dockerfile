@@ -47,9 +47,10 @@ RUN bun run generate:types && \
     bun run generate:field-map
 
 # Migrations — connects to production DB via public URL (private network unavailable at build time)
-# --force-accept-warning skips the interactive "data loss" prompt in CI
+# `yes` auto-confirms the dev-mode push warning prompt (Payload's drizzle adapter
+# doesn't support forceAcceptWarning — the prompt uses `prompts` library directly)
 RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} \
-    bun -e "process.argv=['bun','payload','migrate','--forceAcceptWarning'];const{bin}=await import('./node_modules/payload/dist/bin/index.js');await bin()"
+    yes | bun run migrate
 
 # Next.js build — connects to production DB for prerendering (robots.txt, sitemap, etc.)
 RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun --bun run build
