@@ -334,32 +334,37 @@ export const TwoFactorAdmin: React.FC = () => {
           {state.confirmRegenerate ? (
             <div
               style={{
-                background: "var(--theme-error-100)",
+                border: "1px solid var(--theme-error-200)",
                 borderRadius: "4px",
-                color: "var(--theme-error-600)",
-                fontSize: "0.75rem",
+                fontSize: "0.8125rem",
                 lineHeight: 1.5,
-                padding: "0.5rem 0.625rem",
+                padding: "0.75rem",
               }}
             >
-              Regenerating will invalidate existing codes.
-              <div
+              <p
                 style={{
-                  display: "flex",
-                  gap: "0.375rem",
-                  marginTop: "0.375rem",
+                  color: "var(--theme-error-500)",
+                  fontSize: "0.75rem",
+                  margin: "0 0 0.625rem",
                 }}
               >
+                Regenerating will invalidate existing backup codes.
+              </p>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
                 <button
-                  className="btn btn--style-pill btn--size-xsmall"
+                  className="btn btn--style-pill btn--size-small"
                   disabled={state.loading}
                   onClick={handleBackupCodes}
+                  style={{
+                    background: "var(--theme-error-500)",
+                    color: "white",
+                  }}
                   type="button"
                 >
-                  {state.loading ? "Generating..." : "Confirm"}
+                  {state.loading ? "Generating..." : "Regenerate"}
                 </button>
                 <button
-                  className="btn btn--style-pill btn--size-xsmall"
+                  className="btn btn--style-pill btn--size-small"
                   onClick={() =>
                     setState((s) => ({ ...s, confirmRegenerate: false }))
                   }
