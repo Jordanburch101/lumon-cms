@@ -1,11 +1,17 @@
 "use client";
 
 import { motion } from "motion/react";
-import { type FormEvent, useRef, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { AuthLayout } from "@/components/features/auth/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/payload/lib/auth/client";
 import { EASE } from "./auth-constants";
@@ -17,8 +23,6 @@ export function TwoFactorPage() {
   const [trustDevice, setTrustDevice] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const totpRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -98,7 +102,7 @@ export function TwoFactorPage() {
             <Input
               autoComplete="off"
               autoFocus
-              className="h-14 rounded-lg px-4 font-mono text-sm placeholder:text-muted-foreground/50"
+              className="h-11 rounded-lg px-4 font-mono text-sm placeholder:text-muted-foreground/50"
               disabled={loading}
               onChange={(e) => setBackupCode(e.target.value)}
               placeholder="Enter backup code"
@@ -106,23 +110,25 @@ export function TwoFactorPage() {
               value={backupCode}
             />
           ) : (
-            <Input
-              autoComplete="one-time-code"
+            <InputOTP
               autoFocus
-              className="h-14 rounded-lg px-4 text-center font-mono text-2xl tracking-[0.5em] placeholder:text-base placeholder:text-muted-foreground/50 placeholder:tracking-normal"
               disabled={loading}
-              inputMode="numeric"
               maxLength={6}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, "");
-                setCode(val);
-              }}
-              pattern="[0-9]*"
-              placeholder="000000"
-              ref={totpRef}
-              type="text"
+              onChange={(val) => setCode(val)}
               value={code}
-            />
+            >
+              <InputOTPGroup>
+                <InputOTPSlot className="size-11 text-lg" index={0} />
+                <InputOTPSlot className="size-11 text-lg" index={1} />
+                <InputOTPSlot className="size-11 text-lg" index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot className="size-11 text-lg" index={3} />
+                <InputOTPSlot className="size-11 text-lg" index={4} />
+                <InputOTPSlot className="size-11 text-lg" index={5} />
+              </InputOTPGroup>
+            </InputOTP>
           )}
         </motion.div>
 
