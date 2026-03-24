@@ -17,6 +17,7 @@ import { ComparisonTableBlock } from "../block-schemas/ComparisonTable";
 import { CtaBandBlock } from "../block-schemas/CtaBand";
 import { FaqBlock } from "../block-schemas/Faq";
 import { FeaturesGridBlock } from "../block-schemas/FeaturesGrid";
+import { FormEmbedBlock } from "../block-schemas/FormEmbed";
 import { HeroBlock } from "../block-schemas/Hero";
 import { HeroCenteredBlock } from "../block-schemas/HeroCentered";
 import { HeroMinimalBlock } from "../block-schemas/HeroMinimal";
@@ -124,6 +125,7 @@ export const Pages: CollectionConfig = {
                 TabbedContentBlock,
                 ComparisonTableBlock,
                 JobListingsBlock,
+                FormEmbedBlock,
               ],
             },
           ],
