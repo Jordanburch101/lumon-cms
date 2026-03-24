@@ -1,6 +1,5 @@
-import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import type { ReactNode } from "react";
-import { RichText } from "@/components/features/rich-text/rich-text";
+import { RichText } from "@/components/features/rich-text";
 import type { FormEmbedBlock as FormEmbedBlockType } from "@/types/block-types";
 import { FormRenderer } from "./form-renderer";
 import { MapPanel } from "./map-panel";
@@ -33,9 +32,7 @@ export function FormEmbed(props: FormEmbedBlockType) {
 
   // Pre-render confirmation message as a server component so RichText stays on the server
   const confirmationNode = formData.confirmationMessage ? (
-    <RichText
-      data={formData.confirmationMessage as unknown as SerializedEditorState}
-    />
+    <RichText data={formData.confirmationMessage} />
   ) : undefined;
 
   return (
@@ -94,7 +91,7 @@ function SectionContent({
   if (!content) {
     return null;
   }
-  return <RichText data={content as unknown as SerializedEditorState} />;
+  return <RichText data={content} />;
 }
 
 function StackedLayout({
