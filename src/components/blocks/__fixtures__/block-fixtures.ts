@@ -1407,7 +1407,6 @@ export const blockFixtures: BlockFixtures = {
           label: "Message",
           required: true,
           width: 100,
-          placeholder: "Describe your inquiry to the Board...",
         },
       ],
       confirmationType: "message",
