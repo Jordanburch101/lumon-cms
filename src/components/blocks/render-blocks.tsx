@@ -5,6 +5,7 @@ import { ComparisonTable } from "./comparison-table/comparison-table";
 import { CtaBand } from "./cta-band/cta-band";
 import { Faq } from "./faq/faq";
 import { FeaturesGrid } from "./features-grid/features-grid";
+import { FormEmbed } from "./form-embed/form-embed";
 import { Hero } from "./hero/hero";
 import { HeroCentered } from "./hero/hero-centered";
 import { HeroMinimal } from "./hero/hero-minimal";
@@ -90,6 +91,8 @@ export function renderBlock(block: LayoutBlock) {
       return <TabbedContent {...block} />;
     case "comparisonTable":
       return <ComparisonTable {...block} />;
+    case "formEmbed":
+      return <FormEmbed {...block} />;
     default:
       return null;
   }
