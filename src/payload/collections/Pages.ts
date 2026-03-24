@@ -45,6 +45,24 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "updatedAt"],
+    livePreview: {
+      url: ({ data }) => {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3100";
+        const slug =
+          typeof data?.slug === "string" && data.slug !== "home"
+            ? data.slug
+            : "";
+        return `${baseUrl}/preview/${slug || "home"}`;
+      },
+    },
+    preview: (data) => {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3100";
+      const slug =
+        typeof data?.slug === "string" && data.slug !== "home" ? data.slug : "";
+      return `${baseUrl}/preview/${slug || "home"}`;
+    },
   },
   access: {
     read: () => true,
@@ -60,19 +78,6 @@ export const Pages: CollectionConfig = {
     drafts: true,
   },
   fields: [
-    {
-      name: "title",
-      type: "text",
-      required: true,
-    },
-    slugField({
-      useAsSlug: "title",
-      overrides: (field) => {
-        const slugTextField = field.fields[1] as TextField;
-        slugTextField.validate = validateSlug;
-        return field;
-      },
-    }),
     {
       type: "tabs",
       tabs: [
@@ -125,5 +130,19 @@ export const Pages: CollectionConfig = {
         },
       ],
     },
+    {
+      name: "title",
+      type: "text",
+      required: true,
+      admin: { position: "sidebar" },
+    },
+    slugField({
+      useAsSlug: "title",
+      overrides: (field) => {
+        const slugTextField = field.fields[1] as TextField;
+        slugTextField.validate = validateSlug;
+        return field;
+      },
+    }),
   ],
 };

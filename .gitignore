@@ -54,6 +54,9 @@ next-env.d.ts
 # Payload
 payload.db
 payload.db-journal
+
+# Better Auth
+better-auth.db
 src/app/(payload)/admin/importMap.js
 src/payload-types.ts
 .superpowers/
@@ -65,3 +68,4 @@ docs
 # Storybook
 storybook-static/
 src/components/blocks/__fixtures__/*.stories.tsx
+.collaborator

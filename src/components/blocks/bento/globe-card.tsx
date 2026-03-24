@@ -155,7 +155,11 @@ export function GlobeCard() {
     const map = mapRef.current;
 
     // Hide all text/symbol layers (continent labels, city names, etc.)
-    for (const layer of map.getStyle().layers) {
+    const style = map.getStyle();
+    if (!style?.layers) {
+      return;
+    }
+    for (const layer of style.layers) {
       if (layer.type === "symbol") {
         map.setLayoutProperty(layer.id, "visibility", "none");
       }
