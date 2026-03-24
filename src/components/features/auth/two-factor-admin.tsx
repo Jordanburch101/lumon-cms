@@ -4,7 +4,7 @@ import { useAuth, useDocumentInfo } from "@payloadcms/ui";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useState } from "react";
 
-type Step = "idle" | "qr" | "done";
+type Step = "idle" | "qr" | "verify" | "done";
 
 interface TwoFactorState {
   backupCodes: string[] | null;
@@ -13,6 +13,7 @@ interface TwoFactorState {
   loading: boolean;
   step: Step;
   totpURI: string | null;
+  verifyCode: string;
 }
 
 export const TwoFactorAdmin: React.FC = () => {
@@ -26,6 +27,7 @@ export const TwoFactorAdmin: React.FC = () => {
     loading: false,
     step: "idle",
     totpURI: null,
+    verifyCode: "",
   });
 
   const isAdmin =
@@ -50,7 +52,6 @@ export const TwoFactorAdmin: React.FC = () => {
       }
       setState((s) => ({
         ...s,
-        enabled: true,
         loading: false,
         step: "qr",
         totpURI: data.totpURI ?? null,
@@ -64,9 +65,41 @@ export const TwoFactorAdmin: React.FC = () => {
     }
   }, [id]);
 
-  const handleDoneScanning = useCallback(() => {
-    setState((s) => ({ ...s, step: "done", totpURI: null }));
+  const handleProceedToVerify = useCallback(() => {
+    setState((s) => ({ ...s, step: "verify", verifyCode: "" }));
   }, []);
+
+  const handleVerify = useCallback(async () => {
+    if (!id) {
+      return;
+    }
+    setState((s) => ({ ...s, error: null, loading: true }));
+    try {
+      const res = await fetch(`/api/users/${id}/2fa/verify`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: state.verifyCode }),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) {
+        throw new Error(data.error ?? `Failed (${res.status})`);
+      }
+      setState((s) => ({
+        ...s,
+        enabled: true,
+        loading: false,
+        step: "done",
+        totpURI: null,
+      }));
+    } catch (err) {
+      setState((s) => ({
+        ...s,
+        error: err instanceof Error ? err.message : "Unknown error",
+        loading: false,
+      }));
+    }
+  }, [id, state.verifyCode]);
 
   const handleDisable = useCallback(async () => {
     if (!id) {
@@ -175,16 +208,11 @@ export const TwoFactorAdmin: React.FC = () => {
         </p>
       )}
 
-      {/* QR code — shown after clicking Enable */}
+      {/* Step: QR code */}
       {state.step === "qr" && state.totpURI && (
         <div style={{ marginBottom: "0.75rem" }}>
-          <p
-            style={{
-              fontSize: "0.875rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            Scan this QR code with your authenticator app:
+          <p style={{ fontSize: "0.875rem", marginBottom: "0.5rem" }}>
+            1. Scan this QR code with your authenticator app:
           </p>
           <div
             style={{
@@ -208,24 +236,60 @@ export const TwoFactorAdmin: React.FC = () => {
           </p>
           <button
             className="btn btn--style-primary btn--size-small"
-            onClick={handleDoneScanning}
+            onClick={handleProceedToVerify}
             style={{ marginTop: "0.75rem" }}
             type="button"
           >
-            I&apos;ve scanned it
+            Next: Verify code
           </button>
+        </div>
+      )}
+
+      {/* Step: Verify code */}
+      {state.step === "verify" && (
+        <div style={{ marginBottom: "0.75rem" }}>
+          <p style={{ fontSize: "0.875rem", marginBottom: "0.5rem" }}>
+            2. Enter the 6-digit code from your authenticator app to confirm
+            setup:
+          </p>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <input
+              autoFocus
+              className="field-type text"
+              inputMode="numeric"
+              maxLength={6}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setState((s) => ({ ...s, verifyCode: val, error: null }));
+              }}
+              pattern="[0-9]*"
+              placeholder="000000"
+              style={{
+                fontFamily: "monospace",
+                fontSize: "1.25rem",
+                letterSpacing: "0.3em",
+                textAlign: "center",
+                width: "10rem",
+              }}
+              type="text"
+              value={state.verifyCode}
+            />
+            <button
+              className="btn btn--style-primary btn--size-small"
+              disabled={state.loading || state.verifyCode.length !== 6}
+              onClick={handleVerify}
+              type="button"
+            >
+              {state.loading ? "Verifying..." : "Verify"}
+            </button>
+          </div>
         </div>
       )}
 
       {/* Backup codes */}
       {state.backupCodes && (
         <div style={{ marginBottom: "0.75rem" }}>
-          <p
-            style={{
-              fontSize: "0.875rem",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <p style={{ fontSize: "0.875rem", marginBottom: "0.5rem" }}>
             Backup codes (save these — shown once):
           </p>
           <pre
@@ -252,10 +316,10 @@ export const TwoFactorAdmin: React.FC = () => {
             onClick={handleEnable}
             type="button"
           >
-            {state.loading ? "Enabling..." : "Enable 2FA"}
+            {state.loading ? "Setting up..." : "Enable 2FA"}
           </button>
         )}
-        {state.enabled && state.step !== "qr" && (
+        {state.enabled && state.step !== "qr" && state.step !== "verify" && (
           <>
             <button
               className="btn btn--style-secondary btn--size-small"

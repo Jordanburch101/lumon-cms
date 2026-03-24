@@ -101,21 +101,13 @@ export const Users: CollectionConfig = {
           key: secret,
         });
 
-        // Create the 2FA record
+        // Create the 2FA record (but do NOT enable yet — user must verify first)
         await req.payload.create({
           collection: "ba-two-factors",
           data: {
-            backupCodes: "",
             secret: encryptedSecret,
             userId: Number(id),
           },
-        });
-
-        // Enable 2FA on the user
-        await req.payload.update({
-          collection: "users",
-          id,
-          data: { twoFactorEnabled: true },
         });
 
         // Generate TOTP URI for QR code
@@ -130,6 +122,82 @@ export const Users: CollectionConfig = {
         );
 
         return Response.json({ enabled: true, totpURI });
+      },
+    },
+    {
+      method: "post",
+      path: "/:id/2fa/verify",
+      handler: async (req) => {
+        if (getRole(req.user) !== "admin") {
+          return Response.json({ error: "Forbidden" }, { status: 403 });
+        }
+
+        const id = req.routeParams?.id as string | undefined;
+        if (!id) {
+          return Response.json({ error: "Missing user ID" }, { status: 400 });
+        }
+
+        const body = (await req.json?.().catch(() => null)) as {
+          code?: string;
+        } | null;
+        const code = body?.code;
+        if (!code || code.length !== 6) {
+          return Response.json(
+            { error: "A 6-digit code is required" },
+            { status: 400 }
+          );
+        }
+
+        const secret = process.env.BETTER_AUTH_SECRET;
+        if (!secret) {
+          return Response.json(
+            { error: "Server misconfigured: missing BETTER_AUTH_SECRET" },
+            { status: 500 }
+          );
+        }
+
+        // Find the 2FA record
+        const existing = await req.payload.find({
+          collection: "ba-two-factors",
+          where: { userId: { equals: Number(id) } },
+          limit: 1,
+        });
+
+        if (existing.docs.length === 0) {
+          return Response.json(
+            { error: "2FA setup not started. Enable 2FA first." },
+            { status: 400 }
+          );
+        }
+
+        const { symmetricDecrypt } = await import("better-auth/crypto");
+        const { createOTP } = await import("@better-auth/utils/otp");
+
+        // Decrypt the stored secret and verify the code
+        const encryptedSecret = existing.docs[0].secret as string;
+        const rawSecret: string = await symmetricDecrypt({
+          data: encryptedSecret,
+          key: secret,
+        });
+
+        const otp = createOTP(rawSecret, { digits: 6, period: 30 });
+        const isValid = otp.verify(code);
+
+        if (!isValid) {
+          return Response.json(
+            { error: "Invalid code. Please try again." },
+            { status: 400 }
+          );
+        }
+
+        // Code is valid — now enable 2FA on the user
+        await req.payload.update({
+          collection: "users",
+          id,
+          data: { twoFactorEnabled: true },
+        });
+
+        return Response.json({ verified: true, enabled: true });
       },
     },
     {
