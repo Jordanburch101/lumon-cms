@@ -8,6 +8,7 @@ type Step = "idle" | "qr" | "verify" | "done";
 
 interface TwoFactorState {
   backupCodes: string[] | null;
+  confirmRegenerate: boolean;
   enabled: boolean;
   error: string | null;
   loading: boolean;
@@ -22,6 +23,7 @@ export const TwoFactorAdmin: React.FC = () => {
 
   const [state, setState] = useState<TwoFactorState>({
     backupCodes: null,
+    confirmRegenerate: false,
     enabled: initialData?.twoFactorEnabled === true,
     error: null,
     loading: false,
@@ -108,6 +110,7 @@ export const TwoFactorAdmin: React.FC = () => {
     setState((s) => ({
       ...s,
       backupCodes: null,
+      confirmRegenerate: false,
       error: null,
       loading: true,
       totpURI: null,
@@ -140,7 +143,13 @@ export const TwoFactorAdmin: React.FC = () => {
     if (!id) {
       return;
     }
-    setState((s) => ({ ...s, backupCodes: null, error: null, loading: true }));
+    setState((s) => ({
+      ...s,
+      backupCodes: null,
+      confirmRegenerate: false,
+      error: null,
+      loading: true,
+    }));
     try {
       const res = await fetch(`/api/users/${id}/2fa/backup-codes`, {
         method: "POST",
@@ -249,13 +258,11 @@ export const TwoFactorAdmin: React.FC = () => {
       {state.step === "verify" && (
         <div style={{ marginBottom: "0.75rem" }}>
           <p style={{ fontSize: "0.875rem", marginBottom: "0.5rem" }}>
-            2. Enter the 6-digit code from your authenticator app to confirm
-            setup:
+            2. Enter the 6-digit code from your authenticator app:
           </p>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <input
               autoFocus
-              className="field-type text"
               inputMode="numeric"
               maxLength={6}
               onChange={(e) => {
@@ -265,9 +272,13 @@ export const TwoFactorAdmin: React.FC = () => {
               pattern="[0-9]*"
               placeholder="000000"
               style={{
+                background: "var(--theme-elevation-0)",
+                border: "1px solid var(--theme-elevation-150)",
+                borderRadius: "4px",
                 fontFamily: "monospace",
                 fontSize: "1.25rem",
                 letterSpacing: "0.3em",
+                padding: "0.5rem 0.75rem",
                 textAlign: "center",
                 width: "10rem",
               }}
@@ -295,7 +306,7 @@ export const TwoFactorAdmin: React.FC = () => {
           <pre
             style={{
               background: "var(--theme-elevation-100)",
-              borderRadius: "0.25rem",
+              borderRadius: "4px",
               fontSize: "0.8125rem",
               lineHeight: "1.6",
               overflowX: "auto",
@@ -311,7 +322,7 @@ export const TwoFactorAdmin: React.FC = () => {
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         {!state.enabled && state.step === "idle" && (
           <button
-            className="btn btn--style-secondary btn--size-small"
+            className="btn btn--style-secondary btn--size-medium"
             disabled={state.loading}
             onClick={handleEnable}
             type="button"
@@ -321,16 +332,58 @@ export const TwoFactorAdmin: React.FC = () => {
         )}
         {state.enabled && state.step !== "qr" && state.step !== "verify" && (
           <>
+            {/* Backup codes with confirmation */}
+            {state.confirmRegenerate ? (
+              <div
+                style={{
+                  background: "var(--theme-elevation-100)",
+                  borderRadius: "4px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  padding: "0.75rem",
+                }}
+              >
+                <p style={{ fontSize: "0.8125rem", margin: 0 }}>
+                  This will invalidate any previously generated backup codes.
+                  Continue?
+                </p>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <button
+                    className="btn btn--style-primary btn--size-small"
+                    disabled={state.loading}
+                    onClick={handleBackupCodes}
+                    type="button"
+                  >
+                    {state.loading
+                      ? "Generating..."
+                      : "Yes, generate new codes"}
+                  </button>
+                  <button
+                    className="btn btn--style-secondary btn--size-small"
+                    onClick={() =>
+                      setState((s) => ({ ...s, confirmRegenerate: false }))
+                    }
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="btn btn--style-secondary btn--size-medium"
+                disabled={state.loading}
+                onClick={() =>
+                  setState((s) => ({ ...s, confirmRegenerate: true }))
+                }
+                type="button"
+              >
+                Generate Backup Codes
+              </button>
+            )}
             <button
-              className="btn btn--style-secondary btn--size-small"
-              disabled={state.loading}
-              onClick={handleBackupCodes}
-              type="button"
-            >
-              {state.loading ? "Generating..." : "Generate Backup Codes"}
-            </button>
-            <button
-              className="btn btn--style-secondary btn--size-small"
+              className="btn btn--style-secondary btn--size-medium"
               disabled={state.loading}
               onClick={handleDisable}
               style={{ color: "var(--theme-error-500)" }}
