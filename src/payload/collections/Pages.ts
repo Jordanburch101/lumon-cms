@@ -138,14 +138,6 @@ export const Pages: CollectionConfig = {
       required: true,
       admin: { position: "sidebar" },
     },
-    {
-      name: "description",
-      type: "textarea",
-      admin: {
-        position: "sidebar",
-        description: "Internal page description (not shown on the site)",
-      },
-    },
     slugField({
       useAsSlug: "title",
       overrides: (field) => {
