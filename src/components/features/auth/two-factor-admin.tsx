@@ -330,7 +330,7 @@ export const TwoFactorAdmin: React.FC = () => {
         </button>
       )}
       {state.enabled && state.step !== "qr" && state.step !== "verify" && (
-        <>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           {state.confirmRegenerate ? (
             <div
               style={{
@@ -397,7 +397,7 @@ export const TwoFactorAdmin: React.FC = () => {
           >
             {state.loading ? "Disabling..." : "Disable 2FA"}
           </button>
-        </>
+        </div>
       )}
     </div>
   );
