@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
+import { formBuilderPlugin } from "@payloadcms/plugin-form-builder";
 import { mcpPlugin } from "@payloadcms/plugin-mcp";
 import { seoPlugin } from "@payloadcms/plugin-seo";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
@@ -182,6 +183,33 @@ export default buildConfig({
             enabled: process.env.NODE_ENV === "development",
             configFilePath: path.resolve(dirname, "payload.config.ts"),
           },
+        },
+      },
+    }),
+    formBuilderPlugin({
+      fields: {
+        text: true,
+        textarea: true,
+        select: true,
+        radio: true,
+        email: true,
+        state: true,
+        country: true,
+        checkbox: true,
+        number: true,
+        message: true,
+        date: true,
+        payment: false,
+      },
+      redirectRelationships: ["pages"],
+      formOverrides: {
+        admin: {
+          group: "Forms",
+        },
+      },
+      formSubmissionOverrides: {
+        admin: {
+          group: "Forms",
         },
       },
     }),

@@ -32,6 +32,7 @@
     "@payloadcms/db-sqlite": "3.79.1",
     "@payloadcms/live-preview-react": "^3.79.1",
     "@payloadcms/next": "3.79.1",
+    "@payloadcms/plugin-form-builder": "3.79.1",
     "@payloadcms/plugin-mcp": "3.79.1",
     "@payloadcms/plugin-seo": "3.79.1",
     "@payloadcms/richtext-lexical": "3.79.1",
