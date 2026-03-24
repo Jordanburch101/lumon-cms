@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { RichText } from "@/components/features/rich-text";
+import { RichText, type RichTextProps } from "@/components/features/rich-text";
 import type { FormEmbedBlock as FormEmbedBlockType } from "@/types/block-types";
 import { AnimateIn } from "./animate-in";
 import { FormRenderer } from "./form-renderer";
@@ -25,7 +25,7 @@ export function FormEmbed(props: FormEmbedBlockType) {
 
   // Pre-render confirmation message as a server component so RichText stays on the server
   const confirmationNode = formData.confirmationMessage ? (
-    <RichText data={formData.confirmationMessage} />
+    <RichText data={formData.confirmationMessage as RichTextProps["data"]} />
   ) : undefined;
 
   return (
@@ -84,7 +84,7 @@ function SectionContent({
   if (!content) {
     return null;
   }
-  return <RichText data={content} />;
+  return <RichText data={content as RichTextProps["data"]} />;
 }
 
 function StackedLayout({
