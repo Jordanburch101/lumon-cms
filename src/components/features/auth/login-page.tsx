@@ -29,11 +29,19 @@ export function LoginPage() {
 
     if (result.error) {
       setError(result.error.message ?? "Sign in failed");
-    } else {
-      window.location.href = "/admin";
+      setLoading(false);
+      return;
     }
 
-    setLoading(false);
+    // If 2FA is required, the twoFactorClient plugin handles the redirect
+    // via onTwoFactorRedirect. Check if the response indicates 2FA.
+    const data = result.data as Record<string, unknown> | null;
+    if (data?.twoFactorRedirect) {
+      window.location.href = "/two-factor";
+      return;
+    }
+
+    window.location.href = "/admin";
   }
 
   async function handleMagicLink() {
