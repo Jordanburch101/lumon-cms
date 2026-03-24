@@ -114,6 +114,14 @@ export const blockArgTypes: Record<string, Record<string, unknown>> = {
         "Visual style — default (dividers), card (individual cards), minimal (no borders)",
     },
   },
+  formEmbed: {
+    variant: {
+      control: "select",
+      options: ["stacked", "split", "map"],
+      description:
+        "Layout — stacked (centered), split (content + form), or map (form + location)",
+    },
+  },
   // Text fields, arrays, and nested objects get auto-detected controls
   // from the fixture values — no need to list them here
 };
@@ -1338,5 +1346,101 @@ export const blockFixtures: BlockFixtures = {
         category: "Milestone",
       },
     ],
+  },
+  formEmbed: {
+    blockType: "formEmbed",
+    variant: "stacked",
+    heading: "Contact Lumon Industries",
+    content: {
+      root: {
+        type: "root",
+        direction: "ltr",
+        format: "",
+        indent: 0,
+        version: 1,
+        children: [
+          {
+            type: "paragraph",
+            direction: "ltr",
+            format: "",
+            indent: 0,
+            version: 1,
+            children: [
+              {
+                type: "text",
+                text: "Your outie may have questions. The Board welcomes your inquiry. All submissions are reviewed by Wellness.",
+                format: 0,
+                version: 1,
+              },
+            ],
+          },
+        ],
+      },
+    },
+    form: {
+      id: 1,
+      title: "Contact Form",
+      fields: [
+        {
+          blockType: "text",
+          name: "name",
+          label: "Full Name",
+          required: true,
+          width: "50",
+        },
+        {
+          blockType: "email",
+          name: "email",
+          label: "Email Address",
+          required: true,
+          width: "50",
+        },
+        {
+          blockType: "text",
+          name: "department",
+          label: "Department",
+          width: "100",
+        },
+        {
+          blockType: "textarea",
+          name: "message",
+          label: "Message",
+          required: true,
+          width: "100",
+          placeholder: "Describe your inquiry to the Board...",
+        },
+      ],
+      confirmationType: "message",
+      confirmationMessage: {
+        root: {
+          type: "root",
+          direction: "ltr",
+          format: "",
+          indent: 0,
+          version: 1,
+          children: [
+            {
+              type: "paragraph",
+              direction: "ltr",
+              format: "",
+              indent: 0,
+              version: 1,
+              children: [
+                {
+                  type: "text",
+                  text: "The Board has received your message. Praise Kier.",
+                  format: 0,
+                  version: 1,
+                },
+              ],
+            },
+          ],
+        },
+      },
+      submitButtonLabel: "Submit to the Board",
+    },
+    mapCenter: { latitude: 40.7128, longitude: -74.006 },
+    mapZoom: 14,
+    mapMarkerLabel: "Lumon Industries HQ",
   },
 };

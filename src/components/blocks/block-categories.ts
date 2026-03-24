@@ -31,4 +31,5 @@ export const BLOCK_CATEGORIES: Record<string, string> = {
   faq: "Commerce",
   jobListings: "Commerce",
   comparisonTable: "Commerce",
+  formEmbed: "Content",
 };
