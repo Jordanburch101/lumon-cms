@@ -46,13 +46,9 @@ RUN bun run generate:types && \
     bun run generate:importmap && \
     bun run generate:field-map
 
-# Migrations — connects to production DB via public URL (private network unavailable at build time)
-# `yes` auto-confirms the dev-mode push warning prompt (Payload's drizzle adapter
-# doesn't support forceAcceptWarning — the prompt uses `prompts` library directly)
-RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} \
-    yes | bun run migrate
-
 # Next.js build — connects to production DB for prerendering (robots.txt, sitemap, etc.)
+# Note: migrations are NOT run at build time — they run at container startup via
+# entrypoint.sh, where the private DB network is reachable.
 RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun --bun run build
 
 # =============================================================================
@@ -94,11 +90,22 @@ COPY --from=builder /app/node_modules/@libsql/linux-x64-gnu ./node_modules/@libs
 COPY --from=builder /app/node_modules/@libsql/client ./node_modules/@libsql/client
 COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
 
+# Migration runner — full Payload setup so `bun run migrate` works at startup.
+# Migrations run at container start (not build time) because the private DB
+# network is only reachable from running containers.
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules /migrate/node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/src /migrate/src
+COPY --from=builder --chown=nextjs:nodejs /app/package.json /migrate/package.json
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json /migrate/tsconfig.json
+
 # Bun memory optimization
 COPY --chown=nextjs:nodejs bunfig.toml ./
+
+# Entrypoint: run migrations then start server
+COPY --chown=nextjs:nodejs entrypoint.sh ./
+RUN chmod +x entrypoint.sh
 
 USER nextjs
 EXPOSE 3000
 
-# Exec form — Bun is PID 1, receives SIGTERM for graceful shutdown
-CMD ["bun", "server.js"]
+CMD ["./entrypoint.sh"]
