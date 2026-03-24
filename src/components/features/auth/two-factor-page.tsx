@@ -112,22 +112,22 @@ export function TwoFactorPage() {
           ) : (
             <InputOTP
               autoFocus
-              containerClassName="justify-center"
+              containerClassName="w-full gap-3"
               disabled={loading}
               maxLength={6}
               onChange={(val) => setCode(val)}
               value={code}
             >
-              <InputOTPGroup>
-                <InputOTPSlot className="size-12 text-xl" index={0} />
-                <InputOTPSlot className="size-12 text-xl" index={1} />
-                <InputOTPSlot className="size-12 text-xl" index={2} />
+              <InputOTPGroup className="flex-1">
+                <InputOTPSlot className="h-12 flex-1 text-xl" index={0} />
+                <InputOTPSlot className="h-12 flex-1 text-xl" index={1} />
+                <InputOTPSlot className="h-12 flex-1 text-xl" index={2} />
               </InputOTPGroup>
               <InputOTPSeparator />
-              <InputOTPGroup>
-                <InputOTPSlot className="size-12 text-xl" index={3} />
-                <InputOTPSlot className="size-12 text-xl" index={4} />
-                <InputOTPSlot className="size-12 text-xl" index={5} />
+              <InputOTPGroup className="flex-1">
+                <InputOTPSlot className="h-12 flex-1 text-xl" index={3} />
+                <InputOTPSlot className="h-12 flex-1 text-xl" index={4} />
+                <InputOTPSlot className="h-12 flex-1 text-xl" index={5} />
               </InputOTPGroup>
             </InputOTP>
           )}
