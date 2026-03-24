@@ -25,7 +25,9 @@ export function FormEmbed(props: FormEmbedBlockType) {
 
   // Pre-render confirmation message as a server component so RichText stays on the server
   const confirmationNode = formData.confirmationMessage ? (
-    <RichText data={formData.confirmationMessage as RichTextProps["data"]} />
+    <RichText
+      data={formData.confirmationMessage as unknown as RichTextProps["data"]}
+    />
   ) : undefined;
 
   return (
@@ -84,7 +86,7 @@ function SectionContent({
   if (!content) {
     return null;
   }
-  return <RichText data={content as RichTextProps["data"]} />;
+  return <RichText data={content as unknown as RichTextProps["data"]} />;
 }
 
 function StackedLayout({
