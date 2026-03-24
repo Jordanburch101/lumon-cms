@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
     },
     {
       source: "/admin/logout",
-      destination: "/login",
+      destination: "/api/auth/logout",
       permanent: false,
     },
   ],
