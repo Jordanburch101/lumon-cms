@@ -321,7 +321,7 @@ export const TwoFactorAdmin: React.FC = () => {
       {/* Actions */}
       {!state.enabled && state.step === "idle" && (
         <button
-          className="btn btn--style-secondary btn--size-small"
+          className="btn btn--style-pill btn--size-small"
           disabled={state.loading}
           onClick={handleEnable}
           type="button"
@@ -330,33 +330,28 @@ export const TwoFactorAdmin: React.FC = () => {
         </button>
       )}
       {state.enabled && state.step !== "qr" && state.step !== "verify" && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.375rem",
-          }}
-        >
+        <>
           {state.confirmRegenerate ? (
             <div
               style={{
                 background: "var(--theme-error-100)",
                 borderRadius: "4px",
                 color: "var(--theme-error-600)",
-                fontSize: "0.8125rem",
-                padding: "0.625rem 0.75rem",
+                fontSize: "0.75rem",
+                lineHeight: 1.5,
+                padding: "0.5rem 0.625rem",
               }}
             >
-              <span>Regenerating will invalidate existing codes.</span>
+              Regenerating will invalidate existing codes.
               <div
                 style={{
                   display: "flex",
                   gap: "0.375rem",
-                  marginTop: "0.5rem",
+                  marginTop: "0.375rem",
                 }}
               >
                 <button
-                  className="btn btn--style-pill btn--size-small"
+                  className="btn btn--style-pill btn--size-xsmall"
                   disabled={state.loading}
                   onClick={handleBackupCodes}
                   type="button"
@@ -364,7 +359,7 @@ export const TwoFactorAdmin: React.FC = () => {
                   {state.loading ? "Generating..." : "Confirm"}
                 </button>
                 <button
-                  className="btn btn--style-pill btn--size-small"
+                  className="btn btn--style-pill btn--size-xsmall"
                   onClick={() =>
                     setState((s) => ({ ...s, confirmRegenerate: false }))
                   }
@@ -376,7 +371,7 @@ export const TwoFactorAdmin: React.FC = () => {
             </div>
           ) : (
             <button
-              className="btn btn--style-secondary btn--size-small"
+              className="btn btn--style-pill btn--size-small"
               disabled={state.loading}
               onClick={() =>
                 setState((s) => ({ ...s, confirmRegenerate: true }))
@@ -387,15 +382,22 @@ export const TwoFactorAdmin: React.FC = () => {
             </button>
           )}
           <button
-            className="btn btn--style-secondary btn--size-small"
+            className="btn btn--style-none btn--size-small"
             disabled={state.loading}
             onClick={handleDisable}
-            style={{ color: "var(--theme-error-500)" }}
+            style={{
+              color: "var(--theme-error-500)",
+              cursor: "pointer",
+              fontSize: "0.75rem",
+              marginTop: "0.25rem",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+            }}
             type="button"
           >
             {state.loading ? "Disabling..." : "Disable 2FA"}
           </button>
-        </div>
+        </>
       )}
     </div>
   );
