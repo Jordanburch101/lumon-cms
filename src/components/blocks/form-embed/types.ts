@@ -9,7 +9,7 @@ export interface FormFieldBlock {
   options?: { label: string; value: string }[];
   placeholder?: string;
   required?: boolean;
-  width?: string;
+  width?: number | string;
 }
 
 export interface FormConfig {

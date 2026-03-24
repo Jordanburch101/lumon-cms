@@ -29,11 +29,11 @@ interface FieldMapperProps {
 }
 
 /** Convert plugin width percentages to Tailwind grid column classes */
-function widthToClass(width?: string): string {
-  if (!width) {
+function widthToClass(width?: number | string): string {
+  if (width == null) {
     return "col-span-full";
   }
-  const n = Number.parseInt(width, 10);
+  const n = typeof width === "number" ? width : Number.parseInt(width, 10);
   if (n <= 50) {
     return "col-span-full sm:col-span-1";
   }
