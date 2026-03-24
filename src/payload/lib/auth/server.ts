@@ -94,6 +94,11 @@ export const auth = betterAuth({
             userId: "user_id",
           },
         },
+        user: {
+          fields: {
+            twoFactorEnabled: "two_factor_enabled",
+          },
+        },
       },
     }),
     magicLink({
