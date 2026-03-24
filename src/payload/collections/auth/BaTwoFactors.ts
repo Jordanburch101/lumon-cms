@@ -11,7 +11,7 @@ export const BaTwoFactors: CollectionConfig = {
   },
   fields: [
     { name: "secret", type: "text", required: true, index: true },
-    { name: "backupCodes", type: "text", required: true },
+    { name: "backupCodes", type: "text" },
     { name: "userId", type: "number", required: true, index: true },
   ],
 };
