@@ -322,7 +322,7 @@ export const Users: CollectionConfig = {
       name: "emailVerified",
       type: "checkbox",
       defaultValue: false,
-      admin: { position: "sidebar" },
+      admin: { hidden: true },
     },
     {
       name: "image",
@@ -333,7 +333,7 @@ export const Users: CollectionConfig = {
       name: "twoFactorEnabled",
       type: "checkbox",
       defaultValue: false,
-      admin: { position: "sidebar" },
+      admin: { hidden: true },
     },
     {
       name: "twoFactorManagement",
