@@ -335,18 +335,17 @@ export const TwoFactorAdmin: React.FC = () => {
             {/* Backup codes with confirmation */}
             {state.confirmRegenerate ? (
               <div
-                style={{
-                  background: "var(--theme-elevation-100)",
-                  borderRadius: "4px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  padding: "0.75rem",
-                }}
+                className="banner banner--type-error"
+                style={{ padding: "1rem" }}
               >
-                <p style={{ fontSize: "0.8125rem", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: "0.8125rem",
+                    margin: "0 0 0.75rem",
+                  }}
+                >
                   This will invalidate any previously generated backup codes.
-                  Continue?
+                  Are you sure?
                 </p>
                 <div style={{ display: "flex", gap: "0.5rem" }}>
                   <button
@@ -355,9 +354,7 @@ export const TwoFactorAdmin: React.FC = () => {
                     onClick={handleBackupCodes}
                     type="button"
                   >
-                    {state.loading
-                      ? "Generating..."
-                      : "Yes, generate new codes"}
+                    {state.loading ? "Generating..." : "Yes, regenerate"}
                   </button>
                   <button
                     className="btn btn--style-secondary btn--size-small"
