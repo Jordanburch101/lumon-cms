@@ -62,10 +62,10 @@ export default async function Page({ params }: Args) {
   const settings = await getCachedSiteSettings();
 
   return (
-    <>
+    <div className="flex flex-col gap-16 lg:gap-32">
       <JsonLd page={page} settings={settings} />
       <RenderHero blocks={page.hero ?? []} />
       <RenderBlocks blocks={page.layout ?? []} />
-    </>
+    </div>
   );
 }

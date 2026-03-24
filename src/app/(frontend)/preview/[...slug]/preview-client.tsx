@@ -12,9 +12,9 @@ export function PreviewClient({ initialData }: { initialData: Page }) {
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-16 lg:gap-32">
       <RenderHero blocks={data.hero ?? []} />
       <RenderBlocks blocks={data.layout ?? []} />
-    </>
+    </div>
   );
 }
