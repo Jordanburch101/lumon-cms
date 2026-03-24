@@ -319,77 +319,84 @@ export const TwoFactorAdmin: React.FC = () => {
       )}
 
       {/* Actions */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {!state.enabled && state.step === "idle" && (
-          <button
-            className="btn btn--style-secondary btn--size-medium"
-            disabled={state.loading}
-            onClick={handleEnable}
-            type="button"
-          >
-            {state.loading ? "Setting up..." : "Enable 2FA"}
-          </button>
-        )}
-        {state.enabled && state.step !== "qr" && state.step !== "verify" && (
-          <>
-            {/* Backup codes with confirmation */}
-            {state.confirmRegenerate ? (
+      {!state.enabled && state.step === "idle" && (
+        <button
+          className="btn btn--style-secondary btn--size-small"
+          disabled={state.loading}
+          onClick={handleEnable}
+          type="button"
+        >
+          {state.loading ? "Setting up..." : "Enable 2FA"}
+        </button>
+      )}
+      {state.enabled && state.step !== "qr" && state.step !== "verify" && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.375rem",
+          }}
+        >
+          {state.confirmRegenerate ? (
+            <div
+              style={{
+                background: "var(--theme-error-100)",
+                borderRadius: "4px",
+                color: "var(--theme-error-600)",
+                fontSize: "0.8125rem",
+                padding: "0.625rem 0.75rem",
+              }}
+            >
+              <span>Regenerating will invalidate existing codes.</span>
               <div
-                className="banner banner--type-error"
+                style={{
+                  display: "flex",
+                  gap: "0.375rem",
+                  marginTop: "0.5rem",
+                }}
               >
-                <p
-                  style={{
-                    fontSize: "0.8125rem",
-                    margin: "0 0 0.5rem",
-                  }}
+                <button
+                  className="btn btn--style-pill btn--size-small"
+                  disabled={state.loading}
+                  onClick={handleBackupCodes}
+                  type="button"
                 >
-                  This will invalidate any previously generated backup codes.
-                  Are you sure?
-                </p>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button
-                    className="btn btn--style-primary btn--size-small"
-                    disabled={state.loading}
-                    onClick={handleBackupCodes}
-                    type="button"
-                  >
-                    {state.loading ? "Generating..." : "Yes, regenerate"}
-                  </button>
-                  <button
-                    className="btn btn--style-secondary btn--size-small"
-                    onClick={() =>
-                      setState((s) => ({ ...s, confirmRegenerate: false }))
-                    }
-                    type="button"
-                  >
-                    Cancel
-                  </button>
-                </div>
+                  {state.loading ? "Generating..." : "Confirm"}
+                </button>
+                <button
+                  className="btn btn--style-pill btn--size-small"
+                  onClick={() =>
+                    setState((s) => ({ ...s, confirmRegenerate: false }))
+                  }
+                  type="button"
+                >
+                  Cancel
+                </button>
               </div>
-            ) : (
-              <button
-                className="btn btn--style-secondary btn--size-medium"
-                disabled={state.loading}
-                onClick={() =>
-                  setState((s) => ({ ...s, confirmRegenerate: true }))
-                }
-                type="button"
-              >
-                Generate Backup Codes
-              </button>
-            )}
+            </div>
+          ) : (
             <button
-              className="btn btn--style-secondary btn--size-medium"
+              className="btn btn--style-secondary btn--size-small"
               disabled={state.loading}
-              onClick={handleDisable}
-              style={{ color: "var(--theme-error-500)" }}
+              onClick={() =>
+                setState((s) => ({ ...s, confirmRegenerate: true }))
+              }
               type="button"
             >
-              {state.loading ? "Disabling..." : "Disable 2FA"}
+              Generate Backup Codes
             </button>
-          </>
-        )}
-      </div>
+          )}
+          <button
+            className="btn btn--style-secondary btn--size-small"
+            disabled={state.loading}
+            onClick={handleDisable}
+            style={{ color: "var(--theme-error-500)" }}
+            type="button"
+          >
+            {state.loading ? "Disabling..." : "Disable 2FA"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
