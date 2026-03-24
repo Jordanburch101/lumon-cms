@@ -4,10 +4,14 @@ import { useAuth, useDocumentInfo } from "@payloadcms/ui";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useState } from "react";
 
+type Step = "idle" | "qr" | "done";
+
 interface TwoFactorState {
   backupCodes: string[] | null;
+  enabled: boolean;
   error: string | null;
   loading: boolean;
+  step: Step;
   totpURI: string | null;
 }
 
@@ -17,12 +21,13 @@ export const TwoFactorAdmin: React.FC = () => {
 
   const [state, setState] = useState<TwoFactorState>({
     backupCodes: null,
+    enabled: initialData?.twoFactorEnabled === true,
     error: null,
     loading: false,
+    step: "idle",
     totpURI: null,
   });
 
-  const isEnabled = initialData?.twoFactorEnabled === true;
   const isAdmin =
     user && typeof user === "object" && "role" in user && user.role === "admin";
 
@@ -30,7 +35,7 @@ export const TwoFactorAdmin: React.FC = () => {
     if (!id) {
       return;
     }
-    setState((s) => ({ ...s, error: null, loading: true, totpURI: null }));
+    setState((s) => ({ ...s, error: null, loading: true }));
     try {
       const res = await fetch(`/api/users/${id}/2fa/enable`, {
         method: "POST",
@@ -45,7 +50,9 @@ export const TwoFactorAdmin: React.FC = () => {
       }
       setState((s) => ({
         ...s,
+        enabled: true,
         loading: false,
+        step: "qr",
         totpURI: data.totpURI ?? null,
       }));
     } catch (err) {
@@ -56,6 +63,10 @@ export const TwoFactorAdmin: React.FC = () => {
       }));
     }
   }, [id]);
+
+  const handleDoneScanning = useCallback(() => {
+    setState((s) => ({ ...s, step: "done", totpURI: null }));
+  }, []);
 
   const handleDisable = useCallback(async () => {
     if (!id) {
@@ -77,8 +88,12 @@ export const TwoFactorAdmin: React.FC = () => {
       if (!res.ok) {
         throw new Error(data.error ?? `Failed (${res.status})`);
       }
-      // Reload to refresh the twoFactorEnabled field from server
-      window.location.reload();
+      setState((s) => ({
+        ...s,
+        enabled: false,
+        loading: false,
+        step: "idle",
+      }));
     } catch (err) {
       setState((s) => ({
         ...s,
@@ -140,9 +155,11 @@ export const TwoFactorAdmin: React.FC = () => {
       >
         Status:{" "}
         <strong
-          style={{ color: isEnabled ? "var(--theme-success-500)" : "inherit" }}
+          style={{
+            color: state.enabled ? "var(--theme-success-500)" : "inherit",
+          }}
         >
-          {isEnabled ? "Enabled" : "Disabled"}
+          {state.enabled ? "Enabled" : "Disabled"}
         </strong>
       </p>
 
@@ -158,7 +175,8 @@ export const TwoFactorAdmin: React.FC = () => {
         </p>
       )}
 
-      {state.totpURI && (
+      {/* QR code — shown after clicking Enable */}
+      {state.step === "qr" && state.totpURI && (
         <div style={{ marginBottom: "0.75rem" }}>
           <p
             style={{
@@ -166,7 +184,7 @@ export const TwoFactorAdmin: React.FC = () => {
               marginBottom: "0.5rem",
             }}
           >
-            Scan this QR code with an authenticator app:
+            Scan this QR code with your authenticator app:
           </p>
           <div
             style={{
@@ -188,9 +206,18 @@ export const TwoFactorAdmin: React.FC = () => {
           >
             {state.totpURI}
           </p>
+          <button
+            className="btn btn--style-primary btn--size-small"
+            onClick={handleDoneScanning}
+            style={{ marginTop: "0.75rem" }}
+            type="button"
+          >
+            I&apos;ve scanned it
+          </button>
         </div>
       )}
 
+      {/* Backup codes */}
       {state.backupCodes && (
         <div style={{ marginBottom: "0.75rem" }}>
           <p
@@ -216,8 +243,9 @@ export const TwoFactorAdmin: React.FC = () => {
         </div>
       )}
 
+      {/* Actions */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {!isEnabled && (
+        {!state.enabled && state.step === "idle" && (
           <button
             className="btn btn--style-secondary btn--size-small"
             disabled={state.loading}
@@ -227,7 +255,7 @@ export const TwoFactorAdmin: React.FC = () => {
             {state.loading ? "Enabling..." : "Enable 2FA"}
           </button>
         )}
-        {isEnabled && (
+        {state.enabled && state.step !== "qr" && (
           <>
             <button
               className="btn btn--style-secondary btn--size-small"
