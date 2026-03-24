@@ -181,7 +181,7 @@ export const Users: CollectionConfig = {
         });
 
         const otp = createOTP(rawSecret, { digits: 6, period: 30 });
-        const isValid = otp.verify(code);
+        const isValid = await otp.verify(code);
 
         if (!isValid) {
           return Response.json(
