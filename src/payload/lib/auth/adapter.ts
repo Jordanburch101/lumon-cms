@@ -64,7 +64,7 @@ export const payloadAdapter = createAdapterFactory({
         overrideAccess: true,
       });
 
-      return transformOutput(doc) as typeof data;
+      return transformOutput(doc) as unknown as typeof data;
     },
 
     async findOne({ model, where }) {
@@ -80,7 +80,7 @@ export const payloadAdapter = createAdapterFactory({
       });
 
       const doc = result.docs[0] ?? null;
-      return doc ? transformOutput(doc) : null;
+      return (doc ? transformOutput(doc) : null) as never;
     },
 
     async findMany({ model, where, limit, sortBy, offset }) {
@@ -136,7 +136,7 @@ export const payloadAdapter = createAdapterFactory({
       });
 
       const doc = result.docs[0] ?? null;
-      return doc ? transformOutput(doc) : null;
+      return (doc ? transformOutput(doc) : null) as never;
     },
 
     async updateMany({ model, where, update }) {

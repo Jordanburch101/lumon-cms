@@ -32,8 +32,8 @@ export const betterAuthStrategy: AuthStrategy = {
 
       return {
         user: {
-          collection: "users",
           ...user,
+          collection: "users",
         },
       };
     } catch {
