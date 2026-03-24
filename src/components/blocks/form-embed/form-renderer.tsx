@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -37,7 +36,6 @@ interface FormRendererProps {
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function FormRenderer({ form, confirmationNode }: FormRendererProps) {
-  const router = useRouter();
   const fields = form.fields ?? [];
 
   const [values, setValues] = useState<Record<string, string>>(() => {
@@ -117,7 +115,7 @@ export function FormRenderer({ form, confirmationNode }: FormRendererProps) {
       }
 
       if (form.confirmationType === "redirect" && form.redirect?.url) {
-        router.push(form.redirect.url);
+        window.location.href = form.redirect.url;
         return;
       }
 
