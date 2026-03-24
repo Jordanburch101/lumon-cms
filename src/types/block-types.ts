@@ -51,3 +51,4 @@ export type TimelineBlock = ExtractBlock<"timeline">;
 export type TabbedContentBlock = ExtractBlock<"tabbedContent">;
 export type ComparisonTableBlock = ExtractBlock<"comparisonTable">;
 export type JobListingsBlock = ExtractBlock<"jobListings">;
+export type FormEmbedBlock = ExtractBlock<"formEmbed">;
