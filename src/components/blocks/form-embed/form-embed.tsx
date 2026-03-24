@@ -168,12 +168,12 @@ function MapLayout({
         </AnimateIn>
       </div>
       {hasMap && (
-        <AnimateIn className="order-last" delay={0.2}>
+        <AnimateIn className="order-last self-stretch" delay={0.2}>
           <MapPanel
             latitude={Number(mapCenter.latitude)}
             longitude={Number(mapCenter.longitude)}
             markerLabel={mapMarkerLabel}
-            zoom={mapZoom ?? 14}
+            zoom={mapZoom ?? 2}
           />
         </AnimateIn>
       )}
