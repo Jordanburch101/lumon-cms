@@ -47,7 +47,8 @@ RUN bun run generate:types && \
     bun run generate:field-map
 
 # Migrations — connects to production DB via public URL (private network unavailable at build time)
-RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
+# Pipe "y" to auto-accept Payload's dev-mode schema drift warning (no TTY in Docker builds)
+RUN echo "y" | DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
 
 # Next.js build — connects to production DB for prerendering (robots.txt, sitemap, etc.)
 RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun --bun run build
