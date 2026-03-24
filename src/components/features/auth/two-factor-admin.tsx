@@ -336,12 +336,11 @@ export const TwoFactorAdmin: React.FC = () => {
             {state.confirmRegenerate ? (
               <div
                 className="banner banner--type-error"
-                style={{ padding: "1rem" }}
               >
                 <p
                   style={{
                     fontSize: "0.8125rem",
-                    margin: "0 0 0.75rem",
+                    margin: "0 0 0.5rem",
                   }}
                 >
                   This will invalidate any previously generated backup codes.
