@@ -332,25 +332,17 @@ export const TwoFactorAdmin: React.FC = () => {
       {state.enabled && state.step !== "qr" && state.step !== "verify" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           {state.confirmRegenerate ? (
-            <div
-              style={{
-                border: "1px solid var(--theme-error-200)",
-                borderRadius: "4px",
-                fontSize: "0.8125rem",
-                lineHeight: 1.5,
-                padding: "0.75rem",
-              }}
-            >
+            <div>
               <p
                 style={{
                   color: "var(--theme-error-500)",
                   fontSize: "0.75rem",
-                  margin: "0 0 0.625rem",
+                  margin: "0 0 0.5rem",
                 }}
               >
-                Regenerating will invalidate existing backup codes.
+                Regenerating will invalidate existing codes.
               </p>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
+              <div style={{ display: "flex", gap: "0.375rem" }}>
                 <button
                   className="btn btn--style-pill btn--size-small"
                   disabled={state.loading}
