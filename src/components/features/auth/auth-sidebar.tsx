@@ -1,27 +1,11 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { isVideoUrl } from "@/core/lib/utils";
-import { EASE } from "./auth-constants";
-
-function LogoSvg({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-label="Lumon Industries logo"
-      className={className}
-      fill="none"
-      role="img"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      viewBox="0 0 40 40"
-    >
-      <rect height="28" rx="3" width="28" x="6" y="6" />
-      <path d="M6 20h28M20 6v28" />
-    </svg>
-  );
-}
+import { EASE, LogoSvg } from "./auth-constants";
 
 interface AuthSidebarProps {
   heading?: string;
@@ -54,11 +38,7 @@ export function AuthSidebar({
         />
       )}
       {mediaSrc && !isVideo && (
-        <img
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-          src={mediaSrc}
-        />
+        <Image alt="" className="object-cover" fill priority src={mediaSrc} />
       )}
 
       {/* Dark overlay */}

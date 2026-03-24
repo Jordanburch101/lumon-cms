@@ -13,6 +13,23 @@ export function fieldVariants(i: number, inView: boolean) {
   };
 }
 
+export function LogoSvg({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-label="Lumon Industries logo"
+      className={className}
+      fill="none"
+      role="img"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      viewBox="0 0 40 40"
+    >
+      <rect height="28" rx="3" width="28" x="6" y="6" />
+      <path d="M6 20h28M20 6v28" />
+    </svg>
+  );
+}
+
 export function Spinner({ className }: { className?: string }) {
   return (
     <svg
