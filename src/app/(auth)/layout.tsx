@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { AuthSidebar } from "@/components/features/auth/auth-sidebar";
 import { fontVariables } from "@/core/lib/fonts";
 import { Providers } from "@/providers/providers";
 import "../globals.css";
@@ -17,7 +18,7 @@ async function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export default function AuthLayout({
+export default function AuthRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -27,7 +28,12 @@ export default function AuthLayout({
       <body className={`${fontVariables} antialiased`}>
         <Providers>
           <Suspense>
-            <AuthGuard>{children}</AuthGuard>
+            <AuthGuard>
+              <div className="flex min-h-svh w-full">
+                <AuthSidebar />
+                {children}
+              </div>
+            </AuthGuard>
           </Suspense>
         </Providers>
       </body>
