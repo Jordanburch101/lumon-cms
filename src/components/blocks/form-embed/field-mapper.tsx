@@ -19,18 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/core/lib/utils";
-
-interface FormFieldBlock {
-  blockType: string;
-  defaultValue?: string;
-  label?: string;
-  message?: unknown;
-  name?: string;
-  options?: { label: string; value: string }[];
-  placeholder?: string;
-  required?: boolean;
-  width?: string;
-}
+import type { FormFieldBlock } from "./types";
 
 interface FieldMapperProps {
   error?: string;
@@ -55,11 +44,42 @@ export function FormField({ field, value, onChange, error }: FieldMapperProps) {
   const { blockType, name, label, required, placeholder } = field;
   const fieldName = name ?? "";
 
+  // TODO: Render message blocks as inline rich text instructions within the form
   if (blockType === "message") {
     return null;
   }
 
   const handleChange = (val: string) => onChange(fieldName, val);
+
+  // Checkbox: render label inline next to the checkbox
+  if (blockType === "checkbox") {
+    return (
+      <div className={cn(widthToClass(field.width))}>
+        <Field>
+          <FieldContent>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={value === "true"}
+                id={fieldName}
+                onCheckedChange={(checked) =>
+                  handleChange(checked ? "true" : "false")
+                }
+              />
+              {label && (
+                <Label htmlFor={fieldName}>
+                  {label}
+                  {required && (
+                    <span className="ml-0.5 text-destructive">*</span>
+                  )}
+                </Label>
+              )}
+            </div>
+          </FieldContent>
+          {error && <FieldError>{error}</FieldError>}
+        </Field>
+      </div>
+    );
+  }
 
   return (
     <div className={cn(widthToClass(field.width))}>
@@ -72,6 +92,7 @@ export function FormField({ field, value, onChange, error }: FieldMapperProps) {
         )}
         <FieldContent>
           {renderInput(blockType, {
+            fieldName,
             value,
             onChange: handleChange,
             placeholder,
@@ -89,6 +110,7 @@ export function FormField({ field, value, onChange, error }: FieldMapperProps) {
 function renderInput(
   blockType: string,
   props: {
+    fieldName: string;
     value: string;
     onChange: (val: string) => void;
     placeholder?: string;
@@ -166,24 +188,16 @@ function renderInput(
     case "radio":
       return (
         <RadioGroup onValueChange={props.onChange} value={props.value}>
-          {(props.options ?? []).map((opt) => (
-            <div className="flex items-center gap-2" key={opt.value}>
-              <RadioGroupItem id={opt.value} value={opt.value} />
-              <Label htmlFor={opt.value}>{opt.label}</Label>
-            </div>
-          ))}
+          {(props.options ?? []).map((opt) => {
+            const radioId = `${props.fieldName}-${opt.value}`;
+            return (
+              <div className="flex items-center gap-2" key={opt.value}>
+                <RadioGroupItem id={radioId} value={opt.value} />
+                <Label htmlFor={radioId}>{opt.label}</Label>
+              </div>
+            );
+          })}
         </RadioGroup>
-      );
-    case "checkbox":
-      return (
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={props.value === "true"}
-            onCheckedChange={(checked) =>
-              props.onChange(checked ? "true" : "false")
-            }
-          />
-        </div>
       );
     default:
       return (

@@ -1,17 +1,10 @@
 import type { ReactNode } from "react";
 import { RichText } from "@/components/features/rich-text";
 import type { FormEmbedBlock as FormEmbedBlockType } from "@/types/block-types";
+import { AnimateIn } from "./animate-in";
 import { FormRenderer } from "./form-renderer";
 import { MapPanel } from "./map-panel";
-
-interface FormConfig {
-  confirmationMessage?: Record<string, unknown> | null;
-  confirmationType?: "message" | "redirect" | null;
-  fields?: unknown[] | null;
-  id: number;
-  redirect?: { url?: string } | null;
-  submitButtonLabel?: string | null;
-}
+import type { FormConfig } from "./types";
 
 export function FormEmbed(props: FormEmbedBlockType) {
   const {
@@ -36,7 +29,7 @@ export function FormEmbed(props: FormEmbedBlockType) {
   ) : undefined;
 
   return (
-    <section className="w-full">
+    <section aria-label={heading || "Form"} className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {variant === "stacked" && (
           <StackedLayout
@@ -107,13 +100,13 @@ function StackedLayout({
 }) {
   return (
     <div className="flex flex-col items-center gap-8 text-center">
-      <div className="flex max-w-2xl flex-col gap-4">
+      <AnimateIn className="flex max-w-2xl flex-col gap-4">
         <SectionHeading heading={heading} />
         <SectionContent content={content as Record<string, unknown>} />
-      </div>
-      <div className="w-full max-w-xl text-left">
+      </AnimateIn>
+      <AnimateIn className="w-full max-w-xl text-left" delay={0.1}>
         <FormRenderer confirmationNode={confirmationNode} form={form} />
-      </div>
+      </AnimateIn>
     </div>
   );
 }
@@ -131,13 +124,13 @@ function SplitLayout({
 }) {
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-      <div className="flex flex-col gap-4">
+      <AnimateIn className="flex flex-col gap-4">
         <SectionHeading heading={heading} />
         <SectionContent content={content as Record<string, unknown>} />
-      </div>
-      <div>
+      </AnimateIn>
+      <AnimateIn delay={0.15}>
         <FormRenderer confirmationNode={confirmationNode} form={form} />
-      </div>
+      </AnimateIn>
     </div>
   );
 }
@@ -164,21 +157,23 @@ function MapLayout({
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
+        <AnimateIn className="flex flex-col gap-4">
           <SectionHeading heading={heading} />
           <SectionContent content={content as Record<string, unknown>} />
-        </div>
-        <FormRenderer confirmationNode={confirmationNode} form={form} />
+        </AnimateIn>
+        <AnimateIn delay={0.1}>
+          <FormRenderer confirmationNode={confirmationNode} form={form} />
+        </AnimateIn>
       </div>
       {hasMap && (
-        <div className="order-last">
+        <AnimateIn className="order-last" delay={0.2}>
           <MapPanel
             latitude={Number(mapCenter.latitude)}
             longitude={Number(mapCenter.longitude)}
             markerLabel={mapMarkerLabel}
             zoom={mapZoom ?? 14}
           />
-        </div>
+        </AnimateIn>
       )}
     </div>
   );

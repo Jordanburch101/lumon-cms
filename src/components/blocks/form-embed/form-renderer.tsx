@@ -5,27 +5,7 @@ import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "./field-mapper";
-
-interface FormFieldBlock {
-  blockType: string;
-  defaultValue?: string;
-  label?: string;
-  message?: unknown;
-  name?: string;
-  options?: { label: string; value: string }[];
-  placeholder?: string;
-  required?: boolean;
-  width?: string;
-}
-
-interface FormConfig {
-  confirmationMessage?: Record<string, unknown> | null;
-  confirmationType?: "message" | "redirect" | null;
-  fields?: FormFieldBlock[] | null;
-  id: number;
-  redirect?: { url?: string } | null;
-  submitButtonLabel?: string | null;
-}
+import type { FormConfig } from "./types";
 
 interface FormRendererProps {
   /** Pre-rendered confirmation message (server component RichText passed as prop) */
