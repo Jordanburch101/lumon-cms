@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Cancel01Icon,
   GridIcon,
   Logout03Icon,
   PencilEdit02Icon,
@@ -10,12 +9,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/core/lib/utils";
-import { SaveControls } from "../frontend-editor/save-controls";
-import { useEditMode } from "../frontend-editor/use-edit-mode";
 import type { AdminUser, PageContext, SnapPosition } from "./admin-bar-data";
-import { AdminBarGlassCard, AdminBarHoverCard } from "./admin-bar-glass-card";
 
 interface AdminBarActionsProps {
   onOpenPalette: () => void;
@@ -35,7 +30,6 @@ export function AdminBarActions({
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const firstItemRef = useRef<HTMLElement>(null);
-  const editMode = useEditMode();
 
   const initial = (user.name?.[0] || user.email[0]).toUpperCase();
 
@@ -74,151 +68,21 @@ export function AdminBarActions({
     }
   }, [menuOpen]);
 
-  const handleEnterEditMode = useCallback(async () => {
-    if (!(page && editMode)) {
-      return;
-    }
-
-    try {
-      // Ensure draft mode is enabled
-      const draftRes = await fetch("/api/draft/toggle", {
-        credentials: "include",
-      });
-      if (draftRes.ok) {
-        const draftData = await draftRes.json();
-        if (!draftData.enabled) {
-          await fetch("/api/draft/toggle", {
-            method: "POST",
-            credentials: "include",
-          });
-        }
-      }
-
-      // Fetch full page data with blocks
-      const res = await fetch(`/api/pages/${page.id}?draft=true&depth=2`, {
-        credentials: "include",
-      });
-      if (!res.ok) {
-        return;
-      }
-
-      const data = await res.json();
-      editMode.actions.enter(page.id, data.layout ?? []);
-    } catch {
-      // Silent fail — edit mode is a convenience feature
-    }
-  }, [page, editMode]);
-
-  const handleExit = useCallback(() => {
-    editMode?.actions.exit();
-  }, [editMode]);
-
-  // Edit mode active — show save controls instead of normal actions
-  if (editMode?.state.active) {
-    const dirtyFields = editMode.state.dirtyFields;
-    const dirtyCount = dirtyFields.size;
-    const dirtyEntries = [...dirtyFields.entries()];
-
-    return (
-      <div className="flex items-center gap-2">
-        {dirtyCount > 0 ? (
-          <AdminBarHoverCard
-            content={
-              <AdminBarGlassCard animate>
-                {/* Header */}
-                <div className="flex items-center gap-2">
-                  <div
-                    className="h-2 w-2 rounded-full bg-amber-400"
-                    style={{
-                      boxShadow: "0 0 6px rgba(251,191,36,0.4)",
-                    }}
-                  />
-                  <span className="font-medium text-black/90 text-xs dark:text-white">
-                    {dirtyCount} unsaved{" "}
-                    {dirtyCount === 1 ? "change" : "changes"}
-                  </span>
-                </div>
-
-                <div className="h-px bg-black/[0.06] dark:bg-white/[0.06]" />
-
-                {/* Change list */}
-                <div className="max-h-48 space-y-1 overflow-y-auto">
-                  {dirtyEntries.map(([key, entry]) => (
-                    <div
-                      className="flex items-center justify-between gap-4"
-                      key={key}
-                    >
-                      <span className="text-[11px] text-black/50 dark:text-white/40">
-                        {entry.label}
-                      </span>
-                      {key !== "__structure" && (
-                        <button
-                          className="shrink-0 text-black/40 transition-colors hover:text-black/80 dark:text-white/30 dark:hover:text-white/70"
-                          onClick={() => editMode.actions.revertField(key)}
-                          title="Revert this change"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            fill="none"
-                            height="12"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            width="12"
-                          >
-                            <path d="M18 6L6 18M6 6l12 12" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </AdminBarGlassCard>
-            }
-            position={position}
-          >
-            <button
-              className="flex items-center gap-1.5 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
-              type="button"
-            >
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
-              {dirtyCount} {dirtyCount === 1 ? "change" : "changes"}
-            </button>
-          </AdminBarHoverCard>
-        ) : (
-          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
-            Editing
-          </span>
-        )}
-        <SaveControls />
-        <Button
-          className="h-7 w-7"
-          onClick={handleExit}
-          size="icon"
-          variant="ghost"
-        >
-          <HugeiconsIcon icon={Cancel01Icon} size={14} />
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <>
-      {/* Edit Page */}
+      {/* Edit Page — opens Payload admin for this page */}
       {page ? (
-        <motion.button
+        <motion.a
           className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/80 text-xs transition-colors hover:bg-black/[0.04] hover:text-black dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white/90"
-          onClick={handleEnterEditMode}
+          href={`/admin/collections/${page.collection}/${page.id}`}
+          rel="noopener noreferrer"
+          target="_blank"
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          type="button"
           whileHover={{ scale: 1.02 }}
         >
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
           <span>{page.label}</span>
-        </motion.button>
+        </motion.a>
       ) : (
         <span className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-black/35 text-xs dark:text-white/25">
           <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
@@ -289,22 +153,6 @@ export function AdminBarActions({
               </p>
             </div>
 
-            {/* Open in Admin */}
-            {page && (
-              <a
-                className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
-                href={`/admin/collections/${page.collection}/${page.id}`}
-                onClick={() => setMenuOpen(false)}
-                ref={firstItemRef as React.RefObject<HTMLAnchorElement | null>}
-                rel="noopener noreferrer"
-                role="menuitem"
-                target="_blank"
-              >
-                <HugeiconsIcon icon={PencilEdit02Icon} size={14} />
-                Open in Admin
-              </a>
-            )}
-
             <button
               className="relative z-[3] mt-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-black/60 text-xs transition-colors hover:bg-black/[0.04] hover:text-black/90 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white/80"
               onClick={async () => {
@@ -325,11 +173,7 @@ export function AdminBarActions({
                 }
                 window.location.reload();
               }}
-              ref={
-                page
-                  ? undefined
-                  : (firstItemRef as React.RefObject<HTMLButtonElement | null>)
-              }
+              ref={firstItemRef as React.RefObject<HTMLButtonElement | null>}
               role="menuitem"
               type="button"
             >
