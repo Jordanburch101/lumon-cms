@@ -16,6 +16,8 @@ import { BaVerifications } from "./payload/collections/auth/BaVerifications";
 import { Media } from "./payload/collections/Media";
 import { Pages } from "./payload/collections/Pages";
 import { Users } from "./payload/collections/Users";
+import { Footer as FooterGlobal } from "./payload/globals/Footer";
+import { Header } from "./payload/globals/Header";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { optimizeVideoTask } from "./payload/jobs/optimize-video";
 import {
@@ -81,7 +83,7 @@ export default buildConfig({
     BaVerifications,
     BaTwoFactors,
   ],
-  globals: [SiteSettings],
+  globals: [SiteSettings, Header, FooterGlobal],
   editor: lexicalEditor(),
   secret:
     process.env.PAYLOAD_SECRET ??
