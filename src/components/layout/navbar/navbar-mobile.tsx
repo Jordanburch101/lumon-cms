@@ -2,7 +2,6 @@
 
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 import { useState } from "react";
 import {
   Accordion,
@@ -11,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { CMSLink } from "@/components/ui/cms-link";
 import {
   Sheet,
   SheetContent,
@@ -18,11 +18,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { navItems } from "./navbar-data";
+import type { Header } from "@/payload-types";
 import { SearchTrigger } from "./search-trigger";
 import { ThemeToggle } from "./theme-toggle";
 
-export function NavbarMobile() {
+type NavItems = NonNullable<Header["navItems"]>;
+type CtaData = Header["cta"];
+
+export function NavbarMobile({
+  navItems,
+  cta,
+}: {
+  navItems: NavItems;
+  cta: CtaData;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -45,37 +54,35 @@ export function NavbarMobile() {
           <div className="flex-1 px-6 py-4">
             <Accordion className="border-none" type="multiple">
               {navItems.map((item) => {
-                if (item.href && !item.groups && !item.items) {
+                if (item.blockType === "direct-link") {
                   return (
-                    <Link
+                    <CMSLink
                       className="flex h-10 items-center border-b px-2 font-medium text-xs"
-                      href={item.href}
-                      key={item.title}
-                      onClick={() => setOpen(false)}
-                    >
-                      {item.title}
-                    </Link>
+                      key={item.id ?? item.link.label}
+                      link={item.link}
+                    />
                   );
                 }
 
-                const links = item.groups
-                  ? item.groups.flatMap((g) => g.items)
-                  : (item.items ?? []);
+                const label =
+                  item.blockType === "mega-menu" ? item.label : item.label;
+
+                const links =
+                  item.blockType === "mega-menu"
+                    ? (item.groups ?? []).flatMap((g) => g.items ?? [])
+                    : (item.items ?? []);
 
                 return (
-                  <AccordionItem key={item.title} value={item.title}>
-                    <AccordionTrigger>{item.title}</AccordionTrigger>
+                  <AccordionItem key={item.id ?? label} value={label}>
+                    <AccordionTrigger>{label}</AccordionTrigger>
                     <AccordionContent>
                       <div className="flex flex-col gap-1">
                         {links.map((link) => (
-                          <Link
+                          <CMSLink
                             className="rounded-md px-2 py-1.5 text-muted-foreground text-xs transition-colors hover:bg-muted hover:text-foreground"
-                            href={link.href}
-                            key={link.href}
-                            onClick={() => setOpen(false)}
-                          >
-                            {link.title}
-                          </Link>
+                            key={link.id ?? link.link.label}
+                            link={link.link}
+                          />
                         ))}
                       </div>
                     </AccordionContent>
@@ -90,9 +97,9 @@ export function NavbarMobile() {
               <SearchTrigger />
               <ThemeToggle />
             </div>
-            <Button asChild className="w-full" size="lg">
-              <a href="/login">Get Started</a>
-            </Button>
+            {cta?.show !== false && (
+              <CMSLink className="w-full" link={cta?.link} />
+            )}
           </SheetFooter>
         </SheetContent>
       </Sheet>

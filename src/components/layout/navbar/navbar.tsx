@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { CMSLink } from "@/components/ui/cms-link";
 import { useNavbarContrast } from "@/core/hooks/use-navbar-contrast";
 import { cn } from "@/core/lib/utils";
+import type { Header } from "@/payload-types";
+import { Logo } from "../shared/logo";
 import { NavbarDesktop } from "./navbar-desktop";
 import { NavbarMobile } from "./navbar-mobile";
 import { SearchTrigger } from "./search-trigger";
@@ -56,7 +57,7 @@ function GlassDistortionFilter() {
   );
 }
 
-export function Navbar() {
+export function Navbar({ data }: { data: Header }) {
   const headerRef = useRef<HTMLElement>(null);
   const { contrast, scrolled } = useNavbarContrast(headerRef);
 
@@ -77,23 +78,19 @@ export function Navbar() {
         <div className={cn("liquid-glass-shine", !scrolled && "opacity-0")} />
 
         <div className="liquid-glass-content mx-auto flex h-14 max-w-7xl items-center justify-between px-4 lg:px-6">
-          <Link className="flex items-center" href="/">
-            <span className="font-semibold text-base tracking-tight">
-              Lumon<span className="text-muted-foreground">Payload</span>
-            </span>
-          </Link>
+          <Logo data={data.logo ?? {}} />
 
-          <NavbarDesktop />
+          <NavbarDesktop navItems={data.navItems ?? []} />
 
           <div className="hidden items-center gap-1 md:flex">
             <SearchTrigger />
             <ThemeToggle />
-            <Button asChild className="ml-2" size="default">
-              <a href="/login">Get Started</a>
-            </Button>
+            {data.cta?.show !== false && (
+              <CMSLink className="ml-2" link={data.cta?.link} />
+            )}
           </div>
 
-          <NavbarMobile />
+          <NavbarMobile cta={data.cta} navItems={data.navItems ?? []} />
         </div>
       </header>
     </>
