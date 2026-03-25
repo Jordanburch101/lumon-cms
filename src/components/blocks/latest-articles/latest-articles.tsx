@@ -1,24 +1,21 @@
-import { getCachedArticles } from "@/payload/lib/cached-payload";
 import type { LatestArticlesBlock } from "@/types/block-types";
 import { LatestArticlesClient } from "./latest-articles-client";
 
-export async function LatestArticles({
+/**
+ * LatestArticles — renders the client animation wrapper with empty articles.
+ *
+ * This synchronous wrapper is used by render-blocks.tsx which is imported by
+ * preview-client.tsx ("use client"). The async data-fetching version is in
+ * latest-articles-server.tsx and used by RenderBlocksServer.
+ *
+ * In preview mode this shows nothing (no articles). On real pages,
+ * RenderBlocksServer substitutes the async version.
+ */
+export function LatestArticles({
   headline,
   subtext,
-  limit,
 }: LatestArticlesBlock) {
-  const result = await getCachedArticles(1, limit || 5);
-  const articles = result.docs;
-
-  if (articles.length === 0) {
-    return null;
-  }
-
   return (
-    <LatestArticlesClient
-      articles={articles}
-      headline={headline}
-      subtext={subtext}
-    />
+    <LatestArticlesClient articles={[]} headline={headline} subtext={subtext} />
   );
 }

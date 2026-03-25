@@ -2,7 +2,8 @@ import config from "@payload-config";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
-import { RenderBlocks, RenderHero } from "@/components/blocks/render-blocks";
+import { RenderBlocksServer } from "@/components/blocks/render-blocks-server";
+import { RenderHero } from "@/components/blocks/render-blocks";
 import { JsonLd } from "@/components/features/seo/json-ld";
 import {
   getCachedPage,
@@ -68,7 +69,7 @@ export default async function Page({ params }: Args) {
     <div className="flex flex-col gap-16 lg:gap-32">
       <JsonLd page={page} settings={settings} />
       <RenderHero blocks={page.hero ?? []} />
-      <RenderBlocks blocks={page.layout ?? []} />
+      <RenderBlocksServer blocks={page.layout ?? []} />
     </div>
   );
 }

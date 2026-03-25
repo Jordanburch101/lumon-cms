@@ -98,6 +98,10 @@ export function renderBlock(block: LayoutBlock) {
   }
 }
 
+/**
+ * RenderBlocks — client-safe version used by both server pages and preview-client.
+ * LatestArticles renders with empty articles (placeholder) in this version.
+ */
 export function RenderBlocks({ blocks }: { blocks: LayoutBlock[] }) {
   if (!blocks || blocks.length === 0) {
     return null;

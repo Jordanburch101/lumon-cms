@@ -34,9 +34,10 @@ export async function generateStaticParams() {
       draft: false,
     });
 
-    return articles.docs.map((article) => ({ slug: article.slug }));
+    const params = articles.docs.map((article) => ({ slug: article.slug }));
+    return params.length > 0 ? params : [{ slug: "_" }];
   } catch {
-    return [];
+    return [{ slug: "_" }];
   }
 }
 

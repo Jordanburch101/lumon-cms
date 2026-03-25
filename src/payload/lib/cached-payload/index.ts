@@ -136,7 +136,7 @@ export const getCachedArticles = cache(
 
     const payload = await getPayload({ config });
 
-    const where: Record<string, unknown> = {};
+    const where: { category?: { equals: number } } = {};
 
     if (categorySlug) {
       // Resolve category ID from slug first
@@ -144,7 +144,7 @@ export const getCachedArticles = cache(
         collection: "categories",
         where: { slug: { equals: categorySlug } },
         limit: 1,
-        select: { id: true },
+        select: { slug: true },
       });
       const catId = catResult.docs[0]?.id;
       if (catId) {
