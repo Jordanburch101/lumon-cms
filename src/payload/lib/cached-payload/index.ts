@@ -81,6 +81,109 @@ export const getCachedFooter = cache(async () => {
   return payload.findGlobal({ slug: "footer" });
 });
 
+// ── Articles ────────────────────────────────────────────────────────
+
+/**
+ * Fetch a single article by slug with caching and relationship tagging.
+ */
+export const getCachedArticle = cache(async (slug: string) => {
+  "use cache";
+  cacheLife("hours");
+
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: "articles",
+    where: { slug: { equals: slug } },
+    draft: false,
+    limit: 1,
+    depth: 2,
+  });
+
+  const article = result.docs[0] ?? null;
+
+  if (article) {
+    cacheTag("collection:articles", `doc:articles:${article.id}`);
+    tagResolvedRelationships(article);
+  }
+
+  return article;
+});
+
+/**
+ * Fetch a single article by slug WITHOUT caching. Used for draft/preview mode.
+ */
+export async function getArticleDirect(slug: string, draft = false) {
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: "articles",
+    where: { slug: { equals: slug } },
+    draft,
+    limit: 1,
+    depth: 2,
+  });
+
+  return result.docs[0] ?? null;
+}
+
+/**
+ * Fetch paginated articles with optional category filter.
+ */
+export const getCachedArticles = cache(
+  async (page = 1, limit = 9, categorySlug?: string) => {
+    "use cache";
+    cacheLife("hours");
+    cacheTag("collection:articles", "collection:categories");
+
+    const payload = await getPayload({ config });
+
+    const where: Record<string, unknown> = {};
+
+    if (categorySlug) {
+      // Resolve category ID from slug first
+      const catResult = await payload.find({
+        collection: "categories",
+        where: { slug: { equals: categorySlug } },
+        limit: 1,
+        select: { id: true },
+      });
+      const catId = catResult.docs[0]?.id;
+      if (catId) {
+        where.category = { equals: catId };
+      }
+    }
+
+    const result = await payload.find({
+      collection: "articles",
+      where,
+      draft: false,
+      sort: "-publishedAt",
+      page,
+      limit,
+      depth: 2,
+    });
+
+    return result;
+  }
+);
+
+/**
+ * Fetch all categories.
+ */
+export const getCachedCategories = cache(async () => {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("collection:categories");
+
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: "categories",
+    pagination: false,
+    sort: "title",
+  });
+
+  return result.docs;
+});
+
 interface SitemapEntry {
   lastModified?: Date;
   url: string;
