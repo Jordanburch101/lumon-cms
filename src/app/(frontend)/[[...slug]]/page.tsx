@@ -40,7 +40,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug: slugSegments } = await params;
-  const slug = slugSegments?.join("/") || "home";
+  const slug = slugSegments?.join("/") ?? "";
 
   const page = await getCachedPage(slug);
   const settings = await getCachedSiteSettings();
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 
 export default async function Page({ params }: Args) {
   const { slug: slugSegments } = await params;
-  const slug = slugSegments?.join("/") || "home";
+  const slug = slugSegments?.join("/") ?? "";
 
   const page = await getCachedPage(slug);
 

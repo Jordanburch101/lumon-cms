@@ -36,11 +36,11 @@ const authenticate = cache(async function authenticate() {
 
 export default async function PreviewPage({ params }: Args) {
   const { slug: slugSegments } = await params;
-  const slug = slugSegments.join("/") || "home";
+  const slug = slugSegments.join("/") || "";
 
   const isAuthorized = await authenticate();
   if (!isAuthorized) {
-    const publicPath = !slug || slug === "home" ? "/" : `/${slug}`;
+    const publicPath = !slug ? "/" : `/${slug}`;
     redirect(publicPath);
   }
 
@@ -55,7 +55,7 @@ export default async function PreviewPage({ params }: Args) {
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug: slugSegments } = await params;
-  const slug = slugSegments.join("/") || "home";
+  const slug = slugSegments.join("/") || "";
 
   const isAuthorized = await authenticate();
   if (!isAuthorized) {

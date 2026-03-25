@@ -102,7 +102,7 @@ export function saveBarState(state: AdminBarState): void {
 
 export function getSlugFromPathname(pathname: string): string {
   if (pathname === "/") {
-    return "home";
+    return "";
   }
   return pathname.replace(LEADING_SLASH_RE, "").replace(TRAILING_SLASH_RE, "");
 }
