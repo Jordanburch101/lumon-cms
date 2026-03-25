@@ -146,5 +146,50 @@ export const Pages: CollectionConfig = {
         return field;
       },
     }),
+    {
+      name: "parent",
+      type: "relationship",
+      relationTo: "pages",
+      admin: {
+        position: "sidebar",
+        description: "Select a parent page to nest this page under",
+      },
+    },
+    {
+      name: "path",
+      type: "text",
+      index: true,
+      admin: {
+        position: "sidebar",
+        readOnly: true,
+        description:
+          "Auto-computed URL path (e.g., divisions/macrodata-refinement)",
+      },
+      hooks: {
+        beforeValidate: [
+          async ({ value, data, req, originalDoc }) => {
+            if (value === undefined || value === null) {
+              return value;
+            }
+            const id = originalDoc?.id ?? data?.id;
+            const existing = await req.payload.find({
+              collection: "pages",
+              where: {
+                path: { equals: value },
+                ...(id ? { id: { not_equals: id } } : {}),
+              },
+              limit: 1,
+              select: { id: true },
+            });
+            if (existing.docs.length > 0) {
+              throw new Error(
+                `Path "${value}" is already in use by another page`
+              );
+            }
+            return value;
+          },
+        ],
+      },
+    },
   ],
 };
