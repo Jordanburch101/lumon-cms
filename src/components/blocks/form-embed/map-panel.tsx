@@ -55,29 +55,16 @@ function LocationCard({
   const lngLabel = `${Math.abs(longitude).toFixed(2)}° ${longitude >= 0 ? "E" : "W"}`;
 
   return (
-    <div className="w-64 -m-3 overflow-hidden">
+    <div className="w-56 -m-3 overflow-hidden">
       <PopupMapPreview latitude={latitude} longitude={longitude} />
-      <div className="px-4 pt-3 pb-4 space-y-3">
-        <div className="space-y-0.5">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            {eyebrow}
-          </p>
-          <p className="text-sm font-semibold leading-snug">{heading}</p>
-        </div>
-        <div className="flex gap-6 border-t border-border/30 pt-3 text-[10px] uppercase tracking-wider text-muted-foreground">
-          <div className="space-y-0.5">
-            <p className="text-xs font-semibold text-foreground tabular-nums">
-              {latLabel}
-            </p>
-            <p>Latitude</p>
-          </div>
-          <div className="space-y-0.5">
-            <p className="text-xs font-semibold text-foreground tabular-nums">
-              {lngLabel}
-            </p>
-            <p>Longitude</p>
-          </div>
-        </div>
+      <div className="p-3">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+          {eyebrow}
+        </p>
+        <p className="mt-0.5 text-sm font-bold leading-tight">{heading}</p>
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          {latLabel} · {lngLabel}
+        </p>
       </div>
     </div>
   );
