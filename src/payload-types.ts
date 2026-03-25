@@ -71,6 +71,7 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
+    categories: Category;
     'ba-sessions': BaSession;
     'ba-accounts': BaAccount;
     'ba-verifications': BaVerification;
@@ -89,6 +90,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'ba-sessions': BaSessionsSelect<false> | BaSessionsSelect<true>;
     'ba-accounts': BaAccountsSelect<false> | BaAccountsSelect<true>;
     'ba-verifications': BaVerificationsSelect<false> | BaVerificationsSelect<true>;
@@ -175,6 +177,18 @@ export interface PayloadMcpApiKeyAuthOperations {
 export interface User {
   id: number;
   name?: string | null;
+  /**
+   * Profile photo displayed on blog articles
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * Short author bio for blog articles
+   */
+  bio?: string | null;
+  /**
+   * Job title or role displayed on blog articles
+   */
+  jobTitle?: string | null;
   role: 'admin' | 'editor' | 'guest';
   emailVerified?: boolean | null;
   image?: string | null;
@@ -1271,6 +1285,21 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ba-sessions".
  */
 export interface BaSession {
@@ -1379,6 +1408,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete media.
+     */
+    delete?: boolean | null;
+  };
+  categories?: {
+    /**
+     * Allow clients to find categories.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create categories.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update categories.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete categories.
      */
     delete?: boolean | null;
   };
@@ -1581,6 +1628,10 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
         relationTo: 'ba-sessions';
         value: number | BaSession;
       } | null)
@@ -1666,6 +1717,9 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  avatar?: T;
+  bio?: T;
+  jobTitle?: T;
   role?: T;
   emailVerified?: T;
   image?: T;
@@ -2465,6 +2519,17 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ba-sessions_select".
  */
 export interface BaSessionsSelect<T extends boolean = true> {
@@ -2533,6 +2598,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   media?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  categories?:
     | T
     | {
         find?: T;
