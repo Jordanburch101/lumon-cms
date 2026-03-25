@@ -18,7 +18,7 @@ export const getCachedPage = cache(async (slug: string) => {
   const payload = await getPayload({ config });
   const result = await payload.find({
     collection: "pages",
-    where: { slug: { equals: slug } },
+    where: { path: { equals: slug } },
     draft: false,
     limit: 1,
   });
@@ -40,7 +40,7 @@ export async function getPageDirect(slug: string, draft = false) {
   const payload = await getPayload({ config });
   const result = await payload.find({
     collection: "pages",
-    where: { slug: { equals: slug } },
+    where: { path: { equals: slug } },
     draft,
     limit: 1,
   });
@@ -93,6 +93,7 @@ interface DocMeta {
 
 interface SitemapDoc {
   meta?: DocMeta;
+  path?: string;
   slug?: string;
   updatedAt?: string;
 }
@@ -122,10 +123,9 @@ export function buildDocEntry(
   baseUrl: string,
   urlPrefix: string
 ): SitemapEntry {
-  const slug = doc.slug ?? "";
-  const path = slug === "home" ? "" : slug;
+  const pagePath = (doc as { path?: string }).path ?? doc.slug ?? "";
   return {
-    url: `${baseUrl}${urlPrefix}/${path}`.replace(TRAILING_SLASH_RE, ""),
+    url: `${baseUrl}${urlPrefix}/${pagePath}`.replace(TRAILING_SLASH_RE, ""),
     lastModified: doc.updatedAt ? new Date(doc.updatedAt) : undefined,
   };
 }
@@ -159,7 +159,7 @@ export async function getCachedSitemapData() {
       collection: collection.slug,
       draft: false,
       pagination: false,
-      select: { slug: true, updatedAt: true, meta: true },
+      select: { slug: true, path: true, updatedAt: true, meta: true },
     });
 
     for (const rawDoc of result.docs) {
