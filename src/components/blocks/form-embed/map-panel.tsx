@@ -27,9 +27,9 @@ function PopupMapPreview({
   longitude: number;
 }) {
   return (
-    <div className="h-28 w-full overflow-hidden rounded-t-md border-b border-border/30">
+    <div className="h-28 w-full overflow-hidden rounded-t-md border-border/30 border-b">
       <MapComponent
-        className="h-full w-full pointer-events-none"
+        className="pointer-events-none h-full w-full"
         viewport={{ center: [longitude, latitude], zoom: 12 }}
       />
     </div>
@@ -55,14 +55,14 @@ function LocationCard({
   const lngLabel = `${Math.abs(longitude).toFixed(2)}° ${longitude >= 0 ? "E" : "W"}`;
 
   return (
-    <div className="w-56 -m-3 overflow-hidden rounded-md">
+    <div className="-m-3 w-56 overflow-hidden rounded-md">
       <PopupMapPreview latitude={latitude} longitude={longitude} />
-      <div className="bg-popover p-3 border-t border-border/30">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+      <div className="border-border/30 border-t bg-popover p-3">
+        <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-widest">
           {eyebrow}
         </p>
-        <p className="mt-0.5 text-sm font-bold leading-tight">{heading}</p>
-        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-0.5 font-bold text-sm leading-tight">{heading}</p>
+        <p className="mt-1.5 text-muted-foreground text-xs leading-relaxed">
           {latLabel} · {lngLabel}
         </p>
       </div>
@@ -104,9 +104,13 @@ export function MapPanel({
 
   // Hide symbol layers for a cleaner globe look
   useEffect(() => {
-    if (!(ready && mapRef.current)) return;
+    if (!(ready && mapRef.current)) {
+      return;
+    }
     const style = mapRef.current.getStyle();
-    if (!style?.layers) return;
+    if (!style?.layers) {
+      return;
+    }
     for (const layer of style.layers) {
       if (layer.type === "symbol") {
         mapRef.current.setLayoutProperty(layer.id, "visibility", "none");

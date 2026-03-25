@@ -136,8 +136,14 @@ export default buildConfig({
       collections: {
         pages: { enabled: true, description: "Site pages with layout blocks" },
         media: { enabled: true, description: "Uploaded images and videos" },
-        forms: { enabled: true, description: "Form definitions (fields, confirmation, emails)" },
-        "form-submissions": { enabled: true, description: "Submitted form entries" },
+        forms: {
+          enabled: true,
+          description: "Form definitions (fields, confirmation, emails)",
+        },
+        "form-submissions": {
+          enabled: true,
+          description: "Submitted form entries",
+        },
       },
       mcp: {
         tools: [
