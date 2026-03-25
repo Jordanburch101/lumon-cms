@@ -108,9 +108,13 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'site-settings': SiteSetting;
+    header: Header;
+    footer: Footer;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1370,6 +1374,42 @@ export interface PayloadMcpApiKey {
      */
     delete?: boolean | null;
   };
+  forms?: {
+    /**
+     * Allow clients to find forms.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create forms.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update forms.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete forms.
+     */
+    delete?: boolean | null;
+  };
+  formSubmissions?: {
+    /**
+     * Allow clients to find form-submissions.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create form-submissions.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update form-submissions.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete form-submissions.
+     */
+    delete?: boolean | null;
+  };
   'payload-mcp-tool'?: {
     /**
      * Returns available hero block types (max 1 per page) with slugs, labels, and descriptions. Use when choosing a hero variant for a page.
@@ -2490,6 +2530,22 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
         delete?: T;
       };
+  forms?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  formSubmissions?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
   'payload-mcp-tool'?:
     | T
     | {
@@ -2793,6 +2849,308 @@ export interface SiteSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  logo?: {
+    type?: ('text' | 'image') | null;
+    /**
+     * Primary text (e.g. 'Lumon')
+     */
+    text?: string | null;
+    /**
+     * Secondary styled text (e.g. 'Payload')
+     */
+    textAccent?: string | null;
+    image?: (number | null) | Media;
+    /**
+     * Max height in pixels (e.g. 32)
+     */
+    imageHeight?: number | null;
+  };
+  navItems?:
+    | (
+        | {
+            link: {
+              type?: ('internal' | 'external') | null;
+              newTab?: boolean | null;
+              url?: string | null;
+              reference?: {
+                relationTo: 'pages';
+                value: number | Page;
+              } | null;
+              label: string;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'direct-link';
+          }
+        | {
+            /**
+             * Text shown in the navbar (e.g. 'Resources')
+             */
+            label: string;
+            items?:
+              | {
+                  link: {
+                    type?: ('internal' | 'external') | null;
+                    newTab?: boolean | null;
+                    url?: string | null;
+                    reference?: {
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null;
+                    label: string;
+                  };
+                  icon?:
+                    | (
+                        | 'analytics-up'
+                        | 'brain'
+                        | 'camera-video'
+                        | 'chart'
+                        | 'dna'
+                        | 'file'
+                        | 'heart-check'
+                        | 'labor'
+                        | 'mail'
+                        | 'microscope'
+                        | 'news'
+                        | 'shield'
+                        | 'user-group'
+                        | 'user'
+                        | 'bar-chart'
+                        | 'code'
+                        | 'cpu'
+                        | 'database'
+                        | 'flash'
+                        | 'globe'
+                        | 'layers'
+                        | 'lock'
+                        | 'sync'
+                        | 'settings'
+                        | 'shield-01'
+                        | 'cloud'
+                        | 'dashboard'
+                        | 'headphones'
+                        | 'laptop'
+                        | 'search'
+                        | 'arrow-right'
+                        | 'bookmark'
+                        | 'calendar'
+                        | 'call'
+                        | 'check'
+                        | 'clock'
+                        | 'download'
+                        | 'link'
+                        | 'location'
+                        | 'puzzle'
+                        | 'rocket'
+                        | 'star'
+                        | 'tag'
+                        | 'upload'
+                        | 'zap'
+                      )
+                    | null;
+                  /**
+                   * Short description shown below the link
+                   */
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'dropdown';
+          }
+        | {
+            /**
+             * Text shown in the navbar (e.g. 'Divisions')
+             */
+            label: string;
+            groups?:
+              | {
+                  /**
+                   * Column heading (e.g. 'Core Operations')
+                   */
+                  groupLabel: string;
+                  items?:
+                    | {
+                        link: {
+                          type?: ('internal' | 'external') | null;
+                          newTab?: boolean | null;
+                          url?: string | null;
+                          reference?: {
+                            relationTo: 'pages';
+                            value: number | Page;
+                          } | null;
+                          label: string;
+                        };
+                        icon?:
+                          | (
+                              | 'analytics-up'
+                              | 'brain'
+                              | 'camera-video'
+                              | 'chart'
+                              | 'dna'
+                              | 'file'
+                              | 'heart-check'
+                              | 'labor'
+                              | 'mail'
+                              | 'microscope'
+                              | 'news'
+                              | 'shield'
+                              | 'user-group'
+                              | 'user'
+                              | 'bar-chart'
+                              | 'code'
+                              | 'cpu'
+                              | 'database'
+                              | 'flash'
+                              | 'globe'
+                              | 'layers'
+                              | 'lock'
+                              | 'sync'
+                              | 'settings'
+                              | 'shield-01'
+                              | 'cloud'
+                              | 'dashboard'
+                              | 'headphones'
+                              | 'laptop'
+                              | 'search'
+                              | 'arrow-right'
+                              | 'bookmark'
+                              | 'calendar'
+                              | 'call'
+                              | 'check'
+                              | 'clock'
+                              | 'download'
+                              | 'link'
+                              | 'location'
+                              | 'puzzle'
+                              | 'rocket'
+                              | 'star'
+                              | 'tag'
+                              | 'upload'
+                              | 'zap'
+                            )
+                          | null;
+                        description?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mega-menu';
+          }
+      )[]
+    | null;
+  cta?: {
+    show?: boolean | null;
+    link?: {
+      type?: ('internal' | 'external') | null;
+      newTab?: boolean | null;
+      url?: string | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label?: string | null;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearanceType?: 'button' | null;
+      buttonVariant?: ('default' | 'outline' | 'secondary') | null;
+      buttonSize?: ('sm' | 'default' | 'lg') | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  logo?: {
+    type?: ('text' | 'image') | null;
+    /**
+     * Primary text (e.g. 'Lumon')
+     */
+    text?: string | null;
+    /**
+     * Secondary styled text (e.g. 'Payload')
+     */
+    textAccent?: string | null;
+    image?: (number | null) | Media;
+    /**
+     * Max height in pixels (e.g. 32)
+     */
+    imageHeight?: number | null;
+  };
+  /**
+   * Short tagline below the logo
+   */
+  tagline?: string | null;
+  columns?:
+    | {
+        label: string;
+        links?:
+          | {
+              link: {
+                type?: ('internal' | 'external') | null;
+                newTab?: boolean | null;
+                url?: string | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        platform: 'github' | 'twitter' | 'linkedin' | 'instagram' | 'youtube' | 'facebook' | 'tiktok' | 'discord';
+        /**
+         * Full URL to your profile
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  legalLinks?:
+    | {
+        link: {
+          type?: ('internal' | 'external') | null;
+          newTab?: boolean | null;
+          url?: string | null;
+          reference?: {
+            relationTo: 'pages';
+            value: number | Page;
+          } | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Company name for copyright line. Year is auto-generated.
+   */
+  copyrightText?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -2819,6 +3177,173 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         organizationLogo?: T;
         organizationUrl?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  logo?:
+    | T
+    | {
+        type?: T;
+        text?: T;
+        textAccent?: T;
+        image?: T;
+        imageHeight?: T;
+      };
+  navItems?:
+    | T
+    | {
+        'direct-link'?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    url?: T;
+                    reference?: T;
+                    label?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        dropdown?:
+          | T
+          | {
+              label?: T;
+              items?:
+                | T
+                | {
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          newTab?: T;
+                          url?: T;
+                          reference?: T;
+                          label?: T;
+                        };
+                    icon?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'mega-menu'?:
+          | T
+          | {
+              label?: T;
+              groups?:
+                | T
+                | {
+                    groupLabel?: T;
+                    items?:
+                      | T
+                      | {
+                          link?:
+                            | T
+                            | {
+                                type?: T;
+                                newTab?: T;
+                                url?: T;
+                                reference?: T;
+                                label?: T;
+                              };
+                          icon?: T;
+                          description?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        show?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              url?: T;
+              reference?: T;
+              label?: T;
+              appearanceType?: T;
+              buttonVariant?: T;
+              buttonSize?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  logo?:
+    | T
+    | {
+        type?: T;
+        text?: T;
+        textAccent?: T;
+        image?: T;
+        imageHeight?: T;
+      };
+  tagline?: T;
+  columns?:
+    | T
+    | {
+        label?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    url?: T;
+                    reference?: T;
+                    label?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  legalLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              url?: T;
+              reference?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  copyrightText?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
