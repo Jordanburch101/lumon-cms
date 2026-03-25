@@ -36,6 +36,10 @@ import { TeamBlock } from "../block-schemas/Team";
 import { TestimonialsBlock } from "../block-schemas/Testimonials";
 import { TimelineBlock } from "../block-schemas/Timeline";
 import { TrustBlock } from "../block-schemas/Trust";
+import { filterDescendants } from "../fields/parent/filterDescendants";
+import { cascadeChildPaths } from "../hooks/cascadeChildPaths";
+import { computePath } from "../hooks/computePath";
+import { reparentOnDelete } from "../hooks/reparentOnDelete";
 import { revalidateOnChange } from "../hooks/revalidateOnChange";
 
 const { afterChange, afterDelete } = revalidateOnChange({ tags: ["sitemap"] });
@@ -72,8 +76,9 @@ export const Pages: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
-    afterChange: [afterChange],
-    afterDelete: [afterDelete],
+    beforeChange: [computePath],
+    afterChange: [afterChange, cascadeChildPaths],
+    afterDelete: [afterDelete, reparentOnDelete],
   },
   versions: {
     drafts: true,
@@ -150,6 +155,7 @@ export const Pages: CollectionConfig = {
       name: "parent",
       type: "relationship",
       relationTo: "pages",
+      filterOptions: filterDescendants,
       admin: {
         position: "sidebar",
         description: "Select a parent page to nest this page under",

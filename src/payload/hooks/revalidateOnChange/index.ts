@@ -28,7 +28,7 @@ export function revalidateOnChange(options: RevalidateOptions = {}): {
     collection,
     req: { payload, context },
   }) => {
-    if (context.disableRevalidate) {
+    if (context.disableRevalidate || context.cascadingPaths) {
       return doc;
     }
 
