@@ -553,21 +553,10 @@ export interface Page {
         | {
             headline: string;
             subtext: string;
-            articles: {
-              title: string;
-              excerpt: string;
-              category: string;
-              image: number | Media;
-              imageAlt: string;
-              author: {
-                name: string;
-                avatar?: (number | null) | Media;
-              };
-              readTime: string;
-              href: string;
-              publishedAt: string;
-              id?: string | null;
-            }[];
+            /**
+             * Number of articles to display (default: 5)
+             */
+            limit?: number | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'latestArticles';
@@ -2155,25 +2144,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               headline?: T;
               subtext?: T;
-              articles?:
-                | T
-                | {
-                    title?: T;
-                    excerpt?: T;
-                    category?: T;
-                    image?: T;
-                    imageAlt?: T;
-                    author?:
-                      | T
-                      | {
-                          name?: T;
-                          avatar?: T;
-                        };
-                    readTime?: T;
-                    href?: T;
-                    publishedAt?: T;
-                    id?: T;
-                  };
+              limit?: T;
               id?: T;
               blockName?: T;
             };

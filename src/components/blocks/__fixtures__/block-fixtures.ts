@@ -359,39 +359,7 @@ export const blockFixtures: BlockFixtures = {
     headline: "Latest from the blog",
     subtext:
       "Insights, updates, and dispatches from the severed floor and beyond.",
-    articles: [
-      {
-        id: "a1",
-        title:
-          "Understanding the Severance Protocol: A New Era of Work-Life Balance",
-        category: "Research",
-        image: mockMedia("Article 1", 600, 400),
-        imageAlt: "Severance protocol research",
-        href: "#",
-        publishedAt: "2026-03-01",
-        readTime: "4 min",
-        author: {
-          name: "Harmony Cobel",
-          avatar: mockPortrait("Harmony Cobel", "women", 65),
-        },
-      },
-      {
-        id: "a2",
-        title: "Inside the Waffle Party: Lumon's Most Coveted Incentive",
-        excerpt:
-          "What makes the waffle party the ultimate reward? We explore the history, the ritual, and why top refiners will do anything to earn one.",
-        category: "Culture",
-        image: mockMedia("Article 2", 600, 400),
-        imageAlt: "Waffle party",
-        href: "#",
-        publishedAt: "2026-02-22",
-        readTime: "3 min",
-        author: {
-          name: "Seth Milchick",
-          avatar: mockPortrait("Seth Milchick", "men", 52),
-        },
-      },
-    ],
+    limit: 5,
   },
 
   cinematicCta: {
