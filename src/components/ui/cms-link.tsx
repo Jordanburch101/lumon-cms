@@ -15,7 +15,7 @@ interface CMSLinkData {
   url?: string | null
   reference?: {
     slug?: string | null
-    value?: string | number | { slug?: string } | null
+    value?: string | number | { slug?: string; path?: string } | null
     relationTo?: string
   } | null
   newTab?: boolean | null
@@ -55,13 +55,10 @@ function resolveHref(link: CMSLinkData): string | null {
   if (link.type === 'internal') {
     const ref = link.reference
     if (!ref) return null
-    // Populated references have value as an object with slug
-    const slug =
-      typeof ref.value === 'object' && ref.value !== null
-        ? ref.value.slug
-        : null
-    if (!slug) return null
-    return slug === 'home' ? '/' : `/${slug}`
+    if (typeof ref.value !== 'object' || ref.value === null) return null
+    const path = ref.value.path ?? ref.value.slug
+    if (path === undefined || path === null) return null
+    return !path || path === '' ? '/' : `/${path}`
   }
   const url = link.url ?? null
   if (url && !isSafeUrl(url)) return null
