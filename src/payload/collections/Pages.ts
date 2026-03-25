@@ -54,19 +54,25 @@ export const Pages: CollectionConfig = {
       url: ({ data }) => {
         const baseUrl =
           process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3100";
-        const slug =
-          typeof data?.slug === "string" && data.slug !== "home"
-            ? data.slug
-            : "";
-        return `${baseUrl}/preview/${slug || "home"}`;
+        let pagePath = "";
+        if (typeof data?.path === "string") {
+          pagePath = data.path;
+        } else if (typeof data?.slug === "string" && data.slug !== "home") {
+          pagePath = data.slug;
+        }
+        return `${baseUrl}/preview/${pagePath || "home"}`;
       },
     },
     preview: (data) => {
       const baseUrl =
         process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3100";
-      const slug =
-        typeof data?.slug === "string" && data.slug !== "home" ? data.slug : "";
-      return `${baseUrl}/preview/${slug || "home"}`;
+      let pagePath = "";
+      if (typeof data?.path === "string") {
+        pagePath = data.path;
+      } else if (typeof data?.slug === "string" && data.slug !== "home") {
+        pagePath = data.slug;
+      }
+      return `${baseUrl}/preview/${pagePath || "home"}`;
     },
   },
   access: {

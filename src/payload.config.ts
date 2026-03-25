@@ -249,8 +249,9 @@ export default buildConfig({
         const settings = await req.payload.findGlobal({
           slug: "site-settings",
         });
-        const slug = doc.slug === "home" ? "" : doc.slug;
-        return `${settings.baseUrl || ""}/${slug}`.replace(
+        const pagePath = (doc as { path?: string }).path ?? doc.slug;
+        const urlPath = !pagePath || pagePath === "" ? "" : pagePath;
+        return `${settings.baseUrl || ""}/${urlPath}`.replace(
           TRAILING_SLASH_RE,
           ""
         );

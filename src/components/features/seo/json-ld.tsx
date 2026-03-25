@@ -16,11 +16,12 @@ interface JsonLdProps {
 }
 
 export function JsonLd({ page, settings }: JsonLdProps) {
-  const slug = page.slug === "home" ? "" : page.slug;
+  const pagePath = page.path ?? page.slug;
+  const urlPath = !pagePath || pagePath === "" ? "" : pagePath;
   const pageUrl = settings.baseUrl
-    ? `${settings.baseUrl}/${slug}`.replace(TRAILING_SLASH_RE, "")
+    ? `${settings.baseUrl}/${urlPath}`.replace(TRAILING_SLASH_RE, "")
     : undefined;
-  const isHome = page.slug === "home";
+  const isHome = !pagePath || pagePath === "";
 
   const graph: Record<string, unknown>[] = [];
 
@@ -55,7 +56,7 @@ export function JsonLd({ page, settings }: JsonLdProps) {
   // may not be a real page. This is acceptable for flat-slug pages; revisit
   // if nested slug routing is introduced.
   if (!isHome && pageUrl && settings.baseUrl) {
-    const segments = page.slug.split("/");
+    const segments = urlPath.split("/");
     const items = [
       {
         "@type": "ListItem",
