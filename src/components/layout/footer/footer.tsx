@@ -1,11 +1,17 @@
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
-import { footerColumns, legalLinks, socialLinks } from "./footer-data";
+import { Logo } from "@/components/layout/shared/logo";
+import { socialIconMap } from "@/components/layout/shared/social-icon-map";
+import { CMSLink } from "@/components/ui/cms-link";
+import type { Footer as FooterType } from "@/payload-types";
 import { NewsletterForm } from "./newsletter-form";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-export function Footer() {
+interface FooterProps {
+  data: FooterType;
+}
+
+export function Footer({ data }: FooterProps) {
   const currentYear = CURRENT_YEAR;
 
   return (
@@ -20,50 +26,49 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-6 py-8 lg:grid-cols-6">
           {/* Logo column */}
           <div className="col-span-2">
-            <Link className="inline-block" href="/">
-              <span className="font-semibold text-base tracking-tight">
-                Lumon
-                <span className="text-muted-foreground">Payload</span>
-              </span>
-            </Link>
+            <Logo data={data.logo ?? {}} />
             <p className="mt-1.5 text-muted-foreground text-xs">
-              The work is mysterious and important.
+              {data.tagline}
             </p>
             <div className="mt-3 flex gap-2">
-              {socialLinks.map((social) => (
-                <a
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                  href={social.href}
-                  key={social.label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <HugeiconsIcon
-                    className="size-4"
-                    icon={social.icon}
-                    strokeWidth={2}
-                  />
-                  <span className="sr-only">{social.label}</span>
-                </a>
-              ))}
+              {(data.socialLinks ?? []).map((social) => {
+                const icon = socialIconMap[social.platform];
+                if (!icon) {
+                  return null;
+                }
+                return (
+                  <a
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    href={social.url}
+                    key={social.id ?? social.platform}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <HugeiconsIcon
+                      className="size-4"
+                      icon={icon}
+                      strokeWidth={2}
+                    />
+                    <span className="sr-only">{social.platform}</span>
+                  </a>
+                );
+              })}
             </div>
           </div>
 
           {/* Link columns */}
-          {footerColumns.map((column) => (
-            <div key={column.title}>
+          {(data.columns ?? []).map((column) => (
+            <div key={column.id ?? column.label}>
               <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
-                {column.title}
+                {column.label}
               </h4>
               <ul className="mt-2 space-y-1.5">
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <Link
+                {(column.links ?? []).map((linkItem) => (
+                  <li key={linkItem.id}>
+                    <CMSLink
                       className="text-muted-foreground text-xs transition-colors hover:text-foreground"
-                      href={link.href}
-                    >
-                      {link.title}
-                    </Link>
+                      link={linkItem.link}
+                    />
                   </li>
                 ))}
               </ul>
@@ -74,17 +79,16 @@ export function Footer() {
         {/* Zone 3: Legal */}
         <div className="flex flex-col items-center justify-between gap-4 border-t py-4 sm:flex-row">
           <p className="text-muted-foreground text-xs">
-            &copy; {currentYear} Lumon Industries. All rights reserved.
+            &copy; {currentYear} {data.copyrightText ?? ""}. All rights
+            reserved.
           </p>
           <div className="flex gap-4">
-            {legalLinks.map((link) => (
-              <Link
+            {(data.legalLinks ?? []).map((linkItem) => (
+              <CMSLink
                 className="text-muted-foreground text-xs transition-colors hover:text-foreground"
-                href={link.href}
-                key={link.href}
-              >
-                {link.title}
-              </Link>
+                key={linkItem.id}
+                link={linkItem.link}
+              />
             ))}
           </div>
         </div>

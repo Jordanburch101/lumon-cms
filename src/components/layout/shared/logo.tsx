@@ -8,7 +8,7 @@ import { cn } from "@/core/lib/utils";
 
 interface LogoData {
   image?:
-    | { url?: string | null; alt?: string; width?: number; height?: number }
+    | { url?: string | null; alt?: string; width?: number | null; height?: number | null }
     | number
     | null;
   imageHeight?: number | null;
@@ -33,6 +33,7 @@ export function Logo({ data, className }: LogoProps) {
     data.image.url
   ) {
     const img = data.image;
+    const src = img.url as string;
     const displayHeight = data.imageHeight ?? 32;
 
     // Calculate width from aspect ratio if dimensions are available
@@ -46,7 +47,7 @@ export function Logo({ data, className }: LogoProps) {
         alt={img.alt ?? "Logo"}
         className={cn(className)}
         height={displayHeight}
-        src={img.url}
+        src={src}
         width={displayWidth ?? displayHeight}
       />
     );
