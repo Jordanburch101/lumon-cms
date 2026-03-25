@@ -43,7 +43,7 @@ describe("resolveCollection", () => {
     expect(result).toEqual({
       collection: "pages",
       label: "Edit Page",
-      slug: "home",
+      path: "home",
     });
   });
 
@@ -52,7 +52,7 @@ describe("resolveCollection", () => {
     expect(result).toEqual({
       collection: "pages",
       label: "Edit Page",
-      slug: "about",
+      path: "about",
     });
   });
 
@@ -61,7 +61,7 @@ describe("resolveCollection", () => {
     expect(result).toEqual({
       collection: "pages",
       label: "Edit Page",
-      slug: "services/consulting",
+      path: "services/consulting",
     });
   });
 
@@ -70,7 +70,7 @@ describe("resolveCollection", () => {
     expect(result).toEqual({
       collection: "pages",
       label: "Edit Page",
-      slug: "about",
+      path: "about",
     });
   });
 });

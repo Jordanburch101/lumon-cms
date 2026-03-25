@@ -110,7 +110,7 @@ export function getSlugFromPathname(pathname: string): string {
 export function resolveCollection(pathname: string): {
   collection: string;
   label: string;
-  slug: string;
+  path: string;
 } {
   // Strip /preview prefix so draft preview routes resolve correctly
   const resolved = pathname.startsWith("/preview/")
@@ -119,14 +119,14 @@ export function resolveCollection(pathname: string): {
 
   for (const route of COLLECTION_ROUTES) {
     if (resolved === route.prefix || resolved.startsWith(`${route.prefix}/`)) {
-      const slug = resolved
+      const path = resolved
         .slice(route.prefix.length + 1)
         .replace(TRAILING_SLASH_RE, "");
-      if (slug) {
+      if (path) {
         return {
           collection: route.collection,
           label: route.label,
-          slug,
+          path,
         };
       }
     }
@@ -134,7 +134,7 @@ export function resolveCollection(pathname: string): {
   return {
     collection: "pages",
     label: "Edit Page",
-    slug: getSlugFromPathname(resolved),
+    path: getSlugFromPathname(resolved),
   };
 }
 

@@ -162,9 +162,9 @@ export function AdminBar() {
 
     setPageStatus(null);
     const controller = new AbortController();
-    const { collection, label, slug } = resolveCollection(pathname);
+    const { collection, label, path } = resolveCollection(pathname);
     fetch(
-      `/api/${collection}?where[slug][equals]=${encodeURIComponent(slug)}&limit=1&select[id]=true&select[slug]=true&select[_status]=true&select[updatedAt]=true&select[createdAt]=true`,
+      `/api/${collection}?where[path][equals]=${encodeURIComponent(path)}&limit=1&select[id]=true&select[path]=true&select[_status]=true&select[updatedAt]=true&select[createdAt]=true`,
       { credentials: "include", signal: controller.signal }
     )
       .then((res) => (res.ok ? res.json() : null))
