@@ -18,6 +18,71 @@ interface MapPanelProps {
   zoom?: number;
 }
 
+/** Small static map thumbnail for the popup card. */
+function PopupMapPreview({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) {
+  return (
+    <div className="h-28 w-full overflow-hidden rounded-t-md border-b border-border/30">
+      <MapComponent
+        className="h-full w-full pointer-events-none"
+        viewport={{ center: [longitude, latitude], zoom: 12 }}
+      />
+    </div>
+  );
+}
+
+/** Rich location card shown when the marker is clicked. */
+function LocationCard({
+  latitude,
+  longitude,
+  label,
+}: {
+  latitude: number;
+  longitude: number;
+  label: string;
+}) {
+  // Split "Lumon Industries — Queenstown Office" into eyebrow + heading
+  const parts = label.split(/\s*[—–]\s*/);
+  const eyebrow = parts.length > 1 ? parts[0] : "Location";
+  const heading = parts.length > 1 ? parts.slice(1).join(" — ") : label;
+
+  const latLabel = `${Math.abs(latitude).toFixed(2)}° ${latitude >= 0 ? "N" : "S"}`;
+  const lngLabel = `${Math.abs(longitude).toFixed(2)}° ${longitude >= 0 ? "E" : "W"}`;
+
+  return (
+    <div className="w-64 -m-3 overflow-hidden">
+      <PopupMapPreview latitude={latitude} longitude={longitude} />
+      <div className="p-3 space-y-2">
+        <div>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            {eyebrow}
+          </p>
+          <p className="text-sm font-semibold leading-snug">{heading}</p>
+        </div>
+        <div className="flex gap-4 border-t border-border/30 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div>
+            <p className="text-xs font-semibold text-foreground tabular-nums">
+              {latLabel}
+            </p>
+            <p>Latitude</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground tabular-nums">
+              {lngLabel}
+            </p>
+            <p>Longitude</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function MapPanel({
   latitude,
   longitude,
@@ -85,7 +150,15 @@ export function MapPanel({
       >
         <MapMarker latitude={latitude} longitude={longitude}>
           <MarkerContent />
-          {markerLabel && <MarkerPopup>{markerLabel}</MarkerPopup>}
+          {markerLabel && (
+            <MarkerPopup className="!p-0" offset={20}>
+              <LocationCard
+                label={markerLabel}
+                latitude={latitude}
+                longitude={longitude}
+              />
+            </MarkerPopup>
+          )}
         </MapMarker>
       </MapComponent>
     </div>
