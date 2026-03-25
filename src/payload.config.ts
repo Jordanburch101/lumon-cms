@@ -9,6 +9,7 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { TRAILING_SLASH_RE } from "./core/lib/utils";
+import { Articles } from "./payload/collections/Articles";
 import { BaAccounts } from "./payload/collections/auth/BaAccounts";
 import { BaSessions } from "./payload/collections/auth/BaSessions";
 import { BaTwoFactors } from "./payload/collections/auth/BaTwoFactors";
@@ -80,6 +81,7 @@ export default buildConfig({
     Media,
     Pages,
     Categories,
+    Articles,
     BaSessions,
     BaAccounts,
     BaVerifications,
@@ -139,6 +141,7 @@ export default buildConfig({
         pages: { enabled: true, description: "Site pages with layout blocks" },
         media: { enabled: true, description: "Uploaded images and videos" },
         categories: { enabled: true, description: "Article categories" },
+        articles: { enabled: true, description: "Blog articles" },
         forms: {
           enabled: true,
           description: "Form definitions (fields, confirmation, emails)",
@@ -227,7 +230,7 @@ export default buildConfig({
       },
     }),
     seoPlugin({
-      collections: ["pages"],
+      collections: ["pages", "articles"],
       uploadsCollection: "media",
       tabbedUI: true,
       generateTitle: async ({ doc, req }) => {
@@ -239,27 +242,38 @@ export default buildConfig({
         return siteName ? `${doc.title}${separator}${siteName}` : doc.title;
       },
       generateDescription: ({ doc }) => {
-        // Plugin requires string return — empty string is converted to undefined
-        // by the metadata helper at render time (page.meta?.description || undefined).
-        // Editors see an empty auto-generated field and can fill it manually.
+        // Articles have an excerpt field — use it directly
+        if (
+          "excerpt" in doc &&
+          typeof doc.excerpt === "string" &&
+          doc.excerpt
+        ) {
+          return doc.excerpt;
+        }
         const d = doc as { hero?: unknown[]; layout?: unknown[] };
         const blocks = [...(d.hero ?? []), ...(d.layout ?? [])] as Parameters<
           typeof extractFirstTextFromBlocks
         >[0];
         return extractFirstTextFromBlocks(blocks) ?? "";
       },
-      generateURL: async ({ doc, req }) => {
+      generateURL: async ({ doc, collectionConfig, req }) => {
         const settings = await req.payload.findGlobal({
           slug: "site-settings",
         });
+        const isArticle = collectionConfig?.slug === "articles";
+        const prefix = isArticle ? "/blog" : "";
         const pagePath = (doc as { path?: string }).path ?? doc.slug;
         const urlPath = !pagePath || pagePath === "" ? "" : pagePath;
-        return `${settings.baseUrl || ""}/${urlPath}`.replace(
+        return `${settings.baseUrl || ""}${prefix}/${urlPath}`.replace(
           TRAILING_SLASH_RE,
           ""
         );
       },
       generateImage: ({ doc }) => {
+        // Articles use heroImage directly
+        if ("heroImage" in doc && doc.heroImage) {
+          return doc.heroImage as number;
+        }
         // Cast: plugin type requires number but handles undefined gracefully at runtime
         // (auto-generate button shows nothing when no image found). Verified in plugin-seo@3.79.
         const d = doc as { hero?: unknown[]; layout?: unknown[] };

@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     pages: Page;
     categories: Category;
+    articles: Article;
     'ba-sessions': BaSession;
     'ba-accounts': BaAccount;
     'ba-verifications': BaVerification;
@@ -91,6 +92,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'ba-sessions': BaSessionsSelect<false> | BaSessionsSelect<true>;
     'ba-accounts': BaAccountsSelect<false> | BaAccountsSelect<true>;
     'ba-verifications': BaVerificationsSelect<false> | BaVerificationsSelect<true>;
@@ -1300,6 +1302,82 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  heroImage: number | Media;
+  /**
+   * Short summary for cards and SEO fallback
+   */
+  excerpt: string;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    robots?: {
+      /**
+       * Enable to set custom robots directives for this page.
+       */
+      override?: boolean | null;
+      index?: boolean | null;
+      follow?: boolean | null;
+    };
+    /**
+     * Comma-separated keywords (optional).
+     */
+    keywords?: string | null;
+    /**
+     * Hide this page from the sitemap. It can still be indexed if linked to externally.
+     */
+    excludeFromSitemap?: boolean | null;
+  };
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  category: number | Category;
+  author: number | User;
+  publishedAt: string;
+  /**
+   * Auto-calculated from body content (minutes)
+   */
+  readTime?: number | null;
+  /**
+   * Override author display details for this article
+   */
+  showAuthorOverride?: boolean | null;
+  authorOverride?: {
+    displayName?: string | null;
+    avatar?: (number | null) | Media;
+    bio?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ba-sessions".
  */
 export interface BaSession {
@@ -1426,6 +1504,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete categories.
+     */
+    delete?: boolean | null;
+  };
+  articles?: {
+    /**
+     * Allow clients to find articles.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create articles.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update articles.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete articles.
      */
     delete?: boolean | null;
   };
@@ -1630,6 +1726,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
       } | null)
     | ({
         relationTo: 'ba-sessions';
@@ -2530,6 +2630,49 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  heroImage?: T;
+  excerpt?: T;
+  body?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        robots?:
+          | T
+          | {
+              override?: T;
+              index?: T;
+              follow?: T;
+            };
+        keywords?: T;
+        excludeFromSitemap?: T;
+      };
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  category?: T;
+  author?: T;
+  publishedAt?: T;
+  readTime?: T;
+  showAuthorOverride?: T;
+  authorOverride?:
+    | T
+    | {
+        displayName?: T;
+        avatar?: T;
+        bio?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ba-sessions_select".
  */
 export interface BaSessionsSelect<T extends boolean = true> {
@@ -2606,6 +2749,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   categories?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  articles?:
     | T
     | {
         find?: T;
