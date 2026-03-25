@@ -20,7 +20,7 @@ export const cascadeChildPaths: CollectionAfterChangeHook = async ({
   const children = await req.payload.find({
     collection: "pages",
     where: { parent: { equals: doc.id } },
-    select: { id: true },
+    select: { slug: true },
     pagination: false,
     depth: 0,
     req,

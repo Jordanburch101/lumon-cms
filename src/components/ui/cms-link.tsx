@@ -15,7 +15,7 @@ interface CMSLinkData {
   url?: string | null
   reference?: {
     slug?: string | null
-    value?: string | number | { slug?: string; path?: string } | null
+    value?: string | number | { slug?: string | null; path?: string | null } | null
     relationTo?: string
   } | null
   newTab?: boolean | null

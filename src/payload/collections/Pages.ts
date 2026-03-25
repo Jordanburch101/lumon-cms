@@ -191,7 +191,7 @@ export const Pages: CollectionConfig = {
                 ...(id ? { id: { not_equals: id } } : {}),
               },
               limit: 1,
-              select: { id: true },
+              select: { slug: true },
             });
             if (existing.docs.length > 0) {
               throw new Error(

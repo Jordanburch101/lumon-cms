@@ -8,7 +8,12 @@ import { cn } from "@/core/lib/utils";
 
 interface LogoData {
   image?:
-    | { url?: string | null; alt?: string; width?: number | null; height?: number | null }
+    | {
+        url?: string | null;
+        alt?: string;
+        width?: number | null;
+        height?: number | null;
+      }
     | number
     | null;
   imageHeight?: number | null;
