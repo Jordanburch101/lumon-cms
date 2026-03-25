@@ -40,7 +40,7 @@ export default async function PreviewPage({ params }: Args) {
 
   const isAuthorized = await authenticate();
   if (!isAuthorized) {
-    const publicPath = slug === "home" ? "/" : `/${slug}`;
+    const publicPath = !slug || slug === "home" ? "/" : `/${slug}`;
     redirect(publicPath);
   }
 

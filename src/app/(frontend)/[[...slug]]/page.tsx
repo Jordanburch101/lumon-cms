@@ -20,12 +20,15 @@ export async function generateStaticParams() {
     const pages = await payload.find({
       collection: "pages",
       limit: 100,
-      select: { slug: true },
+      select: { path: true },
       draft: false,
     });
 
     const params = pages.docs.map((page) => ({
-      slug: page.slug === "home" ? undefined : page.slug.split("/"),
+      slug:
+        page.path === "" || page.path == null
+          ? undefined
+          : page.path.split("/"),
     }));
 
     return params.length > 0 ? params : [{ slug: undefined }];
