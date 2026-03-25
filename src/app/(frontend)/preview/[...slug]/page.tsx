@@ -40,8 +40,21 @@ export default async function PreviewPage({ params }: Args) {
 
   const isAuthorized = await authenticate();
   if (!isAuthorized) {
-    const publicPath = !slug ? "/" : `/${slug}`;
+    const publicPath = slug ? `/${slug}` : "/";
     redirect(publicPath);
+  }
+
+  // Detect article preview: preview/blog/{articleSlug}
+  const isBlogPreview = slugSegments[0] === "blog" && slugSegments.length === 2;
+
+  if (isBlogPreview) {
+    const articleSlug = slugSegments[1];
+    const { getArticleDirect } = await import("@/payload/lib/cached-payload");
+    const article = await getArticleDirect(articleSlug, true);
+    if (!article) {
+      notFound();
+    }
+    return <PreviewClient initialData={article} type="article" />;
   }
 
   const page = await getPageDirect(slug, true);
@@ -50,7 +63,7 @@ export default async function PreviewPage({ params }: Args) {
     notFound();
   }
 
-  return <PreviewClient initialData={page} />;
+  return <PreviewClient initialData={page} type="page" />;
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
@@ -60,6 +73,21 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const isAuthorized = await authenticate();
   if (!isAuthorized) {
     return {};
+  }
+
+  const isBlogPreview = slugSegments[0] === "blog" && slugSegments.length === 2;
+
+  if (isBlogPreview) {
+    const articleSlug = slugSegments[1];
+    const { getArticleDirect } = await import("@/payload/lib/cached-payload");
+    const article = await getArticleDirect(articleSlug, true);
+    if (!article) {
+      return {};
+    }
+    return {
+      title: `Preview: ${article.meta?.title || article.title}`,
+      robots: { index: false, follow: false },
+    };
   }
 
   const page = await getPageDirect(slug, true);
