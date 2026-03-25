@@ -55,9 +55,9 @@ function LocationCard({
   const lngLabel = `${Math.abs(longitude).toFixed(2)}° ${longitude >= 0 ? "E" : "W"}`;
 
   return (
-    <div className="w-56 -m-3 overflow-hidden">
+    <div className="w-56 -m-3 overflow-hidden rounded-md">
       <PopupMapPreview latitude={latitude} longitude={longitude} />
-      <div className="p-3">
+      <div className="bg-popover p-3 border-t border-border/30">
         <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
           {eyebrow}
         </p>
