@@ -13,6 +13,7 @@ import { BaAccounts } from "./payload/collections/auth/BaAccounts";
 import { BaSessions } from "./payload/collections/auth/BaSessions";
 import { BaTwoFactors } from "./payload/collections/auth/BaTwoFactors";
 import { BaVerifications } from "./payload/collections/auth/BaVerifications";
+import { Categories } from "./payload/collections/Categories";
 import { Media } from "./payload/collections/Media";
 import { Pages } from "./payload/collections/Pages";
 import { Users } from "./payload/collections/Users";
@@ -78,6 +79,7 @@ export default buildConfig({
     Users,
     Media,
     Pages,
+    Categories,
     BaSessions,
     BaAccounts,
     BaVerifications,
@@ -136,6 +138,7 @@ export default buildConfig({
       collections: {
         pages: { enabled: true, description: "Site pages with layout blocks" },
         media: { enabled: true, description: "Uploaded images and videos" },
+        categories: { enabled: true, description: "Article categories" },
         forms: {
           enabled: true,
           description: "Form definitions (fields, confirmation, emails)",
