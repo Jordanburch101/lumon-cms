@@ -302,6 +302,28 @@ export const Users: CollectionConfig = {
       type: "text",
     },
     {
+      name: "avatar",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        description: "Profile photo displayed on blog articles",
+      },
+    },
+    {
+      name: "bio",
+      type: "textarea",
+      admin: {
+        description: "Short author bio for blog articles",
+      },
+    },
+    {
+      name: "jobTitle",
+      type: "text",
+      admin: {
+        description: "Job title or role displayed on blog articles",
+      },
+    },
+    {
       name: "role",
       type: "select",
       required: true,
