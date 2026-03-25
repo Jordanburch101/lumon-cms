@@ -192,6 +192,7 @@ export const Pages: CollectionConfig = {
               },
               limit: 1,
               select: { slug: true },
+              req,
             });
             if (existing.docs.length > 0) {
               throw new Error(

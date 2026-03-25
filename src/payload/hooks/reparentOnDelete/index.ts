@@ -17,15 +17,13 @@ export const reparentOnDelete: CollectionAfterDeleteHook = async ({
     req,
   });
 
-  await Promise.all(
-    children.docs.map((child) =>
-      req.payload.update({
-        collection: "pages",
-        id: child.id,
-        data: { parent: null },
-        context: { cascadingPaths: true },
-        req,
-      })
-    )
-  );
+  for (const child of children.docs) {
+    await req.payload.update({
+      collection: "pages",
+      id: child.id,
+      data: { parent: null },
+      context: { cascadingPaths: true },
+      req,
+    });
+  }
 };

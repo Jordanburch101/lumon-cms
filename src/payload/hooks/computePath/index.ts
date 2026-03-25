@@ -39,7 +39,8 @@ export const computePath: CollectionBeforeChangeHook = async ({
     req,
   });
 
-  data.path = `${parent.path}/${slug}`;
+  const parentPath = parent.path ?? parent.slug;
+  data.path = parentPath ? `${parentPath}/${slug}` : slug;
 
   return data;
 };

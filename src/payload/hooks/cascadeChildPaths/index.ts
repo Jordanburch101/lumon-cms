@@ -26,17 +26,15 @@ export const cascadeChildPaths: CollectionAfterChangeHook = async ({
     req,
   });
 
-  await Promise.all(
-    children.docs.map((child) =>
-      req.payload.update({
-        collection: "pages",
-        id: child.id,
-        data: {},
-        context: { cascadingPaths: true },
-        req,
-      })
-    )
-  );
+  for (const child of children.docs) {
+    await req.payload.update({
+      collection: "pages",
+      id: child.id,
+      data: {},
+      context: { cascadingPaths: true },
+      req,
+    });
+  }
 
   return doc;
 };

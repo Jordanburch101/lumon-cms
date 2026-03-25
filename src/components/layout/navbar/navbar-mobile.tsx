@@ -64,8 +64,7 @@ export function NavbarMobile({
                   );
                 }
 
-                const label =
-                  item.blockType === "mega-menu" ? item.label : item.label;
+                const label = item.label;
 
                 const links =
                   item.blockType === "mega-menu"
