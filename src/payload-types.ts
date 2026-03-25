@@ -1051,6 +1051,14 @@ export interface Page {
    */
   generateSlug?: boolean | null;
   slug: string;
+  /**
+   * Select a parent page to nest this page under
+   */
+  parent?: (number | null) | Page;
+  /**
+   * Auto-computed URL path (e.g., divisions/macrodata-refinement)
+   */
+  path?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -2449,6 +2457,8 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   generateSlug?: T;
   slug?: T;
+  parent?: T;
+  path?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
