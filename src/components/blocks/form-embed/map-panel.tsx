@@ -57,21 +57,21 @@ function LocationCard({
   return (
     <div className="w-64 -m-3 overflow-hidden">
       <PopupMapPreview latitude={latitude} longitude={longitude} />
-      <div className="p-3 space-y-2">
-        <div>
+      <div className="px-4 pt-3 pb-4 space-y-3">
+        <div className="space-y-0.5">
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             {eyebrow}
           </p>
           <p className="text-sm font-semibold leading-snug">{heading}</p>
         </div>
-        <div className="flex gap-4 border-t border-border/30 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-          <div>
+        <div className="flex gap-6 border-t border-border/30 pt-3 text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div className="space-y-0.5">
             <p className="text-xs font-semibold text-foreground tabular-nums">
               {latLabel}
             </p>
             <p>Latitude</p>
           </div>
-          <div>
+          <div className="space-y-0.5">
             <p className="text-xs font-semibold text-foreground tabular-nums">
               {lngLabel}
             </p>
@@ -149,7 +149,9 @@ export function MapPanel({
         }}
       >
         <MapMarker latitude={latitude} longitude={longitude}>
-          <MarkerContent />
+          <MarkerContent>
+            <div className="relative h-4 w-4 rounded-full border-2 border-white bg-primary shadow-lg" />
+          </MarkerContent>
           {markerLabel && (
             <MarkerPopup className="!p-0" offset={20}>
               <LocationCard
