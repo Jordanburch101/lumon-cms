@@ -63,6 +63,24 @@ export const getCachedSiteSettings = cache(async () => {
   return payload.findGlobal({ slug: "site-settings" });
 });
 
+export const getCachedHeader = cache(async () => {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("header");
+
+  const payload = await getPayload({ config });
+  return payload.findGlobal({ slug: "header" });
+});
+
+export const getCachedFooter = cache(async () => {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("footer");
+
+  const payload = await getPayload({ config });
+  return payload.findGlobal({ slug: "footer" });
+});
+
 interface SitemapEntry {
   lastModified?: Date;
   url: string;

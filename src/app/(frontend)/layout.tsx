@@ -5,6 +5,7 @@ import { EditableOverlay } from "@/components/features/frontend-editor/editable-
 import { Footer } from "@/components/layout/footer/footer";
 import { Navbar } from "@/components/layout/navbar/navbar";
 import { fontVariables } from "@/core/lib/fonts";
+import { getCachedFooter, getCachedHeader } from "@/payload/lib/cached-payload";
 import { Providers } from "@/providers/providers";
 import "../globals.css";
 
@@ -16,6 +17,16 @@ export const metadata: Metadata = {
     default: "Lumon",
   },
 };
+
+async function NavbarLoader() {
+  const data = await getCachedHeader();
+  return <Navbar data={data} />;
+}
+
+async function FooterLoader() {
+  const data = await getCachedFooter();
+  return <Footer data={data} />;
+}
 
 export default function FrontendLayout({
   children,
@@ -32,7 +43,9 @@ export default function FrontendLayout({
               src="https://mcp.figma.com/mcp/html-to-design/capture.js"
             />
           )}
-          <Navbar />
+          <Suspense>
+            <NavbarLoader />
+          </Suspense>
           <Suspense>
             <main>{children}</main>
           </Suspense>
@@ -40,7 +53,9 @@ export default function FrontendLayout({
           <Suspense>
             <AdminBar />
           </Suspense>
-          <Footer />
+          <Suspense>
+            <FooterLoader />
+          </Suspense>
         </Providers>
       </body>
     </html>
