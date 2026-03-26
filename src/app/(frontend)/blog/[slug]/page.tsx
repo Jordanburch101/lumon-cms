@@ -91,7 +91,7 @@ export default async function ArticlePage({ params }: Args) {
       </div>
 
       {/* Article header */}
-      <div className="relative mx-auto -mt-10 max-w-[680px] px-4 lg:px-6">
+      <div className="relative mx-auto -mt-10 max-w-3xl px-4 lg:px-6">
         {/* Meta */}
         <div className="flex items-center gap-2">
           {category && (

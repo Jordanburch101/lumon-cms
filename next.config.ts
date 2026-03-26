@@ -4,7 +4,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   cacheComponents: true,
-  reactStrictMode: true,
+  reactStrictMode: false,
   serverExternalPackages: ["sharp", "libsql", "@libsql/client"],
   images: {
     localPatterns: [
