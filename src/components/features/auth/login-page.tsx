@@ -41,6 +41,19 @@ export function LoginPage() {
       return;
     }
 
+    // Also log in via Payload's JWT endpoint to get a payload-token cookie
+    // with a valid session ID. Without this, refresh-token fails in the admin.
+    try {
+      await fetch("/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+    } catch {
+      // Best-effort — admin will still work via BA strategy
+    }
+
     window.location.href = "/admin";
   }
 

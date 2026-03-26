@@ -18,6 +18,17 @@ export const Users: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
+      ({ data }) => {
+        // Strip sessions from admin form saves — the admin form includes the
+        // sessions array as it was at load time, but refresh-token modifies
+        // sessions concurrently. If we let the stale array overwrite, the
+        // active session disappears and refresh-token returns 403.
+        if (data?.sessions) {
+          const { sessions: _, ...rest } = data;
+          return rest;
+        }
+        return data;
+      },
       async ({ data, req, operation, originalDoc }) => {
         // Sync password changes to Better Auth's credential store.
         // Payload is the source of truth — when a password is set here,
