@@ -11,6 +11,8 @@ export const BLOCK_CATEGORIES: Record<string, string> = {
   heroCentered: "Heroes",
   heroMinimal: "Heroes",
   heroStats: "Heroes",
+  heroSpecimen: "Heroes",
+  heroBriefing: "Heroes",
   bento: "Content",
   featuresGrid: "Content",
   splitMedia: "Content",
