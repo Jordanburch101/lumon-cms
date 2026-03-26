@@ -30,18 +30,10 @@ export const Users: CollectionConfig = {
         return data;
       },
       async ({ data, req, operation, originalDoc }) => {
-        // Sync password changes to Better Auth's credential store.
-        // Payload is the source of truth — when a password is set here,
-        // update the BA account so /login works with the same password.
+        // Sync passwords to Better Auth's credential store.
+        // Payload is the source of truth — BA accounts are kept in sync
+        // so /login (Better Auth) works with the same credentials.
         if (!data?.password) {
-          return data;
-        }
-        if (operation !== "update") {
-          return data;
-        }
-
-        const userId = originalDoc?.id;
-        if (!userId) {
           return data;
         }
 
@@ -49,35 +41,88 @@ export const Users: CollectionConfig = {
           const { hashPassword } = await import("better-auth/crypto");
           const baHash = await hashPassword(data.password);
 
-          // Update the BA credential account's password hash
-          const existing = await req.payload.find({
-            collection: "ba-accounts",
-            where: {
-              userId: { equals: Number(userId) },
-              providerId: { equals: "credential" },
-            },
-            limit: 1,
-            overrideAccess: true,
-            req,
-          });
-
-          if (existing.docs.length > 0) {
-            await req.payload.update({
+          if (operation === "create") {
+            // Store the hashed password temporarily — afterChange will
+            // create the BA account once we have the new user's ID.
+            req.context.baPasswordHash = baHash;
+          } else if (operation === "update" && originalDoc?.id) {
+            // Update existing BA credential account
+            const existing = await req.payload.find({
               collection: "ba-accounts",
-              id: existing.docs[0].id,
-              data: { password: baHash },
+              where: {
+                userId: { equals: Number(originalDoc.id) },
+                providerId: { equals: "credential" },
+              },
+              limit: 1,
               overrideAccess: true,
               req,
             });
+
+            if (existing.docs.length > 0) {
+              await req.payload.update({
+                collection: "ba-accounts",
+                id: existing.docs[0].id,
+                data: { password: baHash },
+                overrideAccess: true,
+                req,
+              });
+            } else {
+              // No BA account yet (user was created before BA integration).
+              // Create one now.
+              await req.payload.create({
+                collection: "ba-accounts",
+                data: {
+                  accountId: String(originalDoc.id),
+                  providerId: "credential",
+                  userId: Number(originalDoc.id),
+                  password: baHash,
+                },
+                overrideAccess: true,
+                req,
+              });
+            }
           }
         } catch {
-          // Best-effort — don't block the Payload save
           req.payload.logger.warn(
             "Failed to sync password to Better Auth credential store"
           );
         }
 
         return data;
+      },
+    ],
+    afterChange: [
+      async ({ doc, req, operation }) => {
+        // Create BA credential account for newly created users.
+        // The beforeChange hook stored the hashed password in context.
+        if (operation !== "create") {
+          return doc;
+        }
+
+        const baHash = req.context.baPasswordHash as string | undefined;
+        if (!baHash) {
+          return doc;
+        }
+
+        try {
+          await req.payload.create({
+            collection: "ba-accounts",
+            data: {
+              accountId: String(doc.id),
+              providerId: "credential",
+              userId: Number(doc.id),
+              password: baHash,
+            },
+            overrideAccess: true,
+            req,
+          });
+        } catch {
+          req.payload.logger.warn(
+            "Failed to create Better Auth credential account for new user"
+          );
+        }
+
+        return doc;
       },
     ],
     afterLogout: [
