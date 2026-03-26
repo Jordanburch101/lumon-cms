@@ -155,6 +155,28 @@ export const blockFixtures: BlockFixtures = {
     secondaryCta: mockCta("View on GitHub", "outline"),
   },
 
+  heroSpecimen: {
+    blockType: "heroSpecimen",
+    eyebrow: "Core Operations — MDR",
+    icon: mockMedia(800, 800),
+    headline: "Macrodata Refinement",
+    subtext:
+      "Refining data to its essential form. The work is mysterious and important. Your outie has been informed of these results.",
+    mediaSrc: mockMedia(1200, 800),
+    primaryCta: mockCta("Explore Department"),
+    secondaryCta: mockCta("Contact", "outline"),
+  },
+  heroBriefing: {
+    blockType: "heroBriefing",
+    eyebrow: "Research & Development — Biotech",
+    headline: "Biotech Solutions",
+    subtext:
+      "Advancing the science of wellbeing. Every refinement brings us closer to the complete human experience Kier envisioned.",
+    mediaSrc: mockMedia(1920, 823),
+    primaryCta: mockCta("Explore Department"),
+    secondaryCta: mockCta("Contact", "outline"),
+  },
+
   heroStats: {
     blockType: "heroStats",
     headline: "Macrodata Refinement",
