@@ -10,6 +10,13 @@ export const betterAuthStrategy: AuthStrategy = {
       return { user: null };
     }
 
+    // If a payload-token JWT exists, let Payload's built-in JWT strategy handle it.
+    // This ensures admin panel operations (save, logout) work correctly —
+    // without this, the BA strategy re-authenticates after JWT changes.
+    if (cookieHeader.includes("payload-token")) {
+      return { user: null };
+    }
+
     try {
       // Lazy import to avoid circular dependency
       const { auth } = await import("./server");
