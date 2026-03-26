@@ -68,10 +68,10 @@ export function HeroSpecimen({
             <div className="flex flex-col justify-center border-border/40 border-b p-8 lg:border-r lg:border-b-0 lg:p-10">
               <motion.h1
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                className="font-semibold text-3xl leading-tight sm:text-4xl"
+                className="font-semibold text-4xl leading-tight sm:text-5xl lg:text-6xl"
                 data-field="headline"
-                initial={{ opacity: 0, y: 16 }}
-                transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
+                initial={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.7, ease: EASE }}
               >
                 {headline}
               </motion.h1>
@@ -88,7 +88,7 @@ export function HeroSpecimen({
                 className="mt-4 text-base text-muted-foreground leading-relaxed"
                 data-field="subtext"
                 initial={{ opacity: 0, y: 16 }}
-                transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}
+                transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
               >
                 {subtext}
               </motion.p>

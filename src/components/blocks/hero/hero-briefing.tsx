@@ -82,10 +82,10 @@ export function HeroBriefing({
 
           <motion.h1
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            className="mt-4 font-semibold text-3xl leading-tight sm:text-4xl"
+            className="mt-4 font-semibold text-4xl leading-tight sm:text-5xl lg:text-6xl"
             data-field="headline"
-            initial={{ opacity: 0, y: 24 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
+            initial={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
           >
             {headline}
           </motion.h1>
@@ -95,7 +95,7 @@ export function HeroBriefing({
             className="mt-3 max-w-xl text-base text-muted-foreground leading-relaxed"
             data-field="subtext"
             initial={{ opacity: 0, y: 16 }}
-            transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}
+            transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
           >
             {subtext}
           </motion.p>
