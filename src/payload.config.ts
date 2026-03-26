@@ -106,7 +106,8 @@ export default buildConfig({
     },
     push: !process.env.DATABASE_AUTH_TOKEN,
   }),
-  sharp,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sharp: sharp as any,
   jobs: {
     tasks: [optimizeVideoTask],
     autoRun: [{ cron: "* * * * *" }],
