@@ -46,9 +46,10 @@ RUN bun run generate:types && \
     bun run generate:importmap && \
     bun run generate:field-map
 
+# Run migrations against production DB before build (prerendering queries the DB)
+RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun run migrate
+
 # Next.js build — connects to production DB for prerendering (robots.txt, sitemap, etc.)
-# Note: migrations are NOT run at build time — they run at container startup via
-# entrypoint.sh, where the private DB network is reachable.
 RUN DATABASE_URI=${DATABASE_BUILD_URI} DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN} bun --bun run build
 
 # =============================================================================
