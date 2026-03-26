@@ -8,7 +8,9 @@ import { FeaturesGrid } from "./features-grid/features-grid";
 import { FormEmbed } from "./form-embed/form-embed";
 import { Hero } from "./hero/hero";
 import { HeroCentered } from "./hero/hero-centered";
+import { HeroBriefing } from "./hero/hero-briefing";
 import { HeroMinimal } from "./hero/hero-minimal";
+import { HeroSpecimen } from "./hero/hero-specimen";
 import { HeroStats } from "./hero/hero-stats";
 import { ImageGallery } from "./image-gallery/image-gallery";
 import { JobListings } from "./job-listings/job-listings";
@@ -35,6 +37,10 @@ export function renderHeroBlock(block: HeroFieldBlock) {
       return <HeroStats {...block} />;
     case "heroMinimal":
       return <HeroMinimal {...block} />;
+    case "heroSpecimen":
+      return <HeroSpecimen {...block} />;
+    case "heroBriefing":
+      return <HeroBriefing {...block} />;
     default:
       return null;
   }

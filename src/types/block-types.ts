@@ -13,6 +13,8 @@ export type HeroBlock = ExtractHeroBlock<"hero">;
 export type HeroCenteredBlock = ExtractHeroBlock<"heroCentered">;
 export type HeroStatsBlock = ExtractHeroBlock<"heroStats">;
 export type HeroMinimalBlock = ExtractHeroBlock<"heroMinimal">;
+export type HeroSpecimenBlock = ExtractHeroBlock<"heroSpecimen">;
+export type HeroBriefingBlock = ExtractHeroBlock<"heroBriefing">;
 
 /** Union of all block types across all Page fields (hero + layout). */
 export type AnyPageBlock = HeroFieldBlock | LayoutBlock;
