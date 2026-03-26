@@ -456,6 +456,108 @@ export interface Page {
             blockName?: string | null;
             blockType: 'heroMinimal';
           }
+        | {
+            /**
+             * Department classification shown in header bar, e.g. "Core Operations — MDR"
+             */
+            eyebrow: string;
+            /**
+             * Small department icon displayed in the header bar.
+             */
+            icon?: (number | null) | Media;
+            headline: string;
+            subtext: string;
+            /**
+             * Department photo displayed full-bleed in the right column.
+             */
+            mediaSrc: number | Media;
+            primaryCta: {
+              type?: ('internal' | 'external') | null;
+              newTab?: boolean | null;
+              url?: string | null;
+              reference?: {
+                relationTo: 'pages';
+                value: number | Page;
+              } | null;
+              label: string;
+              /**
+               * Choose how the link should be rendered.
+               */
+              appearanceType?: 'button' | null;
+              buttonVariant?: ('default' | 'outline') | null;
+              buttonSize?: 'lg' | null;
+            };
+            secondaryCta: {
+              type?: ('internal' | 'external') | null;
+              newTab?: boolean | null;
+              url?: string | null;
+              reference?: {
+                relationTo: 'pages';
+                value: number | Page;
+              } | null;
+              label: string;
+              /**
+               * Choose how the link should be rendered.
+               */
+              appearanceType?: 'button' | null;
+              buttonVariant?: ('outline' | 'default') | null;
+              buttonSize?: 'lg' | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'heroSpecimen';
+          }
+        | {
+            /**
+             * Department classification, e.g. "Research & Development — Biotech"
+             */
+            eyebrow: string;
+            headline: string;
+            subtext: string;
+            /**
+             * Department photo displayed in a cinematic 21:9 letterbox crop.
+             */
+            mediaSrc: number | Media;
+            /**
+             * Fallback poster image if mediaSrc is a video.
+             */
+            posterSrc?: (number | null) | Media;
+            primaryCta: {
+              type?: ('internal' | 'external') | null;
+              newTab?: boolean | null;
+              url?: string | null;
+              reference?: {
+                relationTo: 'pages';
+                value: number | Page;
+              } | null;
+              label: string;
+              /**
+               * Choose how the link should be rendered.
+               */
+              appearanceType?: 'button' | null;
+              buttonVariant?: ('default' | 'outline') | null;
+              buttonSize?: 'lg' | null;
+            };
+            secondaryCta: {
+              type?: ('internal' | 'external') | null;
+              newTab?: boolean | null;
+              url?: string | null;
+              reference?: {
+                relationTo: 'pages';
+                value: number | Page;
+              } | null;
+              label: string;
+              /**
+               * Choose how the link should be rendered.
+               */
+              appearanceType?: 'button' | null;
+              buttonVariant?: ('outline' | 'default') | null;
+              buttonSize?: 'lg' | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'heroBriefing';
+          }
       )[]
     | null;
   layout?:
@@ -2006,6 +2108,76 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               headline?: T;
               subtext?: T;
+              primaryCta?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    url?: T;
+                    reference?: T;
+                    label?: T;
+                    appearanceType?: T;
+                    buttonVariant?: T;
+                    buttonSize?: T;
+                  };
+              secondaryCta?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    url?: T;
+                    reference?: T;
+                    label?: T;
+                    appearanceType?: T;
+                    buttonVariant?: T;
+                    buttonSize?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        heroSpecimen?:
+          | T
+          | {
+              eyebrow?: T;
+              icon?: T;
+              headline?: T;
+              subtext?: T;
+              mediaSrc?: T;
+              primaryCta?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    url?: T;
+                    reference?: T;
+                    label?: T;
+                    appearanceType?: T;
+                    buttonVariant?: T;
+                    buttonSize?: T;
+                  };
+              secondaryCta?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    url?: T;
+                    reference?: T;
+                    label?: T;
+                    appearanceType?: T;
+                    buttonVariant?: T;
+                    buttonSize?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        heroBriefing?:
+          | T
+          | {
+              eyebrow?: T;
+              headline?: T;
+              subtext?: T;
+              mediaSrc?: T;
+              posterSrc?: T;
               primaryCta?:
                 | T
                 | {
