@@ -7,7 +7,6 @@ import { handleServerFunctions, RootLayout } from "@payloadcms/next/layouts";
 import { connection } from "next/server";
 import type { ServerFunctionClient } from "payload";
 import type React from "react";
-import { Suspense } from "react";
 import { importMap } from "./admin/importMap";
 import "./custom.scss";
 
@@ -20,7 +19,7 @@ const serverFunctions: ServerFunctionClient = async (args) => {
   return handleServerFunctions({ ...args, config, importMap });
 };
 
-async function DynamicRootLayout({ children }: Args) {
+const Layout = async ({ children }: Args) => {
   await connection();
   return (
     <RootLayout
@@ -31,12 +30,6 @@ async function DynamicRootLayout({ children }: Args) {
       {children}
     </RootLayout>
   );
-}
-
-const Layout = ({ children }: Args) => (
-  <Suspense>
-    <DynamicRootLayout>{children}</DynamicRootLayout>
-  </Suspense>
-);
+};
 
 export default Layout;
