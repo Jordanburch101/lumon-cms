@@ -4,7 +4,7 @@ import { motion, useInView } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
 import { CMSLink } from "@/components/ui/cms-link";
-import { cn, getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
+import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import type { ExtractHeroBlock } from "@/types/block-types";
 
 type HeroSpecimenBlock = ExtractHeroBlock<"heroSpecimen">;
@@ -39,7 +39,7 @@ export function HeroSpecimen({
           {/* Header bar */}
           <motion.div
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            className="flex items-center gap-3 border-b border-border/40 px-6 py-3.5 lg:px-8"
+            className="flex items-center gap-3 border-border/40 border-b px-6 py-3.5 lg:px-8"
             initial={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
           >
@@ -55,7 +55,7 @@ export function HeroSpecimen({
               </div>
             )}
             <span
-              className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
+              className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]"
               data-field="eyebrow"
             >
               {eyebrow}
@@ -65,7 +65,7 @@ export function HeroSpecimen({
           {/* Body: text + image split */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr]">
             {/* Left: text content */}
-            <div className="flex flex-col justify-center border-b border-border/40 p-8 lg:border-r lg:border-b-0 lg:p-10">
+            <div className="flex flex-col justify-center border-border/40 border-b p-8 lg:border-r lg:border-b-0 lg:p-10">
               <motion.h1
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 className="font-semibold text-3xl leading-tight sm:text-4xl"
@@ -85,7 +85,7 @@ export function HeroSpecimen({
 
               <motion.p
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                className="mt-4 text-base leading-relaxed text-muted-foreground"
+                className="mt-4 text-base text-muted-foreground leading-relaxed"
                 data-field="subtext"
                 initial={{ opacity: 0, y: 16 }}
                 transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}

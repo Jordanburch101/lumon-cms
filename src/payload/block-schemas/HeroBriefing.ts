@@ -30,7 +30,8 @@ export const HeroBriefingBlock: Block = {
       relationTo: "media",
       required: true,
       admin: {
-        description: "Department photo displayed in a cinematic 21:9 letterbox crop.",
+        description:
+          "Department photo displayed in a cinematic 21:9 letterbox crop.",
       },
     },
     {

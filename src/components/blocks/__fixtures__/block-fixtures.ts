@@ -158,11 +158,11 @@ export const blockFixtures: BlockFixtures = {
   heroSpecimen: {
     blockType: "heroSpecimen",
     eyebrow: "Core Operations — MDR",
-    icon: mockMedia(800, 800),
+    icon: mockMedia("mdr-icon", 800, 800),
     headline: "Macrodata Refinement",
     subtext:
       "Refining data to its essential form. The work is mysterious and important. Your outie has been informed of these results.",
-    mediaSrc: mockMedia(1200, 800),
+    mediaSrc: mockMedia("mdr-department", 1200, 800),
     primaryCta: mockCta("Explore Department"),
     secondaryCta: mockCta("Contact", "outline"),
   },
@@ -172,7 +172,7 @@ export const blockFixtures: BlockFixtures = {
     headline: "Biotech Solutions",
     subtext:
       "Advancing the science of wellbeing. Every refinement brings us closer to the complete human experience Kier envisioned.",
-    mediaSrc: mockMedia(1920, 823),
+    mediaSrc: mockMedia("biotech-department", 1920, 823),
     primaryCta: mockCta("Explore Department"),
     secondaryCta: mockCta("Contact", "outline"),
   },

@@ -38,7 +38,8 @@ export const HeroSpecimenBlock: Block = {
       relationTo: "media",
       required: true,
       admin: {
-        description: "Department photo displayed full-bleed in the right column.",
+        description:
+          "Department photo displayed full-bleed in the right column.",
       },
     },
     link({

@@ -72,7 +72,7 @@ export function HeroBriefing({
         <div className="mt-6 lg:mt-8">
           <motion.span
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
+            className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]"
             data-field="eyebrow"
             initial={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
@@ -92,7 +92,7 @@ export function HeroBriefing({
 
           <motion.p
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground"
+            className="mt-3 max-w-xl text-base text-muted-foreground leading-relaxed"
             data-field="subtext"
             initial={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}
