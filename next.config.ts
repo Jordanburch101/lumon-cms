@@ -24,11 +24,6 @@ const nextConfig: NextConfig = {
   },
   redirects: async () => [
     {
-      source: "/admin/login",
-      destination: "/login",
-      permanent: false,
-    },
-    {
       source: "/admin/logout",
       destination: "/api/auth/logout",
       permanent: false,
