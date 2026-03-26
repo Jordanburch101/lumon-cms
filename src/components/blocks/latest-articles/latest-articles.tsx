@@ -11,10 +11,7 @@ import { LatestArticlesClient } from "./latest-articles-client";
  * In preview mode this shows nothing (no articles). On real pages,
  * RenderBlocksServer substitutes the async version.
  */
-export function LatestArticles({
-  headline,
-  subtext,
-}: LatestArticlesBlock) {
+export function LatestArticles({ headline, subtext }: LatestArticlesBlock) {
   return (
     <LatestArticlesClient articles={[]} headline={headline} subtext={subtext} />
   );

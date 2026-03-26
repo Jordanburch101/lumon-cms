@@ -2,8 +2,8 @@ import config from "@payload-config";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
-import { RenderBlocksServer } from "@/components/blocks/render-blocks-server";
 import { RenderHero } from "@/components/blocks/render-blocks";
+import { RenderBlocksServer } from "@/components/blocks/render-blocks-server";
 import { JsonLd } from "@/components/features/seo/json-ld";
 import {
   getCachedPage,
