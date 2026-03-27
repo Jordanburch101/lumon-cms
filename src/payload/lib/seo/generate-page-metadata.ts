@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TRAILING_SLASH_RE } from "@/core/lib/utils";
 import type { Media, Page, SiteSetting } from "@/payload-types";
+import { extractFirstTextFromBlocks } from "./extract-block-content";
 
 /** Ensure a URL is absolute — prepend baseUrl if it's a relative path. */
 function toAbsoluteUrl(url: string, baseUrl: string | undefined): string {
@@ -83,8 +84,16 @@ export function generatePageMetadata(
     page.meta?.title ||
     (siteName ? `${page.title}${separator}${siteName}` : page.title);
 
-  // Description
-  const description = page.meta?.description || undefined;
+  // Description: meta field → fallback to first text extracted from blocks
+  const description =
+    page.meta?.description ||
+    extractFirstTextFromBlocks([
+      ...((page.hero as Parameters<typeof extractFirstTextFromBlocks>[0]) ??
+        []),
+      ...((page.layout as Parameters<typeof extractFirstTextFromBlocks>[0]) ??
+        []),
+    ]) ||
+    undefined;
 
   // Images — resolve populated media objects and ensure absolute URLs
   const baseUrl = settings.baseUrl || undefined;
