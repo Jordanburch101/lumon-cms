@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { TRAILING_SLASH_RE } from "@/core/lib/utils";
 import type { Media, Page, SiteSetting } from "@/payload-types";
-import { extractFirstTextFromBlocks } from "./extract-block-content";
+import {
+  extractFirstImageMediaFromBlocks,
+  extractFirstTextFromBlocks,
+} from "./extract-block-content";
 
 /** Ensure a URL is absolute — prepend baseUrl if it's a relative path. */
 function toAbsoluteUrl(url: string, baseUrl: string | undefined): string {
@@ -84,23 +87,42 @@ export function generatePageMetadata(
     page.meta?.title ||
     (siteName ? `${page.title}${separator}${siteName}` : page.title);
 
-  // Description: meta field → fallback to first text extracted from blocks
+  // Merge all blocks for content extraction (description + image fallbacks)
+  const allBlocks = [
+    ...((page.hero as Parameters<typeof extractFirstTextFromBlocks>[0]) ?? []),
+    ...((page.layout as Parameters<typeof extractFirstTextFromBlocks>[0]) ??
+      []),
+  ];
+
+  // Description: meta field → first text from blocks
   const description =
     page.meta?.description ||
-    extractFirstTextFromBlocks([
-      ...((page.hero as Parameters<typeof extractFirstTextFromBlocks>[0]) ??
-        []),
-      ...((page.layout as Parameters<typeof extractFirstTextFromBlocks>[0]) ??
-        []),
-    ]) ||
+    extractFirstTextFromBlocks(allBlocks) ||
     undefined;
 
-  // Images — resolve populated media objects and ensure absolute URLs
+  // Images: meta field → first image from blocks → global default
   const baseUrl = settings.baseUrl || undefined;
   const metaResolved = resolveMediaUrl(page.meta?.image, baseUrl);
+  const blockImage = metaResolved
+    ? undefined
+    : extractFirstImageMediaFromBlocks(allBlocks);
+  const blockResolved = blockImage
+    ? {
+        url: toAbsoluteUrl(blockImage.url, baseUrl),
+        width: blockImage.width,
+        height: blockImage.height,
+      }
+    : undefined;
   const defaultResolved = resolveMediaUrl(settings.defaultOgImage, baseUrl);
-  const ogImages = buildOgImages(metaResolved, defaultResolved);
-  const ogImageUrl = metaResolved?.url || defaultResolved?.url || undefined;
+  const ogImages = buildOgImages(
+    metaResolved || blockResolved,
+    defaultResolved
+  );
+  const ogImageUrl =
+    metaResolved?.url ||
+    blockResolved?.url ||
+    defaultResolved?.url ||
+    undefined;
 
   // Canonical: auto-generated from baseUrl/path
   const urlPath = (page.path ?? page.slug) || "";

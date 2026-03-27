@@ -80,53 +80,74 @@ export function extractFirstTextFromBlocks(
 
 const IMAGE_MIME_RE = /^image\/(?!svg\+xml)/;
 
+/** Check if a media value is a populated raster image object. */
+function isPopulatedImage(
+  value: unknown
+): value is MediaLike & { id: number; url: string; mimeType: string } {
+  if (!value || typeof value !== "object" || typeof value === "number") {
+    return false;
+  }
+  const media = value as Record<string, unknown>;
+  return (
+    typeof media.mimeType === "string" &&
+    IMAGE_MIME_RE.test(media.mimeType) &&
+    typeof media.url === "string"
+  );
+}
+
 /**
  * Resolve a media relation to its ID, but only if it's a raster image.
  * Skips videos, SVGs, and unpopulated relations (raw number IDs without
  * mimeType info are skipped since we can't verify they're images).
  */
-function resolveImageMediaId(
-  value: number | { id: number; mimeType?: string | null } | null | undefined
-): number | undefined {
-  if (!value) {
-    return undefined;
+function resolveImageMediaId(value: MediaLike | undefined): number | undefined {
+  if (isPopulatedImage(value)) {
+    return value.id;
   }
-  if (typeof value === "number") {
-    // Unpopulated — can't verify mimeType, skip to be safe
-    return undefined;
-  }
-  if (!(value.mimeType && IMAGE_MIME_RE.test(value.mimeType))) {
-    return undefined;
-  }
-  return value.id;
+  return undefined;
 }
 
 /** Field names that typically hold media upload references. */
 const MEDIA_FIELDS = ["mediaSrc", "image", "avatar", "icon"] as const;
 
-type MediaLike = number | { id: number; mimeType?: string | null } | null;
+type MediaLike =
+  | number
+  | {
+      id: number;
+      mimeType?: string | null;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+    }
+  | null;
+
+/** Populated image media with the fields needed for OG tags. */
+export interface PopulatedImageMedia {
+  height?: number | null;
+  id: number;
+  mimeType: string;
+  url: string;
+  width?: number | null;
+}
 
 /**
- * Generically extract the first raster image ID from a block by scanning
- * common media field names. Checks top-level fields, nested `.src`, and
- * first items of array fields. No switch statement.
+ * Generically find the first populated raster image from a block by scanning
+ * common media field names. Returns the full media object (not just ID).
  */
-function getBlockImageId(block: AnyBlock): number | undefined {
+function getBlockImage(block: AnyBlock): PopulatedImageMedia | undefined {
   const data = block as Record<string, unknown>;
 
   // Check top-level media fields
   for (const field of MEDIA_FIELDS) {
     const val = data[field];
-    const resolved = resolveImageMediaId(val as MediaLike);
-    if (resolved) {
-      return resolved;
+    if (isPopulatedImage(val)) {
+      return val;
     }
     // Check nested .src (e.g. bento.image.src)
     if (val && typeof val === "object" && !Array.isArray(val)) {
       const nested = (val as Record<string, unknown>).src;
-      const nestedResolved = resolveImageMediaId(nested as MediaLike);
-      if (nestedResolved) {
-        return nestedResolved;
+      if (isPopulatedImage(nested)) {
+        return nested;
       }
     }
   }
@@ -143,9 +164,8 @@ function getBlockImageId(block: AnyBlock): number | undefined {
     }
     for (const field of MEDIA_FIELDS) {
       const nested = first[field];
-      const resolved = resolveImageMediaId(nested as MediaLike);
-      if (resolved) {
-        return resolved;
+      if (isPopulatedImage(nested)) {
+        return nested;
       }
     }
   }
@@ -155,21 +175,29 @@ function getBlockImageId(block: AnyBlock): number | undefined {
 
 /**
  * Walks blocks in order, returns the first **raster image** media ID.
- * Generically scans common media field names (mediaSrc, image, avatar, icon)
- * including nested .src and first items of array fields.
  * Skips videos, SVGs, and unpopulated relations.
  */
 export function extractFirstImageFromBlocks(
   blocks: AnyBlock[] | null | undefined
 ): number | undefined {
+  return extractFirstImageMediaFromBlocks(blocks)?.id;
+}
+
+/**
+ * Walks blocks in order, returns the first populated raster image media object.
+ * Use this when you need the full media (url, width, height) — e.g. for OG tags.
+ */
+export function extractFirstImageMediaFromBlocks(
+  blocks: AnyBlock[] | null | undefined
+): PopulatedImageMedia | undefined {
   if (!blocks?.length) {
     return undefined;
   }
 
   for (const block of blocks) {
-    const id = getBlockImageId(block);
-    if (id) {
-      return id;
+    const media = getBlockImage(block);
+    if (media) {
+      return media;
     }
   }
 
