@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
+import { ViewTransition } from "react";
 import { ArticleAuthor } from "@/components/features/blog/article-author";
 import {
   formatDate,
@@ -12,6 +13,7 @@ import {
 import { ArticleJsonLd } from "@/components/features/blog/article-json-ld";
 import { RichText } from "@/components/features/rich-text/rich-text";
 import { Badge } from "@/components/ui/badge";
+import { DirectionalTransition } from "@/components/ui/directional-transition";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
 import {
   getCachedArticle,
@@ -68,6 +70,7 @@ export default async function ArticlePage({ params }: Args) {
   const author = resolveAuthor(article);
 
   return (
+    <DirectionalTransition>
     <article>
       <ArticleJsonLd article={article} settings={settings} />
 
@@ -75,16 +78,21 @@ export default async function ArticlePage({ params }: Args) {
       <div className="relative">
         <div className="relative h-[280px] sm:h-[340px] lg:h-[420px]">
           {imageSrc && (
-            <Image
-              alt={article.title}
-              blurDataURL={blurData}
-              className="object-cover"
-              fill
-              placeholder={blurData ? "blur" : "empty"}
-              priority
-              sizes="100vw"
-              src={imageSrc}
-            />
+            <ViewTransition
+              name={`article-hero-${article.id}`}
+              share="morph"
+            >
+              <Image
+                alt={article.title}
+                blurDataURL={blurData}
+                className="object-cover"
+                fill
+                placeholder={blurData ? "blur" : "empty"}
+                priority
+                sizes="100vw"
+                src={imageSrc}
+              />
+            </ViewTransition>
           )}
         </div>
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
@@ -109,9 +117,14 @@ export default async function ArticlePage({ params }: Args) {
         </div>
 
         {/* Title */}
-        <h1 className="mt-3 font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
-          {article.title}
-        </h1>
+        <ViewTransition
+          name={`article-title-${article.id}`}
+          share="text-morph"
+        >
+          <h1 className="mt-3 font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
+            {article.title}
+          </h1>
+        </ViewTransition>
 
         {/* Author */}
         <div className="mt-5 border-border border-b pb-6">
@@ -152,6 +165,7 @@ export default async function ArticlePage({ params }: Args) {
           <Link
             className="inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground"
             href="/blog"
+            transitionTypes={["nav-back"]}
           >
             <svg
               aria-hidden="true"
@@ -168,5 +182,6 @@ export default async function ArticlePage({ params }: Args) {
         </div>
       </div>
     </article>
+    </DirectionalTransition>
   );
 }
