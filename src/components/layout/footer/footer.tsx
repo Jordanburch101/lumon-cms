@@ -15,7 +15,10 @@ export function Footer({ data }: FooterProps) {
   const currentYear = CURRENT_YEAR;
 
   return (
-    <footer className="mt-16 border-t bg-background lg:mt-24">
+    <footer
+      className="mt-16 border-t bg-background lg:mt-24"
+      style={{ viewTransitionName: "site-footer" }}
+    >
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Zone 1: Newsletter */}
         <div className="border-b py-6">
