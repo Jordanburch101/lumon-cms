@@ -62,25 +62,19 @@ export function ArticleCard({ article }: ArticleCardProps) {
       href={`/blog/${article.slug}`}
       transitionTypes={["nav-forward"]}
     >
-      <ViewTransition
-        default="none"
-        name={`article-hero-${article.id}`}
-        share="morph"
-      >
-        <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
-          {imageSrc && (
-            <Image
-              alt={article.title}
-              blurDataURL={blurData}
-              className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
-              fill
-              placeholder={blurData ? "blur" : "empty"}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              src={imageSrc}
-            />
-          )}
-        </div>
-      </ViewTransition>
+      <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+        {imageSrc && (
+          <Image
+            alt={article.title}
+            blurDataURL={blurData}
+            className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
+            fill
+            placeholder={blurData ? "blur" : "empty"}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            src={imageSrc}
+          />
+        )}
+      </div>
       <div className="mt-4 px-0.5">
         <div className="flex items-center gap-2">
           {category && (

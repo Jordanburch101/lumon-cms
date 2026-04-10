@@ -76,26 +76,20 @@ export default async function ArticlePage({ params }: Args) {
 
         {/* Hero image */}
         <div className="relative">
-          <ViewTransition
-            default="none"
-            name={`article-hero-${article.id}`}
-            share="morph"
-          >
-            <div className="relative h-[280px] overflow-hidden sm:h-[340px] lg:h-[420px]">
-              {imageSrc && (
-                <Image
-                  alt={article.title}
-                  blurDataURL={blurData}
-                  className="object-cover"
-                  fill
-                  placeholder={blurData ? "blur" : "empty"}
-                  priority
-                  sizes="100vw"
-                  src={imageSrc}
-                />
-              )}
-            </div>
-          </ViewTransition>
+          <div className="relative h-[280px] sm:h-[340px] lg:h-[420px]">
+            {imageSrc && (
+              <Image
+                alt={article.title}
+                blurDataURL={blurData}
+                className="object-cover"
+                fill
+                placeholder={blurData ? "blur" : "empty"}
+                priority
+                sizes="100vw"
+                src={imageSrc}
+              />
+            )}
+          </div>
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
 
