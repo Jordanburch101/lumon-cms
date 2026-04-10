@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { MdrBootSequence } from "./mdr-boot-sequence";
+import { MdrCrtHousing } from "./mdr-crt-housing";
 import { MdrGrid } from "./mdr-grid";
 import { CRT, type TerminalState } from "./mdr-terminal-data";
 
@@ -22,138 +23,38 @@ export function MdrScreen() {
   const isOn = state !== "standby";
 
   return (
-    /* Layer 1: Outer monitor housing — the plastic/metal shell */
-    <div
-      className="relative mx-auto w-full max-w-4xl"
-      style={{
-        borderRadius: "clamp(28px, 5vw, 56px)",
-        background:
-          "linear-gradient(170deg, #141c2e 0%, #0a0f1a 40%, #0c1222 100%)",
-        padding: "clamp(6px, 1vw, 12px)",
-        boxShadow: `
-          0 4px 60px -10px rgba(0, 0, 0, 0.8),
-          0 0 120px -20px rgba(74, 144, 226, ${isOn ? "0.2" : "0.05"}),
-          inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
-          inset 0 -1px 0 0 rgba(0, 0, 0, 0.4)
-        `,
-        transition: "box-shadow 1s ease",
-      }}
-    >
-      {/* Layer 2: Inner bezel ridge — the sloped edge around the glass */}
-      <div
-        style={{
-          borderRadius: "clamp(22px, 4vw, 46px)",
-          background: "linear-gradient(180deg, #0e1524 0%, #080c18 100%)",
-          padding: "clamp(8px, 1.5vw, 16px)",
-          boxShadow: `
-            inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
-            inset 0 -1px 2px 0 rgba(120, 180, 255, 0.04),
-            inset 2px 0 4px 0 rgba(0, 0, 0, 0.3),
-            inset -2px 0 4px 0 rgba(0, 0, 0, 0.3)
-          `,
-        }}
-      >
-        {/* Layer 3: Screen glass bezel — the lip right around the glass */}
-        <div
-          className="relative"
-          style={{
-            borderRadius: "clamp(14px, 2.5vw, 28px)",
-            /* The glass bezel ring — visible border with glow */
-            boxShadow: `
-              0 0 0 1.5px rgba(74, 144, 226, ${isOn ? "0.3" : "0.12"}),
-              0 0 0 3px rgba(10, 15, 26, 0.9),
-              0 0 ${isOn ? "30px" : "8px"} -2px rgba(74, 144, 226, ${isOn ? "0.15" : "0.03"})
-            `,
-            transition: "box-shadow 1s ease",
-          }}
+    <MdrCrtHousing isOn={isOn}>
+      {state === "standby" && (
+        <button
+          className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-3 bg-transparent"
+          onClick={handleActivate}
+          type="button"
         >
-          {/* The screen itself */}
-          <div
-            className="relative overflow-hidden"
+          <span
+            className="font-mono text-xs uppercase tracking-[0.3em] lg:text-sm"
             style={{
-              aspectRatio: "16 / 10",
-              backgroundColor: CRT.screenBg,
-              borderRadius: "inherit",
-              animation: isOn
-                ? "crt-flicker 4s ease-in-out infinite"
-                : undefined,
+              color: CRT.text,
+              textShadow: `0 0 10px ${CRT.glowBright}, 0 0 20px ${CRT.glowDim}`,
             }}
           >
-            {/* Screen content */}
-            <div className="relative z-10 h-full">
-              {state === "standby" && (
-                <button
-                  className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-3 bg-transparent"
-                  onClick={handleActivate}
-                  type="button"
-                >
-                  <span
-                    className="font-mono text-xs uppercase tracking-[0.3em] lg:text-sm"
-                    style={{
-                      color: CRT.text,
-                      textShadow: `0 0 10px ${CRT.glowBright}, 0 0 20px ${CRT.glowDim}`,
-                    }}
-                  >
-                    Press to initialize
-                  </span>
-                  <span
-                    className="inline-block h-4 w-2"
-                    style={{
-                      backgroundColor: CRT.textBright,
-                      boxShadow: `0 0 8px ${CRT.glow}, 0 0 16px ${CRT.glowDim}`,
-                      animation: "crt-cursor-blink 1s step-end infinite",
-                    }}
-                  />
-                </button>
-              )}
-
-              {state === "booting" && (
-                <MdrBootSequence onComplete={handleBootComplete} />
-              )}
-
-              {state === "active" && <MdrGrid />}
-            </div>
-
-            {/* Scan lines */}
-            <div className="crt-scanlines absolute inset-0 z-20" />
-
-            {/* Vignette — darkens middle area, but NOT the very edge */}
-            <div className="crt-vignette absolute inset-0 z-20" />
-
-            {/* Edge light refraction — BRIGHT glow at the very edge of the screen
-                This sits ABOVE the vignette so it reads through the darkening.
-                On a real CRT, curved glass refracts light outward, creating a
-                concentrated bright line right along the screen perimeter. */}
-            <div
-              className="pointer-events-none absolute inset-0 z-30"
-              style={{
-                borderRadius: "inherit",
-                /* Thin bright edge + softer bloom behind it */
-                boxShadow: `
-                  inset 0 0 2px 1px rgba(100, 170, 255, ${isOn ? "0.5" : "0.1"}),
-                  inset 0 0 8px 2px rgba(74, 144, 226, ${isOn ? "0.3" : "0.06"}),
-                  inset 0 0 20px 4px rgba(74, 144, 226, ${isOn ? "0.12" : "0.02"}),
-                  inset 0 0 50px 8px rgba(74, 144, 226, ${isOn ? "0.06" : "0.01"})
-                `,
-                transition: "box-shadow 1s ease",
-              }}
-            />
-          </div>
-
-          {/* Edge glow ring — light bleeding out around the glass edges */}
-          <div
-            className="pointer-events-none absolute inset-0 z-[-1]"
+            Press to initialize
+          </span>
+          <span
+            className="inline-block h-4 w-2"
             style={{
-              borderRadius: "inherit",
-              boxShadow: `
-                0 0 15px 2px rgba(74, 144, 226, ${isOn ? "0.12" : "0.02"}),
-                0 0 40px 5px rgba(74, 144, 226, ${isOn ? "0.06" : "0.01"})
-              `,
-              transition: "box-shadow 1s ease",
+              backgroundColor: CRT.textBright,
+              boxShadow: `0 0 8px ${CRT.glow}, 0 0 16px ${CRT.glowDim}`,
+              animation: "crt-cursor-blink 1s step-end infinite",
             }}
           />
-        </div>
-      </div>
-    </div>
+        </button>
+      )}
+
+      {state === "booting" && (
+        <MdrBootSequence onComplete={handleBootComplete} />
+      )}
+
+      {state === "active" && <MdrGrid />}
+    </MdrCrtHousing>
   );
 }
