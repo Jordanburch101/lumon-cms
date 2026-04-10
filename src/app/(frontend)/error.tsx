@@ -1,6 +1,9 @@
 "use client";
 
+import { motion } from "motion/react";
 import Link from "next/link";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function LayoutError({
   reset,
@@ -9,34 +12,37 @@ export default function LayoutError({
   reset: () => void;
 }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
-      <span className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
-        Lumon
-      </span>
-      <span className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
-        System Error
-      </span>
-      <h2 className="font-semibold text-3xl leading-tight">
-        Something went wrong
-      </h2>
-      <p className="max-w-md text-base text-muted-foreground">
-        An unexpected error occurred. Please try again.
-      </p>
-      <div className="flex items-center gap-3">
-        <button
-          className="rounded-md bg-primary px-4 py-2 font-mono text-primary-foreground text-xs uppercase tracking-wider transition-colors hover:bg-primary/90"
-          onClick={reset}
-          type="button"
-        >
-          Try again
-        </button>
-        <Link
-          className="rounded-md border border-border px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-muted"
-          href="/"
-        >
-          Return home
-        </Link>
-      </div>
+    <div className="flex min-h-screen items-center justify-center px-4 text-center">
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 24 }}
+        transition={{ duration: 0.8, ease: EASE }}
+      >
+        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
+          Error
+        </p>
+        <h1 className="mt-3 font-semibold text-3xl leading-tight sm:text-4xl">
+          Something went wrong
+        </h1>
+        <p className="mt-3 text-base text-muted-foreground">
+          An unexpected error occurred.
+        </p>
+        <div className="mt-6 flex items-center justify-center gap-4">
+          <button
+            className="text-muted-foreground text-sm underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground/50"
+            onClick={reset}
+            type="button"
+          >
+            Try again
+          </button>
+          <Link
+            className="text-muted-foreground text-sm underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground/50"
+            href="/"
+          >
+            Back to home
+          </Link>
+        </div>
+      </motion.div>
     </div>
   );
 }
