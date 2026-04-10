@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import { ArticleCard } from "@/components/features/blog/article-card";
 import { CategoryFilter } from "@/components/features/blog/category-filter";
 import { FeaturedCard } from "@/components/features/blog/featured-card";
 import { Pagination } from "@/components/features/blog/pagination";
+import { DirectionalTransition } from "@/components/ui/directional-transition";
 import {
   getCachedArticles,
   getCachedCategories,
@@ -41,6 +43,7 @@ export default async function BlogArchivePage({ searchParams }: Args) {
   const baseHref = categorySlug ? `/blog?category=${categorySlug}` : "/blog";
 
   return (
+    <DirectionalTransition>
     <section className="w-full">
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         {/* Header */}
@@ -64,7 +67,9 @@ export default async function BlogArchivePage({ searchParams }: Args) {
         {/* Featured article */}
         {featured && (
           <div className="pb-5">
-            <FeaturedCard article={featured} />
+            <ViewTransition key={featured.id}>
+              <FeaturedCard article={featured} />
+            </ViewTransition>
           </div>
         )}
 
@@ -72,7 +77,9 @@ export default async function BlogArchivePage({ searchParams }: Args) {
         {gridArticles.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-4 gap-y-8 pb-8 sm:grid-cols-2 lg:grid-cols-3">
             {gridArticles.map((article) => (
-              <ArticleCard article={article} key={article.id} />
+              <ViewTransition key={article.id}>
+                <ArticleCard article={article} />
+              </ViewTransition>
             ))}
           </div>
         ) : (
@@ -91,5 +98,6 @@ export default async function BlogArchivePage({ searchParams }: Args) {
         </div>
       </div>
     </section>
+    </DirectionalTransition>
   );
 }
