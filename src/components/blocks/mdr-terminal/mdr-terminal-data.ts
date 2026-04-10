@@ -79,3 +79,42 @@ export const CRT = {
   error: "#e24a4a",
   errorGlow: "rgba(226, 74, 74, 0.3)",
 } as const;
+
+export const boot404Sequence: BootLine[] = [
+  { text: "LUMON INDUSTRIES (tm)", delay: 0 },
+  { text: "MDR TERMINAL v2.0", delay: 200 },
+  { text: "", delay: 600 },
+  {
+    text: "INITIALIZING NEURAL PARTITION...",
+    delay: 800,
+    suffix: "OK",
+    suffixDelay: 400,
+  },
+  {
+    text: "LOADING COGNITIVE INTERFACE...",
+    delay: 1500,
+    suffix: "OK",
+    suffixDelay: 350,
+  },
+  {
+    text: "ESTABLISHING INNIE PROTOCOL...",
+    delay: 2200,
+    suffix: "OK",
+    suffixDelay: 300,
+  },
+  { text: "", delay: 2800 },
+  {
+    text: "LOCATING REQUESTED RESOURCE...",
+    delay: 3000,
+    suffix: "ERR",
+    suffixDelay: 600,
+  },
+  { text: "", delay: 3800 },
+  { text: "FILE: UNKNOWN", delay: 4000 },
+  { text: "STATUS: RESOURCE NOT FOUND", delay: 4200 },
+  { text: "", delay: 4600 },
+  { text: "ERR 0x404: REQUESTED FILE HAS NOT BEEN", delay: 4800 },
+  { text: "ASSIGNED TO THIS DEPARTMENT", delay: 5000 },
+];
+
+export const BOOT_404_DURATION_MS = 5200;
