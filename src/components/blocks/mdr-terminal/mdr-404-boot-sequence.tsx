@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import {
   BOOT_404_DURATION_MS,
   type BootLine,
-  CRT,
   boot404Sequence,
+  CRT,
 } from "./mdr-terminal-data";
 
 interface VisibleLine {
@@ -64,9 +64,7 @@ export function Mdr404BootSequence() {
       {visibleLines.map((vl) => {
         const error = isErrorLine(vl.line);
         const textColor = error ? CRT.error : CRT.text;
-        const textShadow = error
-          ? `0 0 8px ${CRT.errorGlow}`
-          : undefined;
+        const textShadow = error ? `0 0 8px ${CRT.errorGlow}` : undefined;
 
         return (
           <div key={vl.line.delay} style={{ color: textColor, textShadow }}>
@@ -75,8 +73,7 @@ export function Mdr404BootSequence() {
               <span
                 className="ml-4"
                 style={{
-                  color:
-                    vl.line.suffix === "ERR" ? CRT.error : CRT.textBright,
+                  color: vl.line.suffix === "ERR" ? CRT.error : CRT.textBright,
                   textShadow:
                     vl.line.suffix === "ERR"
                       ? `0 0 8px ${CRT.errorGlow}`
