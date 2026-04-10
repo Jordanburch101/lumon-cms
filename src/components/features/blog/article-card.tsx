@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
@@ -56,18 +57,20 @@ export function ArticleCard({ article }: ArticleCardProps) {
   const author = resolveAuthor(article);
 
   return (
-    <Link className="group block" href={`/blog/${article.slug}`}>
+    <Link className="group block" href={`/blog/${article.slug}`} transitionTypes={["nav-forward"]}>
       <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
         {imageSrc && (
-          <Image
-            alt={article.title}
-            blurDataURL={blurData}
-            className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
-            fill
-            placeholder={blurData ? "blur" : "empty"}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            src={imageSrc}
-          />
+          <ViewTransition name={`article-hero-${article.id}`} share="morph" default="none">
+            <Image
+              alt={article.title}
+              blurDataURL={blurData}
+              className="object-cover brightness-[0.97] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-105"
+              fill
+              placeholder={blurData ? "blur" : "empty"}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              src={imageSrc}
+            />
+          </ViewTransition>
         )}
       </div>
       <div className="mt-4 px-0.5">
@@ -81,9 +84,11 @@ export function ArticleCard({ article }: ArticleCardProps) {
             {formatDateShort(article.publishedAt)}
           </span>
         </div>
-        <h3 className="mt-2.5 line-clamp-2 font-semibold text-base leading-snug">
-          {article.title}
-        </h3>
+        <ViewTransition name={`article-title-${article.id}`} share="text-morph" default="none">
+          <h3 className="mt-2.5 line-clamp-2 font-semibold text-base leading-snug">
+            {article.title}
+          </h3>
+        </ViewTransition>
         <p className="mt-1.5 line-clamp-2 text-muted-foreground text-sm leading-relaxed">
           {article.excerpt}
         </p>
