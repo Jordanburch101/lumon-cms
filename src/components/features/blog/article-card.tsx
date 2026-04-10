@@ -62,13 +62,13 @@ export function ArticleCard({ article }: ArticleCardProps) {
       href={`/blog/${article.slug}`}
       transitionTypes={["nav-forward"]}
     >
-      <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
-        {imageSrc && (
-          <ViewTransition
-            default="none"
-            name={`article-hero-${article.id}`}
-            share="morph"
-          >
+      <ViewTransition
+        default="none"
+        name={`article-hero-${article.id}`}
+        share="morph"
+      >
+        <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+          {imageSrc && (
             <Image
               alt={article.title}
               blurDataURL={blurData}
@@ -78,9 +78,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               src={imageSrc}
             />
-          </ViewTransition>
-        )}
-      </div>
+          )}
+        </div>
+      </ViewTransition>
       <div className="mt-4 px-0.5">
         <div className="flex items-center gap-2">
           {category && (

@@ -23,13 +23,13 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
       href={`/blog/${article.slug}`}
       transitionTypes={["nav-forward"]}
     >
-      <div className="relative aspect-[3/2] w-full lg:aspect-[21/9]">
-        {imageSrc && (
-          <ViewTransition
-            default="none"
-            name={`article-hero-${article.id}`}
-            share="morph"
-          >
+      <ViewTransition
+        default="none"
+        name={`article-hero-${article.id}`}
+        share="morph"
+      >
+        <div className="relative aspect-[3/2] w-full lg:aspect-[21/9]">
+          {imageSrc && (
             <Image
               alt={article.title}
               blurDataURL={blurData}
@@ -39,9 +39,9 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
               sizes="(max-width: 1024px) 100vw, 100vw"
               src={imageSrc}
             />
-          </ViewTransition>
-        )}
-      </div>
+          )}
+        </div>
+      </ViewTransition>
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-[45%] via-black/30 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 z-10 p-5 lg:p-8">
         <div className="mb-2 flex items-center gap-2">
