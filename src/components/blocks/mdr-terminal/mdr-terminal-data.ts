@@ -75,4 +75,7 @@ export const CRT = {
   /** Border/chrome color for the CRT bezel and UI elements */
   border: "rgba(74, 144, 226, 0.4)",
   borderBright: "rgba(120, 180, 255, 0.6)",
+  /** Error red — for failed boot lines and error states */
+  error: "#e24a4a",
+  errorGlow: "rgba(226, 74, 74, 0.3)",
 } as const;
