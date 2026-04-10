@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
@@ -20,18 +21,21 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
     <Link
       className="group relative block overflow-hidden rounded-xl"
       href={`/blog/${article.slug}`}
+      transitionTypes={["nav-forward"]}
     >
       <div className="relative aspect-[3/2] w-full lg:aspect-[21/9]">
         {imageSrc && (
-          <Image
-            alt={article.title}
-            blurDataURL={blurData}
-            className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
-            fill
-            placeholder={blurData ? "blur" : "empty"}
-            sizes="(max-width: 1024px) 100vw, 100vw"
-            src={imageSrc}
-          />
+          <ViewTransition name={`article-hero-${article.id}`} share="morph" default="none">
+            <Image
+              alt={article.title}
+              blurDataURL={blurData}
+              className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:brightness-110"
+              fill
+              placeholder={blurData ? "blur" : "empty"}
+              sizes="(max-width: 1024px) 100vw, 100vw"
+              src={imageSrc}
+            />
+          </ViewTransition>
         )}
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-[45%] via-black/30 to-transparent" />
@@ -50,9 +54,11 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
             {article.readTime} min read
           </span>
         </div>
-        <h3 className="max-w-xl font-semibold text-white text-xl leading-snug sm:text-2xl">
-          {article.title}
-        </h3>
+        <ViewTransition name={`article-title-${article.id}`} share="text-morph" default="none">
+          <h3 className="max-w-xl font-semibold text-white text-xl leading-snug sm:text-2xl">
+            {article.title}
+          </h3>
+        </ViewTransition>
         <p className="mt-2 hidden max-w-lg text-sm text-white/55 leading-relaxed sm:line-clamp-2">
           {article.excerpt}
         </p>
