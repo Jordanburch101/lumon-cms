@@ -72,7 +72,6 @@ export function Navbar({ data }: { data: Header }) {
           contrast === "dark" && "liquid-glass-dark"
         )}
         ref={headerRef}
-        style={{ viewTransitionName: "site-header" }}
       >
         <div className={cn("liquid-glass-effect", !scrolled && "opacity-0")} />
         <div className={cn("liquid-glass-tint", !scrolled && "opacity-0")} />

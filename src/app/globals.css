@@ -842,14 +842,6 @@
   animation: none;
 }
 
-/* Persistent element isolation — backdrop-blur workaround (navbar) */
-::view-transition-old(site-header) {
-  display: none;
-}
-::view-transition-new(site-header) {
-  animation: none;
-}
-
 /* Persistent element isolation — standard (footer) */
 ::view-transition-group(site-footer) {
   animation: none;
