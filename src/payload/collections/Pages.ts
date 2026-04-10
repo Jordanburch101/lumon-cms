@@ -19,8 +19,10 @@ import { FaqBlock } from "../block-schemas/Faq";
 import { FeaturesGridBlock } from "../block-schemas/FeaturesGrid";
 import { FormEmbedBlock } from "../block-schemas/FormEmbed";
 import { HeroBlock } from "../block-schemas/Hero";
+import { HeroBriefingBlock } from "../block-schemas/HeroBriefing";
 import { HeroCenteredBlock } from "../block-schemas/HeroCentered";
 import { HeroMinimalBlock } from "../block-schemas/HeroMinimal";
+import { HeroSpecimenBlock } from "../block-schemas/HeroSpecimen";
 import { HeroStatsBlock } from "../block-schemas/HeroStats";
 import { ImageGalleryBlock } from "../block-schemas/ImageGallery";
 import { JobListingsBlock } from "../block-schemas/JobListings";
@@ -105,6 +107,8 @@ export const Pages: CollectionConfig = {
                 HeroCenteredBlock,
                 HeroStatsBlock,
                 HeroMinimalBlock,
+                HeroSpecimenBlock,
+                HeroBriefingBlock,
               ],
             },
           ],

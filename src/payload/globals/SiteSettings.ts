@@ -66,8 +66,7 @@ export const SiteSettings: GlobalConfig = {
       relationTo: "media",
       label: "Default OG Image",
       filterOptions: {
-        mimeType: { not_in: ["image/svg+xml"] },
-        _or: [{ mimeType: { contains: "image/" } }],
+        mimeType: { contains: "image/", not_in: ["image/svg+xml"] },
       },
       admin: {
         description:
@@ -128,8 +127,7 @@ export const SiteSettings: GlobalConfig = {
           relationTo: "media",
           label: "Organization Logo",
           filterOptions: {
-            mimeType: { not_in: ["image/svg+xml"] },
-            _or: [{ mimeType: { contains: "image/" } }],
+            mimeType: { contains: "image/", not_in: ["image/svg+xml"] },
           },
         },
         {

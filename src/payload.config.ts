@@ -290,8 +290,7 @@ export default buildConfig({
             ? ({
                 ...field,
                 filterOptions: {
-                  mimeType: { not_in: ["image/svg+xml"] },
-                  _or: [{ mimeType: { contains: "image/" } }],
+                  mimeType: { contains: "image/", not_in: ["image/svg+xml"] },
                 },
               } as typeof field)
             : field
