@@ -25,7 +25,11 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
     >
       <div className="relative aspect-[3/2] w-full lg:aspect-[21/9]">
         {imageSrc && (
-          <ViewTransition name={`article-hero-${article.id}`} share="morph" default="none">
+          <ViewTransition
+            default="none"
+            name={`article-hero-${article.id}`}
+            share="morph"
+          >
             <Image
               alt={article.title}
               blurDataURL={blurData}
@@ -54,7 +58,11 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
             {article.readTime} min read
           </span>
         </div>
-        <ViewTransition name={`article-title-${article.id}`} share="text-morph" default="none">
+        <ViewTransition
+          default="none"
+          name={`article-title-${article.id}`}
+          share="text-morph"
+        >
           <h3 className="max-w-xl font-semibold text-white text-xl leading-snug sm:text-2xl">
             {article.title}
           </h3>

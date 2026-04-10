@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import { RenderHero } from "@/components/blocks/render-blocks";
-import { DirectionalTransition } from "@/components/ui/directional-transition";
 import { RenderBlocksServer } from "@/components/blocks/render-blocks-server";
 import { JsonLd } from "@/components/features/seo/json-ld";
+import { DirectionalTransition } from "@/components/ui/directional-transition";
 import {
   getCachedPage,
   getCachedSiteSettings,

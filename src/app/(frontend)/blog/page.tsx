@@ -44,60 +44,63 @@ export default async function BlogArchivePage({ searchParams }: Args) {
 
   return (
     <DirectionalTransition>
-    <section className="w-full">
-      <div className="mx-auto max-w-7xl px-4 lg:px-6">
-        {/* Header */}
-        <div className="pt-8 pb-6 lg:pt-12">
-          <div className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
-            Department Archives
-          </div>
-          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h1 className="font-semibold text-3xl leading-tight sm:text-4xl">
-                Latest from the blog
-              </h1>
-              <p className="mt-2 text-muted-foreground text-sm">
-                Insights, updates, and dispatches from the severed floor.
-              </p>
+      <section className="w-full">
+        <div className="mx-auto max-w-7xl px-4 lg:px-6">
+          {/* Header */}
+          <div className="pt-8 pb-6 lg:pt-12">
+            <div className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
+              Department Archives
             </div>
-            <CategoryFilter activeSlug={categorySlug} categories={categories} />
+            <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h1 className="font-semibold text-3xl leading-tight sm:text-4xl">
+                  Latest from the blog
+                </h1>
+                <p className="mt-2 text-muted-foreground text-sm">
+                  Insights, updates, and dispatches from the severed floor.
+                </p>
+              </div>
+              <CategoryFilter
+                activeSlug={categorySlug}
+                categories={categories}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Featured article */}
-        {featured && (
-          <div className="pb-5">
-            <ViewTransition key={featured.id}>
-              <FeaturedCard article={featured} />
-            </ViewTransition>
-          </div>
-        )}
-
-        {/* Article grid */}
-        {gridArticles.length > 0 ? (
-          <div className="grid grid-cols-1 gap-x-4 gap-y-8 pb-8 sm:grid-cols-2 lg:grid-cols-3">
-            {gridArticles.map((article) => (
-              <ViewTransition key={article.id}>
-                <ArticleCard article={article} />
+          {/* Featured article */}
+          {featured && (
+            <div className="pb-5">
+              <ViewTransition key={featured.id}>
+                <FeaturedCard article={featured} />
               </ViewTransition>
-            ))}
-          </div>
-        ) : (
-          <div className="py-24 text-center text-muted-foreground">
-            No articles found.
-          </div>
-        )}
+            </div>
+          )}
 
-        {/* Pagination */}
-        <div className="pb-12">
-          <Pagination
-            baseHref={baseHref}
-            currentPage={currentPage}
-            totalPages={result.totalPages}
-          />
+          {/* Article grid */}
+          {gridArticles.length > 0 ? (
+            <div className="grid grid-cols-1 gap-x-4 gap-y-8 pb-8 sm:grid-cols-2 lg:grid-cols-3">
+              {gridArticles.map((article) => (
+                <ViewTransition key={article.id}>
+                  <ArticleCard article={article} />
+                </ViewTransition>
+              ))}
+            </div>
+          ) : (
+            <div className="py-24 text-center text-muted-foreground">
+              No articles found.
+            </div>
+          )}
+
+          {/* Pagination */}
+          <div className="pb-12">
+            <Pagination
+              baseHref={baseHref}
+              currentPage={currentPage}
+              totalPages={result.totalPages}
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
     </DirectionalTransition>
   );
 }

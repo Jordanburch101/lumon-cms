@@ -739,18 +739,32 @@
 
 /* Shared keyframes */
 @keyframes vt-fade {
-  from { filter: blur(3px); opacity: 0; }
-  to { filter: blur(0); opacity: 1; }
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
 }
 
 @keyframes vt-slide {
-  from { translate: var(--slide-offset); }
-  to { translate: 0; }
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
 }
 
 @keyframes vt-slide-y {
-  from { transform: translateY(var(--slide-y-offset, 10px)); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(var(--slide-y-offset, 10px));
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* Fade */
@@ -810,7 +824,9 @@
 }
 
 @keyframes vt-via-blur {
-  30% { filter: blur(3px); }
+  30% {
+    filter: blur(3px);
+  }
 }
 
 /* Text morph — avoids raster scaling artifacts */
@@ -821,9 +837,9 @@
   display: none;
 }
 ::view-transition-new(.text-morph) {
-  animation: none;
   object-fit: none;
   object-position: left top;
+  animation: none;
 }
 
 /* Persistent element isolation — backdrop-blur workaround (navbar) */

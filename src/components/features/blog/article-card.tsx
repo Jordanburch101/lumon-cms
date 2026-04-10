@@ -57,10 +57,18 @@ export function ArticleCard({ article }: ArticleCardProps) {
   const author = resolveAuthor(article);
 
   return (
-    <Link className="group block" href={`/blog/${article.slug}`} transitionTypes={["nav-forward"]}>
+    <Link
+      className="group block"
+      href={`/blog/${article.slug}`}
+      transitionTypes={["nav-forward"]}
+    >
       <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
         {imageSrc && (
-          <ViewTransition name={`article-hero-${article.id}`} share="morph" default="none">
+          <ViewTransition
+            default="none"
+            name={`article-hero-${article.id}`}
+            share="morph"
+          >
             <Image
               alt={article.title}
               blurDataURL={blurData}
@@ -84,7 +92,11 @@ export function ArticleCard({ article }: ArticleCardProps) {
             {formatDateShort(article.publishedAt)}
           </span>
         </div>
-        <ViewTransition name={`article-title-${article.id}`} share="text-morph" default="none">
+        <ViewTransition
+          default="none"
+          name={`article-title-${article.id}`}
+          share="text-morph"
+        >
           <h3 className="mt-2.5 line-clamp-2 font-semibold text-base leading-snug">
             {article.title}
           </h3>

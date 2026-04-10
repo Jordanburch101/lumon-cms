@@ -71,117 +71,117 @@ export default async function ArticlePage({ params }: Args) {
 
   return (
     <DirectionalTransition>
-    <article>
-      <ArticleJsonLd article={article} settings={settings} />
+      <article>
+        <ArticleJsonLd article={article} settings={settings} />
 
-      {/* Hero image */}
-      <div className="relative">
-        <div className="relative h-[280px] sm:h-[340px] lg:h-[420px]">
-          {imageSrc && (
-            <ViewTransition
-              name={`article-hero-${article.id}`}
-              share="morph"
-            >
-              <Image
-                alt={article.title}
-                blurDataURL={blurData}
-                className="object-cover"
-                fill
-                placeholder={blurData ? "blur" : "empty"}
-                priority
-                sizes="100vw"
-                src={imageSrc}
-              />
-            </ViewTransition>
-          )}
-        </div>
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
-      </div>
-
-      {/* Article header */}
-      <div className="relative mx-auto -mt-10 max-w-3xl px-4 lg:px-6">
-        {/* Meta */}
-        <div className="flex items-center gap-2">
-          {category && (
-            <Badge className="bg-foreground/10 text-[10px]" variant="secondary">
-              {category.title}
-            </Badge>
-          )}
-          <span className="text-muted-foreground text-xs">
-            {formatDate(article.publishedAt)}
-          </span>
-          <span className="text-muted-foreground/30">|</span>
-          <span className="text-muted-foreground text-xs">
-            {article.readTime} min read
-          </span>
+        {/* Hero image */}
+        <div className="relative">
+          <div className="relative h-[280px] sm:h-[340px] lg:h-[420px]">
+            {imageSrc && (
+              <ViewTransition name={`article-hero-${article.id}`} share="morph">
+                <Image
+                  alt={article.title}
+                  blurDataURL={blurData}
+                  className="object-cover"
+                  fill
+                  placeholder={blurData ? "blur" : "empty"}
+                  priority
+                  sizes="100vw"
+                  src={imageSrc}
+                />
+              </ViewTransition>
+            )}
+          </div>
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
 
-        {/* Title */}
-        <ViewTransition
-          name={`article-title-${article.id}`}
-          share="text-morph"
-        >
-          <h1 className="mt-3 font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
-            {article.title}
-          </h1>
-        </ViewTransition>
+        {/* Article header */}
+        <div className="relative mx-auto -mt-10 max-w-3xl px-4 lg:px-6">
+          {/* Meta */}
+          <div className="flex items-center gap-2">
+            {category && (
+              <Badge
+                className="bg-foreground/10 text-[10px]"
+                variant="secondary"
+              >
+                {category.title}
+              </Badge>
+            )}
+            <span className="text-muted-foreground text-xs">
+              {formatDate(article.publishedAt)}
+            </span>
+            <span className="text-muted-foreground/30">|</span>
+            <span className="text-muted-foreground text-xs">
+              {article.readTime} min read
+            </span>
+          </div>
 
-        {/* Author */}
-        <div className="mt-5 border-border border-b pb-6">
-          <ArticleAuthor
-            avatarUrl={author.avatarUrl}
-            jobTitle={author.jobTitle}
-            name={author.name}
-            variant="inline"
-          />
-        </div>
-
-        {/* Body */}
-        <div className="py-8">
-          <RichText data={article.body} />
-        </div>
-
-        {/* Divider */}
-        <div
-          className="my-2 h-px"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, var(--border), transparent)",
-          }}
-        />
-
-        {/* Author bio */}
-        <div className="py-8">
-          <ArticleAuthor
-            avatarUrl={author.avatarUrl}
-            bio={author.bio}
-            name={author.name}
-            variant="bio"
-          />
-        </div>
-
-        {/* Back link */}
-        <div className="pb-12">
-          <Link
-            className="inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground"
-            href="/blog"
-            transitionTypes={["nav-back"]}
+          {/* Title */}
+          <ViewTransition
+            name={`article-title-${article.id}`}
+            share="text-morph"
           >
-            <svg
-              aria-hidden="true"
-              className="size-3.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
+            <h1 className="mt-3 font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
+              {article.title}
+            </h1>
+          </ViewTransition>
+
+          {/* Author */}
+          <div className="mt-5 border-border border-b pb-6">
+            <ArticleAuthor
+              avatarUrl={author.avatarUrl}
+              jobTitle={author.jobTitle}
+              name={author.name}
+              variant="inline"
+            />
+          </div>
+
+          {/* Body */}
+          <div className="py-8">
+            <RichText data={article.body} />
+          </div>
+
+          {/* Divider */}
+          <div
+            className="my-2 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, var(--border), transparent)",
+            }}
+          />
+
+          {/* Author bio */}
+          <div className="py-8">
+            <ArticleAuthor
+              avatarUrl={author.avatarUrl}
+              bio={author.bio}
+              name={author.name}
+              variant="bio"
+            />
+          </div>
+
+          {/* Back link */}
+          <div className="pb-12">
+            <Link
+              className="inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground"
+              href="/blog"
+              transitionTypes={["nav-back"]}
             >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Back to all articles
-          </Link>
+              <svg
+                aria-hidden="true"
+                className="size-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+              Back to all articles
+            </Link>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
     </DirectionalTransition>
   );
 }
