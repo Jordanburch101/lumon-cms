@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import { RenderHero } from "@/components/blocks/render-blocks";
+import { DirectionalTransition } from "@/components/ui/directional-transition";
 import { RenderBlocksServer } from "@/components/blocks/render-blocks-server";
 import { JsonLd } from "@/components/features/seo/json-ld";
 import {
@@ -66,10 +67,12 @@ export default async function Page({ params }: Args) {
   const settings = await getCachedSiteSettings();
 
   return (
-    <div className="flex flex-col gap-16 lg:gap-32">
-      <JsonLd page={page} settings={settings} />
-      <RenderHero blocks={page.hero ?? []} />
-      <RenderBlocksServer blocks={page.layout ?? []} />
-    </div>
+    <DirectionalTransition>
+      <div className="flex flex-col gap-16 lg:gap-32">
+        <JsonLd page={page} settings={settings} />
+        <RenderHero blocks={page.hero ?? []} />
+        <RenderBlocksServer blocks={page.layout ?? []} />
+      </div>
+    </DirectionalTransition>
   );
 }
