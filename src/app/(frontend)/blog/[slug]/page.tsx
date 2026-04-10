@@ -78,7 +78,11 @@ export default async function ArticlePage({ params }: Args) {
         <div className="relative">
           <div className="relative h-[280px] sm:h-[340px] lg:h-[420px]">
             {imageSrc && (
-              <ViewTransition name={`article-hero-${article.id}`} share="morph">
+              <ViewTransition
+                default="none"
+                name={`article-hero-${article.id}`}
+                share="morph"
+              >
                 <Image
                   alt={article.title}
                   blurDataURL={blurData}
@@ -118,6 +122,7 @@ export default async function ArticlePage({ params }: Args) {
 
           {/* Title */}
           <ViewTransition
+            default="none"
             name={`article-title-${article.id}`}
             share="text-morph"
           >
