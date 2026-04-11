@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
@@ -86,15 +85,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
             {formatDateShort(article.publishedAt)}
           </span>
         </div>
-        <ViewTransition
-          default="none"
-          name={`article-title-${article.id}`}
-          share="text-morph"
-        >
-          <h3 className="mt-2.5 line-clamp-2 font-semibold text-base leading-snug">
-            {article.title}
-          </h3>
-        </ViewTransition>
+        <h3 className="mt-2.5 line-clamp-2 font-semibold text-base leading-snug">
+          {article.title}
+        </h3>
         <p className="mt-1.5 line-clamp-2 text-muted-foreground text-sm leading-relaxed">
           {article.excerpt}
         </p>

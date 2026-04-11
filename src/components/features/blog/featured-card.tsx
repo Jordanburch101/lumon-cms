@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getBlurDataURL, getMediaUrl } from "@/core/lib/utils";
@@ -52,15 +51,9 @@ export function FeaturedCard({ article }: FeaturedCardProps) {
             {article.readTime} min read
           </span>
         </div>
-        <ViewTransition
-          default="none"
-          name={`article-title-${article.id}`}
-          share="text-morph"
-        >
-          <h3 className="max-w-xl font-semibold text-white text-xl leading-snug sm:text-2xl">
-            {article.title}
-          </h3>
-        </ViewTransition>
+        <h3 className="max-w-xl font-semibold text-white text-xl leading-snug sm:text-2xl">
+          {article.title}
+        </h3>
         <p className="mt-2 hidden max-w-lg text-sm text-white/55 leading-relaxed sm:line-clamp-2">
           {article.excerpt}
         </p>

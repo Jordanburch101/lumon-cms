@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
-import { ViewTransition } from "react";
 import { ArticleAuthor } from "@/components/features/blog/article-author";
 import {
   formatDate,
@@ -115,15 +114,9 @@ export default async function ArticlePage({ params }: Args) {
           </div>
 
           {/* Title */}
-          <ViewTransition
-            default="none"
-            name={`article-title-${article.id}`}
-            share="text-morph"
-          >
-            <h1 className="mt-3 font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
-              {article.title}
-            </h1>
-          </ViewTransition>
+          <h1 className="mt-3 font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
+            {article.title}
+          </h1>
 
           {/* Author */}
           <div className="mt-5 border-border border-b pb-6">
